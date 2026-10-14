@@ -5,11 +5,11 @@ import {readFileSync} from 'node:fs';
 const levels=globalThis.MAGIC_FOREST_LEVELS;
 const ending=globalThis.WORLD_ONE_ENDING;
 const questionBank=JSON.parse(readFileSync(new URL('../dist/data/question-bank.json',import.meta.url),'utf8'));
-const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374];
+const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 
-check(Array.isArray(levels)&&levels.length===6,'เกมต้องมี World 1 จำนวน 5 ด่าน และ World 2 ด่านเปิดตัว');
+check(Array.isArray(levels)&&levels.length===7,'เกมต้องมี World 1 จำนวน 5 ด่าน และ World 2 จำนวน 2 ด่าน');
 check(Array.isArray(questionBank)&&questionBank.length===100,'คลังโจทย์ต้นฉบับต้องมี 100 ด่าน');
 questionBank.forEach((question,index)=>{
   check(question.id===index+1,`คลังโจทย์ลำดับ ${index+1} ไม่ต่อเนื่อง`);
@@ -31,6 +31,8 @@ check(Array.isArray(ending)&&ending.length>=4,'ตอนจบ World 1 ไม่
 check(ending.some(line=>line.who==='แบมแบม')&&ending.some(line=>line.text.includes('แบมแบม')),'ตอนจบต้องรองรับการแทนชื่อผู้เล่น');
 check(levels[5]?.world===2,'ด่าน 6 ต้องเปิด World 2');
 check(levels[5]?.title===questionBank[5]?.title,'ชื่อด่าน 6 ต้องตรงกับต้นฉบับ');
+check(levels[6]?.world===2&&levels[6]?.type==='repair','ด่าน 7 ต้องเป็นกลไกซ่อมคริสตัลใน World 2');
+check(levels[6]?.title===questionBank[6]?.title,'ชื่อด่าน 7 ต้องตรงกับต้นฉบับ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ World 1 ผ่าน 5 ด่าน · World 2 เปิดตัว 1 ด่าน · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน`);
+console.log(`✓ World 1 ผ่าน 5 ด่าน · World 2 ผ่าน 2 ด่าน · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน`);
