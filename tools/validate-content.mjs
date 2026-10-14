@@ -5,11 +5,11 @@ import {readFileSync} from 'node:fs';
 const levels=globalThis.MAGIC_FOREST_LEVELS;
 const ending=globalThis.WORLD_ONE_ENDING;
 const questionBank=JSON.parse(readFileSync(new URL('../dist/data/question-bank.json',import.meta.url),'utf8'));
-const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256];
+const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 
-check(Array.isArray(levels)&&levels.length===9,'เกมต้องมี World 1 จำนวน 5 ด่าน และ World 2 จำนวน 4 ด่าน');
+check(Array.isArray(levels)&&levels.length===10,'เกมต้องมี World 1 และ World 2 อย่างละ 5 ด่าน');
 check(Array.isArray(questionBank)&&questionBank.length===100,'คลังโจทย์ต้นฉบับต้องมี 100 ด่าน');
 questionBank.forEach((question,index)=>{
   check(question.id===index+1,`คลังโจทย์ลำดับ ${index+1} ไม่ต่อเนื่อง`);
@@ -37,6 +37,9 @@ check(levels[7]?.world===2&&levels[7]?.type==='fish','ด่าน 8 ต้อ�
 check(levels[7]?.title===questionBank[7]?.title,'ชื่อด่าน 8 ต้องตรงกับต้นฉบับ');
 check(levels[8]?.world===2&&levels[8]?.type==='leaves','ด่าน 9 ต้องเป็นกลไกรวมใบไม้ใน World 2');
 check(levels[8]?.title===questionBank[8]?.title,'ชื่อด่าน 9 ต้องตรงกับต้นฉบับ');
+check(levels[9]?.world===2&&levels[9]?.type==='sand','ด่าน 10 ต้องเป็นกลไกชั่งทรายใน World 2');
+check(levels[9]?.title===questionBank[9]?.title,'ชื่อด่าน 10 ต้องตรงกับต้นฉบับ');
+check(Array.isArray(globalThis.WORLD_TWO_ENDING)&&globalThis.WORLD_TWO_ENDING.length>=4,'ตอนจบ World 2 ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ World 1 ผ่าน 5 ด่าน · World 2 ผ่าน 4 ด่าน · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน`);
+console.log(`✓ World 1 ผ่าน 5 ด่าน · World 2 ผ่าน 5 ด่านพร้อมฉากจบ · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน`);
