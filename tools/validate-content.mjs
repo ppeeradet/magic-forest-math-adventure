@@ -29,6 +29,7 @@ levels.forEach((level,index)=>{
   check(String(level.answer)===String(questionBank[index].answer),`คำตอบเกมด่าน ${level.id} ไม่ตรงกับคลังต้นฉบับ`);
 });
 check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลใน World 1 ต้องไม่ซ้ำกัน');
+check(levels.every(level=>level.item&&level.reward),'ทุกด่านต้องมีไอคอนและชื่อของวิเศษสำหรับกระเป๋า');
 check(Array.isArray(ending)&&ending.length>=4,'ตอนจบ World 1 ไม่ครบ');
 check(ending.some(line=>line.who==='แบมแบม')&&ending.some(line=>line.text.includes('แบมแบม')),'ตอนจบต้องรองรับการแทนชื่อผู้เล่น');
 check(levels[5]?.world===2,'ด่าน 6 ต้องเปิด World 2');
