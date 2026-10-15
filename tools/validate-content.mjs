@@ -10,6 +10,8 @@ const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 
 check(Array.isArray(levels)&&levels.length===10,'เกมต้องมี World 1 และ World 2 อย่างละ 5 ด่าน');
+check(levels.filter(level=>(level.world||1)===1).length===5,'World 1 ต้องมี 5 ด่าน');
+check(levels.filter(level=>level.world===2).length===5,'World 2 ต้องมี 5 ด่าน');
 check(Array.isArray(questionBank)&&questionBank.length===100,'คลังโจทย์ต้นฉบับต้องมี 100 ด่าน');
 questionBank.forEach((question,index)=>{
   check(question.id===index+1,`คลังโจทย์ลำดับ ${index+1} ไม่ต่อเนื่อง`);
