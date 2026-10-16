@@ -1,5 +1,6 @@
 globalThis.window=globalThis;
 await import('../dist/data/levels.js');
+await import('../dist/data/progress.js');
 import {readFileSync} from 'node:fs';
 
 const levels=globalThis.MAGIC_FOREST_LEVELS;
@@ -10,6 +11,17 @@ const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 
 check(Array.isArray(levels)&&levels.length===10,'เกมต้องมี World 1 และ World 2 อย่างละ 5 ด่าน');
+const progress=globalThis.MAGIC_FOREST_PROGRESS;
+check(progress?.starsForTries(1)===3&&progress?.starsForTries(2)===2&&progress?.starsForTries(4)===1,'เกณฑ์ดาวตามจำนวนครั้งไม่ถูกต้อง');
+const testLevel=levels[0],fresh={unlocked:1,stars:{},items:[],crystals:0,sound:true};
+const firstClear=progress.completeLevel(fresh,testLevel,3,levels.length);
+check(firstClear.runStars===2&&firstClear.bestStars===2&&firstClear.isNewItem,'ผ่านครั้งแรกต้องได้ 2 ดาวและของวิเศษใหม่');
+check(firstClear.nextSave.unlocked===2&&firstClear.nextSave.crystals===10&&firstClear.nextSave.items.length===1,'ผ่านครั้งแรกต้องปลดล็อกด่าน 2 และได้ 10 ผลึก');
+const worseReplay=progress.completeLevel(firstClear.nextSave,testLevel,5,levels.length);
+check(worseReplay.runStars===1&&worseReplay.bestStars===2&&!worseReplay.isNewItem,'เล่นซ้ำแย่ลงต้องรักษาสถิติและไม่แจกของซ้ำ');
+check(worseReplay.nextSave.crystals===10&&worseReplay.nextSave.items.length===1,'เล่นซ้ำต้องไม่เพิ่มผลึกหรือของวิเศษ');
+const newRecord=progress.completeLevel(worseReplay.nextSave,testLevel,1,levels.length);
+check(newRecord.runStars===3&&newRecord.bestStars===3&&newRecord.isRecord,'ทำได้ดีขึ้นต้องบันทึกสถิติใหม่ 3 ดาว');
 check(levels.filter(level=>(level.world||1)===1).length===5,'World 1 ต้องมี 5 ด่าน');
 check(levels.filter(level=>level.world===2).length===5,'World 2 ต้องมี 5 ด่าน');
 check(Array.isArray(questionBank)&&questionBank.length===100,'คลังโจทย์ต้นฉบับต้องมี 100 ด่าน');
@@ -45,4 +57,4 @@ check(levels[9]?.title===questionBank[9]?.title,'ชื่อด่าน 10 ต
 check(Array.isArray(globalThis.WORLD_TWO_ENDING)&&globalThis.WORLD_TWO_ENDING.length>=4,'ตอนจบ World 2 ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ World 1 ผ่าน 5 ด่าน · World 2 ผ่าน 5 ด่านพร้อมฉากจบ · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน`);
+console.log(`✓ World 1 ผ่าน 5 ด่าน · World 2 ผ่าน 5 ด่านพร้อมฉากจบ · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
