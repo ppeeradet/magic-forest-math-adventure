@@ -1,7 +1,7 @@
 # แผนพัฒนาแบบ Sprint
 
 - Sprint 1–3 (2–3 วัน): ทำ World 1 ให้สมบูรณ์ทั้ง UX, บทสนทนา, animation, audio และ playtest
-- Sprint 4–7 (3–5 วัน): ✅ แยกคลังโจทย์ครบ 100 ด่าน สร้าง World 2 ครบ 5 ด่านพร้อมฉากจบ ปรับ UX/คำใบ้/กลไกตัวเลขด่าน 2–4 พร้อม regression test · งานถัดไป playtest และเก็บ UX
+- Sprint 4–7 (3–5 วัน): ✅ แยกคลังโจทย์ครบ 100 ด่าน สร้าง World 2 ครบ 5 ด่านพร้อมฉากจบ ปรับ UX/คำใบ้/กลไกตัวเลข World 1 ครบ พร้อม regression test · งานถัดไป playtest และเก็บ UX
 - Sprint 8–10 (2–4 วัน): Firebase cloud save, โปรไฟล์ผู้เล่น และหน้าผู้ปกครอง
 - Sprint 11–14 (3–5 วัน): AR prototype และคอลเลกชันสัตว์สามมิติ
 
