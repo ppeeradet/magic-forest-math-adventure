@@ -33,3 +33,12 @@
 .echo-pool em{font-style:normal;font-size:11px;color:var(--mint);margin-top:3px}.echo-stone i{display:block;margin-top:3px;font-style:normal;font-size:11px;color:var(--muted)}.echo-stone:disabled:not(.heard){opacity:.38;filter:grayscale(.75);cursor:not-allowed}.echo-actions{display:grid;grid-template-columns:1fr 1.45fr;gap:8px;width:min(430px,100%);margin:auto}.echo-actions button{width:100%}@media(max-width:470px){.echo-stones{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.echo-stone{min-width:0;padding:8px 4px}.echo-stone i{font-size:9px}.echo-actions{grid-template-columns:1fr}}
 .boss-stage{--light-progress:0}.boss-stage .shadow-vines{opacity:calc(1 - var(--light-progress)*.78);filter:drop-shadow(0 0 calc(18px - var(--light-progress)*12px) #9b63d8);transition:opacity .28s,filter .28s}.wing-meter b{display:block;margin:2px 0 6px;color:var(--mint);font:500 15px Mitr}.boss-actions{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;width:min(520px,100%)}.boss-actions button{width:100%}@media(max-width:470px){.boss-actions{grid-template-columns:1fr}.light-butterfly small{font-size:10px}.wing-meter b{font-size:13px}}
 .boss-stage .shadow-vines{opacity:calc(1 - var(--light-progress));filter:drop-shadow(0 0 18px #9b63d8);transition:opacity .28s}
+.magic-choice-builder{width:min(620px,100%);display:grid;gap:12px}
+.magic-tiles{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.magic-tiles .tile.selected{outline:3px solid var(--mint);transform:translateY(-4px);box-shadow:0 0 24px rgba(120,237,202,.45)}
+.magic-slot{width:min(330px,100%);min-height:86px;margin:auto;color:#fff;cursor:pointer}
+.magic-slot small{display:block;font-size:12px;color:var(--muted)}
+.magic-slot strong{font:600 22px Mitr}
+.magic-slot[aria-disabled="true"]{opacity:.7;cursor:default}
+.magic-choice-builder>#castChoice{justify-self:center;min-width:240px}
+@media(max-width:470px){.magic-tiles{display:grid;grid-template-columns:repeat(2,1fr)}.magic-tiles .tile{min-width:0}.magic-choice-builder>#castChoice{width:100%;min-width:0}}
