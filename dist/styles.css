@@ -38,6 +38,7 @@
 .magic-tiles{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .magic-tiles .tile.selected{outline:3px solid var(--mint);transform:translateY(-4px);box-shadow:0 0 24px rgba(120,237,202,.45)}
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}.explore-instruction{margin-top:10px!important;padding:8px 11px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:rgba(0,0,0,.28);color:#fff!important;font-size:14px;line-height:1.4!important}.hotspot{min-width:78px;min-height:78px;touch-action:manipulation}.magic-tiles .tile,.magic-choice-builder button{min-height:52px;touch-action:manipulation}
+.puzzle button{min-width:44px;min-height:44px;touch-action:manipulation}.puzzle button:focus-visible{outline:4px solid #fff;outline-offset:4px;box-shadow:0 0 0 7px rgba(15,61,70,.9),0 0 22px rgba(255,217,106,.8)}
 .magic-slot{width:min(330px,100%);min-height:86px;margin:auto;color:#fff;cursor:pointer}
 .magic-slot small{display:block;font-size:12px;color:var(--muted)}
 .magic-slot strong{font:600 22px Mitr}
