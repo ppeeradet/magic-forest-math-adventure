@@ -6,7 +6,10 @@ import {readFileSync} from 'node:fs';
 const levels=globalThis.MAGIC_FOREST_LEVELS;
 const ending=globalThis.WORLD_ONE_ENDING;
 const questionBank=JSON.parse(readFileSync(new URL('../dist/data/question-bank.json',import.meta.url),'utf8'));
+const appSource=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
 const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145];
+const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand'];
+const expectedWorlds=[1,1,1,1,1,2,2,2,2,2];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 
@@ -33,14 +36,23 @@ questionBank.forEach((question,index)=>{
 });
 levels.forEach((level,index)=>{
   check(level.id===index+1,`ลำดับด่าน ${index+1} ไม่ต่อเนื่อง`);
+  check((level.world||1)===expectedWorlds[index],`ด่าน ${level.id} อยู่ผิด World`);
+  check(level.type===expectedTypes[index],`กลไกด่าน ${level.id} ไม่ตรงกับแผนการเล่น`);
   check(String(level.answer)===String(expectedAnswers[index]),`คำตอบด่าน ${level.id} ไม่ตรงกับโจทย์คณิตศาสตร์`);
   check(level.required>0&&level.required<=level.hotspots.length,`จำนวนเบาะแสด่าน ${level.id} ไม่ถูกต้อง`);
   check(level.dialogue.length>=3,`บทสนทนาด่าน ${level.id} สั้นเกินไป`);
   check(level.dialogue.some(line=>line.who==='แบมแบม'||line.text.includes('แบมแบม')),`ด่าน ${level.id} ไม่มีตัวละครผู้เล่นในบทสนทนา`);
+  check(level.dialogue.some(line=>line.who.includes('ชิป')||line.who.includes('ฟลัฟฟี่')),`ด่าน ${level.id} ไม่มีเพื่อนร่วมทางในบทสนทนา`);
+  check(level.hotspots.every(spot=>spot.label&&spot.clue),`เบาะแสด่าน ${level.id} มีข้อมูลไม่ครบ`);
   check(level.reward&&level.item&&level.success,`รางวัลหรือฉากสำเร็จด่าน ${level.id} ไม่ครบ`);
   check(String(level.answer)===String(questionBank[index].answer),`คำตอบเกมด่าน ${level.id} ไม่ตรงกับคลังต้นฉบับ`);
+  if(level.world===2)check(level.title===questionBank[index].title,`ชื่อเกมด่าน ${level.id} ไม่ตรงกับคลังต้นฉบับ`);
+  if(['choice','drag'].includes(level.type))check(level.choices?.includes(level.answer),`ด่าน ${level.id} ไม่มีคำตอบจริงในตัวเลือก`);
 });
-check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลใน World 1 ต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.title)).size===levels.length,'ชื่อด่านต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.scene)).size===levels.length,'ฉากของแต่ละด่านต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลทั้ง 10 ด่านต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.item)).size===levels.length,'ไอคอนของวิเศษทั้ง 10 ด่านต้องไม่ซ้ำกัน');
 check(levels.every(level=>level.item&&level.reward),'ทุกด่านต้องมีไอคอนและชื่อของวิเศษสำหรับกระเป๋า');
 check(Array.isArray(ending)&&ending.length>=4,'ตอนจบ World 1 ไม่ครบ');
 check(ending.some(line=>line.who==='แบมแบม')&&ending.some(line=>line.text.includes('แบมแบม')),'ตอนจบต้องรองรับการแทนชื่อผู้เล่น');
@@ -55,6 +67,11 @@ check(levels[8]?.title===questionBank[8]?.title,'ชื่อด่าน 9 ต�
 check(levels[9]?.world===2&&levels[9]?.type==='sand','ด่าน 10 ต้องเป็นกลไกชั่งทรายใน World 2');
 check(levels[9]?.title===questionBank[9]?.title,'ชื่อด่าน 10 ต้องตรงกับต้นฉบับ');
 check(Array.isArray(globalThis.WORLD_TWO_ENDING)&&globalThis.WORLD_TWO_ENDING.length>=4,'ตอนจบ World 2 ไม่ครบ');
+const storyText=JSON.stringify({levels,worldOne:ending,worldTwo:globalThis.WORLD_TWO_ENDING})+appSource;
+check(!/(ณดา|นาดา|Nada)/i.test(storyText),'ยังพบชื่อตัวละครเดิมในเนื้อหาเกม');
+check(globalThis.WORLD_TWO_ENDING.some(line=>line.who==='แบมแบม'||line.text.includes('แบมแบม')),'ตอนจบ World 2 ต้องรองรับการแทนชื่อผู้เล่น');
+check(levels[4].success.includes('แผนที่อาณาจักรเห็ด')&&levels[5].exploreText.includes('อาณาจักรใหม่'),'รอยต่อ World 1 → World 2 ไม่ต่อเนื่อง');
+check(levels[9].success.includes('ผลึกหัวใจชิ้นที่สอง')&&globalThis.WORLD_TWO_ENDING.some(line=>line.text.includes('ผลึกหัวใจชิ้นที่สอง')),'รอยต่อด่าน 10 → ตอนจบ World 2 ไม่ต่อเนื่อง');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ World 1 ผ่าน 5 ด่าน · World 2 ผ่าน 5 ด่านพร้อมฉากจบ · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
+console.log(`✓ เนื้อเรื่องและกลไก 10 ด่านสอดคล้อง · World 1/2 และฉากจบต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
