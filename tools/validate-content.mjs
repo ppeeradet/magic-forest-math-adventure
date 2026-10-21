@@ -1,7 +1,7 @@
 globalThis.window=globalThis;
 await import('../dist/data/levels.js');
 await import('../dist/data/progress.js');
-import {readFileSync} from 'node:fs';
+import {existsSync,readFileSync} from 'node:fs';
 
 const levels=globalThis.MAGIC_FOREST_LEVELS;
 const ending=globalThis.WORLD_ONE_ENDING;
@@ -69,9 +69,13 @@ check(levels[9]?.title===questionBank[9]?.title,'ชื่อด่าน 10 ต
 check(Array.isArray(globalThis.WORLD_TWO_ENDING)&&globalThis.WORLD_TWO_ENDING.length>=4,'ตอนจบ World 2 ไม่ครบ');
 const storyText=JSON.stringify({levels,worldOne:ending,worldTwo:globalThis.WORLD_TWO_ENDING})+appSource;
 check(!/(ณดา|นาดา|Nada)/i.test(storyText),'ยังพบชื่อตัวละครเดิมในเนื้อหาเกม');
+check(appSource.includes('data-gender="boy"')&&appSource.includes('data-gender="girl"'),'หน้าสร้างโปรไฟล์ต้องมีตัวละครผู้ชายและผู้หญิง');
+check(existsSync(new URL('../dist/assets/characters/bambam.png',import.meta.url))&&existsSync(new URL('../dist/assets/characters/bambam-girl.png',import.meta.url)),'ไฟล์ภาพตัวละครผู้ชายหรือผู้หญิงไม่ครบ');
+check(appSource.includes('maxlength="12"')&&appSource.includes("replace(/[<>&\"']/g,''"),'ชื่อผู้เล่นต้องจำกัดความยาวและกรองอักขระ HTML');
+check(appSource.includes('applyPlayerCopy(previousName)'),'การเปลี่ยนชื่อต้องแทนชื่อเดิมในบทสนทนาโดยไม่เสียความต่อเนื่อง');
 check(globalThis.WORLD_TWO_ENDING.some(line=>line.who==='แบมแบม'||line.text.includes('แบมแบม')),'ตอนจบ World 2 ต้องรองรับการแทนชื่อผู้เล่น');
 check(levels[4].success.includes('แผนที่อาณาจักรเห็ด')&&levels[5].exploreText.includes('อาณาจักรใหม่'),'รอยต่อ World 1 → World 2 ไม่ต่อเนื่อง');
 check(levels[9].success.includes('ผลึกหัวใจชิ้นที่สอง')&&globalThis.WORLD_TWO_ENDING.some(line=>line.text.includes('ผลึกหัวใจชิ้นที่สอง')),'รอยต่อด่าน 10 → ตอนจบ World 2 ไม่ต่อเนื่อง');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ เนื้อเรื่องและกลไก 10 ด่านสอดคล้อง · World 1/2 และฉากจบต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
+console.log(`✓ เนื้อเรื่องและกลไก 10 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1/2 และฉากจบต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
