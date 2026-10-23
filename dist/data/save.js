@@ -18,5 +18,13 @@ function normalize(raw){
 }
 function load(storage,key){try{const next=normalize(JSON.parse(storage.getItem(key)||'null'));storage.setItem(key,JSON.stringify(next));return next}catch{const next=fresh();storage.setItem(key,JSON.stringify(next));return next}}
 function stamp(value){return {...normalize(value),saveVersion:VERSION,updatedAt:new Date().toISOString()}}
-root.MAGIC_FOREST_SAVE={VERSION,fresh,normalize,load,stamp};
+function merge(localValue,cloudValue){
+ const local=normalize(localValue),cloud=normalize(cloudValue);
+ const localTime=Date.parse(local.updatedAt||'')||0,cloudTime=Date.parse(cloud.updatedAt||'')||0;
+ const latest=cloudTime>localTime?cloud:local,other=latest===local?cloud:local;
+ const starIds=new Set([...Object.keys(local.stars),...Object.keys(cloud.stars)]),stars={};
+ starIds.forEach(id=>stars[id]=Math.max(local.stars[id]||0,cloud.stars[id]||0));
+ return normalize({...latest,unlocked:Math.max(local.unlocked,cloud.unlocked),stars,items:[...new Set([...local.items,...cloud.items])].slice(0,100),crystals:Math.max(local.crystals,cloud.crystals),storySeen:local.storySeen||cloud.storySeen,player:latest.player||other.player,updatedAt:latest.updatedAt||other.updatedAt});
+}
+root.MAGIC_FOREST_SAVE={VERSION,fresh,normalize,load,stamp,merge};
 })(window);
