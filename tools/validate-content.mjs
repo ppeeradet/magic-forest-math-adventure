@@ -104,9 +104,10 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v60'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v61'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
+check(appSource.includes('showIosInstallGuide')&&appSource.includes("navigator.platform==='MacIntel'")&&indexSource.includes('app-icon-192.png'),'iPhone/iPad ต้องมีคำแนะนำเพิ่มเกมไปยังหน้าจอโฮมและใช้ไอคอน PWA');
 check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
