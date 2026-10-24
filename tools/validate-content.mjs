@@ -1,17 +1,37 @@
 globalThis.window=globalThis;
 await import('../dist/data/levels.js');
 await import('../dist/data/progress.js');
+await import('../dist/data/save.js');
 import {existsSync,readFileSync} from 'node:fs';
 
 const levels=globalThis.MAGIC_FOREST_LEVELS;
 const ending=globalThis.WORLD_ONE_ENDING;
 const questionBank=JSON.parse(readFileSync(new URL('../dist/data/question-bank.json',import.meta.url),'utf8'));
 const appSource=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
+const stylesSource=readFileSync(new URL('../dist/styles.css',import.meta.url),'utf8');
+const indexSource=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const serviceWorkerSource=readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
+const manifest=JSON.parse(readFileSync(new URL('../dist/manifest.webmanifest',import.meta.url),'utf8'));
 const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145];
 const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand'];
 const expectedWorlds=[1,1,1,1,1,2,2,2,2,2];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
+const saveApi=globalThis.MAGIC_FOREST_SAVE;
+const repairedSave=saveApi.normalize({unlocked:-4,stars:{1:9,2:2,bad:3},items:['🌱 เมล็ดแสง','🌱 เมล็ดแสง',null],crystals:-20,sound:false,storySeen:true,player:{name:' <มะลิ> ',gender:'girl'}});
+check(saveApi.VERSION===3,'schema เซฟต้องเป็นรุ่น 3');
+check(repairedSave.unlocked===1&&repairedSave.stars[2]===2&&!repairedSave.stars[1],'ระบบซ่อมเซฟต้องกรอง progress ที่ไม่ถูกต้อง');
+check(repairedSave.items.length===1&&repairedSave.crystals===0,'ระบบซ่อมเซฟต้องตัดของซ้ำและค่าผลึกติดลบ');
+check(repairedSave.player.name==='มะลิ'&&repairedSave.player.gender==='girl'&&!repairedSave.sound&&repairedSave.storySeen,'ระบบซ่อมเซฟต้องรักษาโปรไฟล์และการตั้งค่าที่ถูกต้อง');
+const memoryStorage={value:'{broken json',getItem(){return this.value},setItem(key,value){this.value=value}};
+const recoveredSave=saveApi.load(memoryStorage,'test');
+check(recoveredSave.saveVersion===3&&recoveredSave.unlocked===1&&JSON.parse(memoryStorage.value).saveVersion===3,'เซฟ JSON ที่เสียต้องถูกกู้เป็นค่าเริ่มต้นและเขียนทับอย่างปลอดภัย');
+const localSave={unlocked:8,stars:{1:3,2:2},items:['เมล็ดแสง'],crystals:70,sound:true,storySeen:true,player:{name:'แบมแบม',gender:'boy'},updatedAt:'2026-10-22T10:00:00.000Z'};
+const cloudSave={unlocked:6,stars:{1:2,3:3},items:['ใบปัญญา'],crystals:50,sound:false,storySeen:false,player:{name:'ลูน่า',gender:'girl'},updatedAt:'2026-10-23T10:00:00.000Z'};
+const mergedSave=saveApi.merge(localSave,cloudSave);
+check(mergedSave.unlocked===8&&mergedSave.stars[1]===3&&mergedSave.stars[2]===2&&mergedSave.stars[3]===3,'การรวมเซฟต้องรักษาด่านและดาวสูงสุดจากทั้งสองฝั่ง');
+check(mergedSave.items.length===2&&mergedSave.crystals===70&&mergedSave.storySeen,'การรวมเซฟต้องรักษาของสะสม ผลึก และสถานะเนื้อเรื่องที่ก้าวหน้ากว่า');
+check(mergedSave.player.name==='ลูน่า'&&mergedSave.player.gender==='girl'&&!mergedSave.sound&&mergedSave.updatedAt===cloudSave.updatedAt,'โปรไฟล์และการตั้งค่าต้องใช้เซฟที่แก้ไขล่าสุด');
 
 check(Array.isArray(levels)&&levels.length===10,'เกมต้องมี World 1 และ World 2 อย่างละ 5 ด่าน');
 const progress=globalThis.MAGIC_FOREST_PROGRESS;
@@ -76,6 +96,17 @@ check(appSource.includes('applyPlayerCopy(previousName)'),'การเปลี
 check(globalThis.WORLD_TWO_ENDING.some(line=>line.who==='แบมแบม'||line.text.includes('แบมแบม')),'ตอนจบ World 2 ต้องรองรับการแทนชื่อผู้เล่น');
 check(levels[4].success.includes('แผนที่อาณาจักรเห็ด')&&levels[5].exploreText.includes('อาณาจักรใหม่'),'รอยต่อ World 1 → World 2 ไม่ต่อเนื่อง');
 check(levels[9].success.includes('ผลึกหัวใจชิ้นที่สอง')&&globalThis.WORLD_TWO_ENDING.some(line=>line.text.includes('ผลึกหัวใจชิ้นที่สอง')),'รอยต่อด่าน 10 → ตอนจบ World 2 ไม่ต่อเนื่อง');
+check(appSource.includes('function successFanfare()')&&appSource.includes('dataset.fanfare'),'หน้ารางวัลต้องเล่นทำนองฉลองเมื่อเปิดเสียง');
+check(appSource.includes('lootHeading')&&appSource.includes('lootNote=itemInfo(savedItem).note'),'หน้ารางวัลต้องอธิบายของวิเศษที่ค้นพบและความหมายในเนื้อเรื่อง');
+check(stylesSource.includes('@media(prefers-reduced-motion:reduce)'),'เกมต้องเคารพการตั้งค่าลดการเคลื่อนไหวของอุปกรณ์');
+check(stylesSource.includes('@keyframes sceneReveal')&&stylesSource.includes('@keyframes stageReveal'),'หน้าหลักและแผนที่ต้องมีภาพเคลื่อนไหวเปลี่ยนฉาก');
+check(appSource.includes('function showParentDashboard()')&&appSource.includes("parentSkill('การบวก'")&&appSource.includes("parentSkill('การลบ'")&&appSource.includes("parentSkill('การคูณ'"),'มุมผู้ปกครองต้องสรุปความคืบหน้าและทักษะบวก ลบ คูณ');
+check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
+check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
+check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v59'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
+check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
 console.log(`✓ เนื้อเรื่องและกลไก 10 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1/2 และฉากจบต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
