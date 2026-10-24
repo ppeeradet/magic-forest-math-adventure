@@ -67,3 +67,4 @@ new MutationObserver(()=>{const reward=document.querySelector('.reward');if(!rew
 const polishThaiCopy=root=>{const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode())if(node.nodeValue.includes('อโอเอซิส'))node.nodeValue=node.nodeValue.replaceAll('อโอเอซิส','โอเอซิส')};
 new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===Node.TEXT_NODE){if(node.nodeValue.includes('อโอเอซิส'))node.nodeValue=node.nodeValue.replaceAll('อโอเอซิส','โอเอซิส')}else polishThaiCopy(node)}))).observe(app,{childList:true,subtree:true});
 applyPlayerCopy();save.player?home():profileSetup();
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
