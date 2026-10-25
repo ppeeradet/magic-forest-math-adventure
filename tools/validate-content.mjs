@@ -2,6 +2,7 @@ globalThis.window=globalThis;
 await import('../dist/data/levels.js');
 await import('../dist/data/progress.js');
 await import('../dist/data/save.js');
+await import('../dist/data/cloud-save.js');
 import {existsSync,readFileSync} from 'node:fs';
 
 const levels=globalThis.MAGIC_FOREST_LEVELS;
@@ -18,6 +19,7 @@ const expectedWorlds=[1,1,1,1,1,2,2,2,2,2];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 const saveApi=globalThis.MAGIC_FOREST_SAVE;
+const cloudSaveApi=globalThis.MAGIC_FOREST_CLOUD_SAVE;
 const repairedSave=saveApi.normalize({unlocked:-4,stars:{1:9,2:2,bad:3},items:['🌱 เมล็ดแสง','🌱 เมล็ดแสง',null],crystals:-20,sound:false,storySeen:true,player:{name:' <มะลิ> ',gender:'girl'}});
 check(saveApi.VERSION===3,'schema เซฟต้องเป็นรุ่น 3');
 check(repairedSave.unlocked===1&&repairedSave.stars[2]===2&&!repairedSave.stars[1],'ระบบซ่อมเซฟต้องกรอง progress ที่ไม่ถูกต้อง');
@@ -34,6 +36,13 @@ check(mergedSave.items.length===2&&mergedSave.crystals===70&&mergedSave.storySee
 check(mergedSave.player.name==='ลูน่า'&&mergedSave.player.gender==='girl'&&!mergedSave.sound&&mergedSave.updatedAt===cloudSave.updatedAt,'โปรไฟล์และการตั้งค่าต้องใช้เซฟที่แก้ไขล่าสุด');
 const roundTripSave=saveApi.normalize(JSON.parse(JSON.stringify(saveApi.stamp(localSave))));
 check(roundTripSave.saveVersion===saveApi.VERSION&&roundTripSave.unlocked===localSave.unlocked&&roundTripSave.stars[1]===3&&roundTripSave.player.name==='แบมแบม','ไฟล์สำรองต้องผ่าน export/parse/normalize แบบ round trip โดยข้อมูลหลักไม่สูญหาย');
+const disabledSync=await cloudSaveApi.synchronize(cloudSaveApi.disabled(),localSave,saveApi);
+check(disabledSync.status==='disabled'&&disabledSync.save.unlocked===8,'cloud adapter ที่ยังไม่เปิดใช้ต้องคืน local save เดิมโดยไม่เรียก network');
+const mockCloud=cloudSaveApi.memory(cloudSave),mockSync=await cloudSaveApi.synchronize(mockCloud,localSave,saveApi);
+check(mockSync.status==='synced'&&mockSync.save.unlocked===8&&mockSync.save.stars[3]===3&&mockSync.save.items.length===2,'mock cloud sync ต้องใช้กติกา merge เดียวกับ local/cloud contract');
+mockCloud.setOnline(false);
+const offlineSync=await cloudSaveApi.synchronize(mockCloud,localSave,saveApi);
+check(offlineSync.status==='offline'&&offlineSync.save.unlocked===8,'cloud ล่มต้องคืน local save ที่เล่นต่อได้โดยไม่ทำข้อมูลหาย');
 
 check(Array.isArray(levels)&&levels.length===10,'เกมต้องมี World 1 และ World 2 อย่างละ 5 ด่าน');
 const progress=globalThis.MAGIC_FOREST_PROGRESS;
@@ -106,12 +115,13 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v64'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v65'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
 check(appSource.includes('showIosInstallGuide')&&appSource.includes("navigator.platform==='MacIntel'")&&indexSource.includes('app-icon-192.png'),'iPhone/iPad ต้องมีคำแนะนำเพิ่มเกมไปยังหน้าจอโฮมและใช้ไอคอน PWA');
 check(appSource.includes('function exportSave(')&&appSource.includes('function importSave(')&&appSource.includes('SAVE.merge(save,imported)')&&appSource.includes('data-save-file'),'มุมผู้ปกครองต้องส่งออกและนำเข้าไฟล์บันทึกด้วยกติกา merge ที่ปลอดภัย');
 check(appSource.includes('function showImportPreview(')&&appSource.includes('data-confirm-import')&&appSource.includes('data-cancel-import'),'การนำเข้าไฟล์ต้องแสดงสรุปและรอผู้ปกครองยืนยันก่อนบันทึกจริง');
+check(indexSource.includes('data/cloud-save.js?v=65')&&cloudSaveApi?.disabled&&cloudSaveApi?.memory&&cloudSaveApi?.synchronize,'ต้องโหลด cloud-save adapter แบบปิดใช้งานได้และมี mock สำหรับทดสอบ');
 check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
