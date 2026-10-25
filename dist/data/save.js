@@ -13,6 +13,7 @@ function normalize(raw){
  next.storySeen=source.storySeen===true;
  if(source.player&&typeof source.player==='object'){const name=String(source.player.name||'').trim().replace(/[<>&"']/g,'').slice(0,12);if(name)next.player={name,gender:source.player.gender==='girl'?'girl':'boy'}}
  if(next.stars[5]&&next.unlocked<6)next.unlocked=6;
+ if(next.stars[10]&&next.unlocked<11)next.unlocked=11;
  if(typeof source.updatedAt==='string')next.updatedAt=source.updatedAt;
  return next;
 }

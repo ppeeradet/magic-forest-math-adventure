@@ -13,9 +13,9 @@ const stylesSource=readFileSync(new URL('../dist/styles.css',import.meta.url),'u
 const indexSource=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
 const serviceWorkerSource=readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
 const manifest=JSON.parse(readFileSync(new URL('../dist/manifest.webmanifest',import.meta.url),'utf8'));
-const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145];
-const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand'];
-const expectedWorlds=[1,1,1,1,1,2,2,2,2,2];
+const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485];
+const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','choice','digits','counter','drag','digits'];
+const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 const saveApi=globalThis.MAGIC_FOREST_SAVE;
@@ -44,7 +44,7 @@ mockCloud.setOnline(false);
 const offlineSync=await cloudSaveApi.synchronize(mockCloud,localSave,saveApi);
 check(offlineSync.status==='offline'&&offlineSync.save.unlocked===8,'cloud ล่มต้องคืน local save ที่เล่นต่อได้โดยไม่ทำข้อมูลหาย');
 
-check(Array.isArray(levels)&&levels.length===10,'เกมต้องมี World 1 และ World 2 อย่างละ 5 ด่าน');
+check(Array.isArray(levels)&&levels.length===15,'เกมต้องมี World 1–3 อย่างละ 5 ด่าน');
 const progress=globalThis.MAGIC_FOREST_PROGRESS;
 check(progress?.starsForTries(1)===3&&progress?.starsForTries(2)===2&&progress?.starsForTries(4)===1,'เกณฑ์ดาวตามจำนวนครั้งไม่ถูกต้อง');
 const testLevel=levels[0],fresh={unlocked:1,stars:{},items:[],crystals:0,sound:true};
@@ -58,6 +58,7 @@ const newRecord=progress.completeLevel(worseReplay.nextSave,testLevel,1,levels.l
 check(newRecord.runStars===3&&newRecord.bestStars===3&&newRecord.isRecord,'ทำได้ดีขึ้นต้องบันทึกสถิติใหม่ 3 ดาว');
 check(levels.filter(level=>(level.world||1)===1).length===5,'World 1 ต้องมี 5 ด่าน');
 check(levels.filter(level=>level.world===2).length===5,'World 2 ต้องมี 5 ด่าน');
+check(levels.filter(level=>level.world===3).length===5,'World 3 ต้องมี 5 ด่าน');
 check(Array.isArray(questionBank)&&questionBank.length===100,'คลังโจทย์ต้นฉบับต้องมี 100 ด่าน');
 questionBank.forEach((question,index)=>{
   check(question.id===index+1,`คลังโจทย์ลำดับ ${index+1} ไม่ต่อเนื่อง`);
@@ -77,13 +78,13 @@ levels.forEach((level,index)=>{
   check(level.hotspots.every(spot=>spot.label&&spot.clue),`เบาะแสด่าน ${level.id} มีข้อมูลไม่ครบ`);
   check(level.reward&&level.item&&level.success,`รางวัลหรือฉากสำเร็จด่าน ${level.id} ไม่ครบ`);
   check(String(level.answer)===String(questionBank[index].answer),`คำตอบเกมด่าน ${level.id} ไม่ตรงกับคลังต้นฉบับ`);
-  if(level.world===2)check(level.title===questionBank[index].title,`ชื่อเกมด่าน ${level.id} ไม่ตรงกับคลังต้นฉบับ`);
+  if(level.world>=2)check(level.title===questionBank[index].title,`ชื่อเกมด่าน ${level.id} ไม่ตรงกับคลังต้นฉบับ`);
   if(['choice','drag'].includes(level.type))check(level.choices?.includes(level.answer),`ด่าน ${level.id} ไม่มีคำตอบจริงในตัวเลือก`);
 });
 check(new Set(levels.map(level=>level.title)).size===levels.length,'ชื่อด่านต้องไม่ซ้ำกัน');
 check(new Set(levels.map(level=>level.scene)).size===levels.length,'ฉากของแต่ละด่านต้องไม่ซ้ำกัน');
-check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลทั้ง 10 ด่านต้องไม่ซ้ำกัน');
-check(new Set(levels.map(level=>level.item)).size===levels.length,'ไอคอนของวิเศษทั้ง 10 ด่านต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลทั้ง 15 ด่านต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.item)).size===levels.length,'ไอคอนของวิเศษทั้ง 15 ด่านต้องไม่ซ้ำกัน');
 check(levels.every(level=>level.item&&level.reward),'ทุกด่านต้องมีไอคอนและชื่อของวิเศษสำหรับกระเป๋า');
 check(Array.isArray(ending)&&ending.length>=4,'ตอนจบ World 1 ไม่ครบ');
 check(ending.some(line=>line.who==='แบมแบม')&&ending.some(line=>line.text.includes('แบมแบม')),'ตอนจบต้องรองรับการแทนชื่อผู้เล่น');
@@ -98,7 +99,8 @@ check(levels[8]?.title===questionBank[8]?.title,'ชื่อด่าน 9 ต�
 check(levels[9]?.world===2&&levels[9]?.type==='sand','ด่าน 10 ต้องเป็นกลไกชั่งทรายใน World 2');
 check(levels[9]?.title===questionBank[9]?.title,'ชื่อด่าน 10 ต้องตรงกับต้นฉบับ');
 check(Array.isArray(globalThis.WORLD_TWO_ENDING)&&globalThis.WORLD_TWO_ENDING.length>=4,'ตอนจบ World 2 ไม่ครบ');
-const storyText=JSON.stringify({levels,worldOne:ending,worldTwo:globalThis.WORLD_TWO_ENDING})+appSource;
+check(Array.isArray(globalThis.WORLD_THREE_ENDING)&&globalThis.WORLD_THREE_ENDING.length>=4,'ตอนจบ World 3 ไม่ครบ');
+const storyText=JSON.stringify({levels,worldOne:ending,worldTwo:globalThis.WORLD_TWO_ENDING,worldThree:globalThis.WORLD_THREE_ENDING})+appSource;
 check(!/(ณดา|นาดา|Nada)/i.test(storyText),'ยังพบชื่อตัวละครเดิมในเนื้อหาเกม');
 check(appSource.includes('data-gender="boy"')&&appSource.includes('data-gender="girl"'),'หน้าสร้างโปรไฟล์ต้องมีตัวละครผู้ชายและผู้หญิง');
 check(existsSync(new URL('../dist/assets/characters/bambam.png',import.meta.url))&&existsSync(new URL('../dist/assets/characters/bambam-girl.png',import.meta.url)),'ไฟล์ภาพตัวละครผู้ชายหรือผู้หญิงไม่ครบ');
@@ -107,6 +109,8 @@ check(appSource.includes('applyPlayerCopy(previousName)'),'การเปลี
 check(globalThis.WORLD_TWO_ENDING.some(line=>line.who==='แบมแบม'||line.text.includes('แบมแบม')),'ตอนจบ World 2 ต้องรองรับการแทนชื่อผู้เล่น');
 check(levels[4].success.includes('แผนที่อาณาจักรเห็ด')&&levels[5].exploreText.includes('อาณาจักรใหม่'),'รอยต่อ World 1 → World 2 ไม่ต่อเนื่อง');
 check(levels[9].success.includes('ผลึกหัวใจชิ้นที่สอง')&&globalThis.WORLD_TWO_ENDING.some(line=>line.text.includes('ผลึกหัวใจชิ้นที่สอง')),'รอยต่อด่าน 10 → ตอนจบ World 2 ไม่ต่อเนื่อง');
+check(globalThis.WORLD_TWO_ENDING.some(line=>line.text.includes('ประตูเห็ดยักษ์'))&&levels[10].exploreText.includes('ประตูเห็ดยักษ์'),'รอยต่อ World 2 → World 3 ไม่ต่อเนื่อง');
+check(levels[14].success.includes('ผลึกหัวใจชิ้นที่สาม')&&globalThis.WORLD_THREE_ENDING.some(line=>line.text.includes('ผลึกหัวใจชิ้นที่สาม')),'รอยต่อด่าน 15 → ตอนจบ World 3 ไม่ต่อเนื่อง');
 check(appSource.includes('function successFanfare()')&&appSource.includes('dataset.fanfare'),'หน้ารางวัลต้องเล่นทำนองฉลองเมื่อเปิดเสียง');
 check(appSource.includes('lootHeading')&&appSource.includes('lootNote=itemInfo(savedItem).note'),'หน้ารางวัลต้องอธิบายของวิเศษที่ค้นพบและความหมายในเนื้อเรื่อง');
 check(stylesSource.includes('@media(prefers-reduced-motion:reduce)'),'เกมต้องเคารพการตั้งค่าลดการเคลื่อนไหวของอุปกรณ์');
@@ -115,7 +119,7 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v65'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v66'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
 check(appSource.includes('showIosInstallGuide')&&appSource.includes("navigator.platform==='MacIntel'")&&indexSource.includes('app-icon-192.png'),'iPhone/iPad ต้องมีคำแนะนำเพิ่มเกมไปยังหน้าจอโฮมและใช้ไอคอน PWA');
@@ -125,4 +129,4 @@ check(indexSource.includes('data/cloud-save.js?v=65')&&cloudSaveApi?.disabled&&c
 check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ เนื้อเรื่องและกลไก 10 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1/2 และฉากจบต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
+console.log(`✓ เนื้อเรื่องและกลไก 15 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1–3 และฉากจบต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
