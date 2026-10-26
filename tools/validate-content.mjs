@@ -14,7 +14,7 @@ const indexSource=readFileSync(new URL('../dist/index.html',import.meta.url),'ut
 const serviceWorkerSource=readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
 const manifest=JSON.parse(readFileSync(new URL('../dist/manifest.webmanifest',import.meta.url),'utf8'));
 const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485];
-const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','drag','digits'];
+const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','lotus-boats','digits'];
 const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
@@ -112,6 +112,7 @@ check(levels[9].success.includes('ผลึกหัวใจชิ้นที�
 check(levels[10].type==='mushroom-lights'&&appSource.includes("if(l.type==='mushroom-lights')")&&appSource.includes('litRings*7'),'ด่าน 11 ต้องใช้กลไกปลุกวงโคม 6 × 7 แบบโต้ตอบ');
 check(levels[11].type==='fog-lantern'&&appSource.includes("if(l.type==='fog-lantern')")&&appSource.includes('power+=+button.dataset.value'),'ด่าน 12 ต้องใช้กลไกรวมแสง 295 + 348 ทีละค่าประจำหลัก');
 check(levels[12].type==='flower-choir'&&appSource.includes("if(l.type==='flower-choir')")&&appSource.includes('voices-=+button.dataset.value'),'ด่าน 13 ต้องใช้กลไกแยกเสียงต้องคำสาป 823 − 179 ทีละค่าประจำหลัก');
+check(levels[13].type==='lotus-boats'&&appSource.includes("if(l.type==='lotus-boats')")&&appSource.includes('drops=litBoats*6'),'ด่าน 14 ต้องใช้กลไกปลุกเรือใบบัว 4 × 6 แบบโต้ตอบ');
 check(globalThis.WORLD_TWO_ENDING.some(line=>line.text.includes('ประตูเห็ดยักษ์'))&&levels[10].exploreText.includes('ประตูเห็ดยักษ์'),'รอยต่อ World 2 → World 3 ไม่ต่อเนื่อง');
 check(levels[14].success.includes('ผลึกหัวใจชิ้นที่สาม')&&globalThis.WORLD_THREE_ENDING.some(line=>line.text.includes('ผลึกหัวใจชิ้นที่สาม')),'รอยต่อด่าน 15 → ตอนจบ World 3 ไม่ต่อเนื่อง');
 check(appSource.includes('function successFanfare()')&&appSource.includes('dataset.fanfare'),'หน้ารางวัลต้องเล่นทำนองฉลองเมื่อเปิดเสียง');
@@ -122,7 +123,7 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v69'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v70'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
 check(appSource.includes('showIosInstallGuide')&&appSource.includes("navigator.platform==='MacIntel'")&&indexSource.includes('app-icon-192.png'),'iPhone/iPad ต้องมีคำแนะนำเพิ่มเกมไปยังหน้าจอโฮมและใช้ไอคอน PWA');

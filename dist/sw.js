@@ -1,5 +1,5 @@
-const CACHE='magic-forest-v69';
-const CORE=['./','./index.html','./styles.css?v=69','./app.js?v=69','./data/levels.js?v=69','./data/progress.js?v=45','./data/save.js?v=66','./data/cloud-save.js?v=65','./manifest.webmanifest','./forest-map.png'];
+const CACHE='magic-forest-v70';
+const CORE=['./','./index.html','./styles.css?v=70','./app.js?v=70','./data/levels.js?v=70','./data/progress.js?v=45','./data/save.js?v=66','./data/cloud-save.js?v=65','./manifest.webmanifest','./forest-map.png'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);const response=await fetch('./asset-manifest.json',{cache:'no-store'});const assets=response.ok?await response.json():[];await cache.addAll([...CORE,...assets]);await self.skipWaiting()})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('magic-forest-')&&key!==CACHE).map(key=>caches.delete(key)));await self.clients.claim()})()));
 self.addEventListener('fetch',event=>{if(event.request.method!=='GET'||new URL(event.request.url).origin!==location.origin)return;event.respondWith((async()=>{const cached=await caches.match(event.request);if(cached)return cached;try{const response=await fetch(event.request);if(response.ok){const cache=await caches.open(CACHE);cache.put(event.request,response.clone())}return response}catch{if(event.request.mode==='navigate')return caches.match('./index.html');throw new Error('offline resource unavailable')}})())});
