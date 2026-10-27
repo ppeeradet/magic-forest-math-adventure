@@ -3,12 +3,14 @@ await import('../dist/data/levels.js');
 
 const worldThree=globalThis.MAGIC_FOREST_LEVELS.filter(level=>level.world===3);
 const ending=globalThis.WORLD_THREE_ENDING;
+const intro=globalThis.WORLD_THREE_INTRO;
 const failures=[];
 const check=(condition,message)=>{if(!condition)failures.push(message)};
 
 check(worldThree.length===5,'World 3 ต้องมี 5 ด่าน');
 check(worldThree.map(level=>level.id).join(',')==='11,12,13,14,15','ลำดับ World 3 ต้องเป็นด่าน 11–15');
 check(worldThree.map(level=>level.type).join(',')==='mushroom-lights,fog-lantern,flower-choir,lotus-boats,root-network','กลไก World 3 ไม่ครบตามเส้นทาง');
+check(intro.length>=4&&intro[0].text.includes('ผลึกชิ้นที่สอง')&&intro.at(-1).text.includes('ผลึกชิ้นที่สาม'),'ฉากเปิด World 3 ต้องรับผลึกชิ้นที่สองและตั้งภารกิจชิ้นที่สาม');
 
 const runs=[
   {id:11,steps:[7,7,7,7,7,7],start:0,answer:42,mode:'add'},

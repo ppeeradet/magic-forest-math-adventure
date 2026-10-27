@@ -99,6 +99,7 @@ check(levels[8]?.title===questionBank[8]?.title,'ชื่อด่าน 9 ต�
 check(levels[9]?.world===2&&levels[9]?.type==='sand','ด่าน 10 ต้องเป็นกลไกชั่งทรายใน World 2');
 check(levels[9]?.title===questionBank[9]?.title,'ชื่อด่าน 10 ต้องตรงกับต้นฉบับ');
 check(Array.isArray(globalThis.WORLD_TWO_ENDING)&&globalThis.WORLD_TWO_ENDING.length>=4,'ตอนจบ World 2 ไม่ครบ');
+check(Array.isArray(globalThis.WORLD_THREE_INTRO)&&globalThis.WORLD_THREE_INTRO.length>=4,'ฉากเปิด World 3 ไม่ครบ');
 check(Array.isArray(globalThis.WORLD_THREE_ENDING)&&globalThis.WORLD_THREE_ENDING.length>=4,'ตอนจบ World 3 ไม่ครบ');
 const storyText=JSON.stringify({levels,worldOne:ending,worldTwo:globalThis.WORLD_TWO_ENDING,worldThree:globalThis.WORLD_THREE_ENDING})+appSource;
 check(!/(ณดา|นาดา|Nada)/i.test(storyText),'ยังพบชื่อตัวละครเดิมในเนื้อหาเกม');
@@ -115,6 +116,8 @@ check(levels[12].type==='flower-choir'&&appSource.includes("if(l.type==='flower-
 check(levels[13].type==='lotus-boats'&&appSource.includes("if(l.type==='lotus-boats')")&&appSource.includes('drops=litBoats*6'),'ด่าน 14 ต้องใช้กลไกปลุกเรือใบบัว 4 × 6 แบบโต้ตอบ');
 check(levels[14].type==='root-network'&&appSource.includes("if(l.type==='root-network')")&&appSource.includes('forestPower+=rootParts[index].value'),'ด่าน 15 ต้องใช้กลไกเชื่อมราก 367 + 400 + 80 + 5 แบบโต้ตอบ');
 check(globalThis.WORLD_TWO_ENDING.some(line=>line.text.includes('ประตูเห็ดยักษ์'))&&levels[10].exploreText.includes('ประตูเห็ดยักษ์'),'รอยต่อ World 2 → World 3 ไม่ต่อเนื่อง');
+check(globalThis.WORLD_THREE_INTRO[0].text.includes('ผลึกชิ้นที่สอง')&&globalThis.WORLD_THREE_INTRO.some(line=>line.text.includes('ผลึกชิ้นที่สาม')),'ฉากเปิด World 3 ต้องเชื่อมผลึกชิ้นที่สองไปสู่ภารกิจชิ้นที่สาม');
+check(appSource.includes("id===11&&!save.stars[11]?window.WORLD_THREE_INTRO:[]"),'ฉากเปิด World 3 ต้องเล่นก่อนด่าน 11 ครั้งแรกและไม่เล่นซ้ำหลังผ่าน');
 check(levels[14].success.includes('ผลึกหัวใจชิ้นที่สาม')&&globalThis.WORLD_THREE_ENDING.some(line=>line.text.includes('ผลึกหัวใจชิ้นที่สาม')),'รอยต่อด่าน 15 → ตอนจบ World 3 ไม่ต่อเนื่อง');
 check(globalThis.WORLD_THREE_ENDING.some(line=>line.text.includes('สามชิ้น')&&line.text.includes('เจ็ดชิ้น')),'ตอนจบ World 3 ต้องสรุปว่าได้ผลึก 3 จาก 10 และเหลือ 7 ชิ้น');
 check(appSource.includes('function successFanfare()')&&appSource.includes('dataset.fanfare'),'หน้ารางวัลต้องเล่นทำนองฉลองเมื่อเปิดเสียง');
@@ -125,7 +128,7 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v72'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v73'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
 check(appSource.includes('showIosInstallGuide')&&appSource.includes("navigator.platform==='MacIntel'")&&indexSource.includes('app-icon-192.png'),'iPhone/iPad ต้องมีคำแนะนำเพิ่มเกมไปยังหน้าจอโฮมและใช้ไอคอน PWA');
