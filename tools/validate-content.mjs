@@ -131,13 +131,14 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v77'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v78'")&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(stylesSource.includes('.topbar .brand{font-size:0;gap:0}'),'แถบบนมือถือหน้าบทสนทนาต้องย่อชื่อเกมเพื่อไม่ให้ล้นแนวนอน');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
 check(appSource.includes('showIosInstallGuide')&&appSource.includes("navigator.platform==='MacIntel'")&&indexSource.includes('app-icon-192.png'),'iPhone/iPad ต้องมีคำแนะนำเพิ่มเกมไปยังหน้าจอโฮมและใช้ไอคอน PWA');
 check(appSource.includes('function exportSave(')&&appSource.includes('function importSave(')&&appSource.includes('SAVE.merge(save,imported)')&&appSource.includes('data-save-file'),'มุมผู้ปกครองต้องส่งออกและนำเข้าไฟล์บันทึกด้วยกติกา merge ที่ปลอดภัย');
 check(appSource.includes('function showImportPreview(')&&appSource.includes('data-confirm-import')&&appSource.includes('data-cancel-import'),'การนำเข้าไฟล์ต้องแสดงสรุปและรอผู้ปกครองยืนยันก่อนบันทึกจริง');
+check(appSource.includes("p.querySelector('#resetMushrooms').onclick=()=>{tone(330);play(l.id)}"),'ปุ่มเริ่มใหม่ด่าน 11 ต้องผูกกับปุ่มจริงและไม่ชนกับชื่อฟังก์ชัน');
 check(indexSource.includes('data/cloud-save.js?v=65')&&cloudSaveApi?.disabled&&cloudSaveApi?.memory&&cloudSaveApi?.synchronize,'ต้องโหลด cloud-save adapter แบบปิดใช้งานได้และมี mock สำหรับทดสอบ');
 check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
