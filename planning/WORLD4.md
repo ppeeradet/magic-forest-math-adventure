@@ -1,6 +1,6 @@
 # World 4 · นครลอยฟ้าและบทเพลงแห่งเมฆ
 
-สถานะ: ด่าน 16 playable แล้ว; ด่าน 17–20 อยู่ใน Story/Gameplay specification  
+สถานะ: ด่าน 16–17 playable แล้ว; ด่าน 18–20 อยู่ใน Story/Gameplay specification  
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง
@@ -102,6 +102,16 @@
 - ใช้ Enter สำรวจและถอนศิลาได้
 - ปุ่มเริ่มใหม่คืนค่า 300 → 500 และเปิดเฉพาะขั้น −200
 - ลำดับ 500 → 300 → 230 → 227 และรางวัล “เศษระฆังศิลา” ถูกต้อง
+- Mobile 390×844: client/scroll width 375/375 ไม่มี horizontal overflow
+- iPad 820×1180: client/scroll width 820/820 ไม่มี horizontal overflow
+- Console error: 0
+
+## ผลทดสอบด่าน 17 · เวอร์ชัน 81
+
+- เส้นทาง แผนที่ → บทสนทนา → สำรวจ → โล่ห้าระลอก → รางวัล ผ่าน
+- ใช้ Enter สำรวจและรับคาถาแต่ละระลอกได้
+- ปุ่มเริ่มใหม่คืนค่าพลัง 9 → 0 และเปิดเฉพาะระลอกแรก
+- ลำดับ 9 → 18 → 27 → 36 → 45 และรางวัล “ตราผู้พิทักษ์เมฆ” ถูกต้อง
 - Mobile 390×844: client/scroll width 375/375 ไม่มี horizontal overflow
 - iPad 820×1180: client/scroll width 820/820 ไม่มี horizontal overflow
 - Console error: 0

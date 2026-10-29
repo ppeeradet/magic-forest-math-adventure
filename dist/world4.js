@@ -2,6 +2,17 @@ const world4PlayBase=play;
 play=id=>{
   world4PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='spell-arena'){
+    let waves=0,power=0;
+    const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+    p.innerHTML=`<div class="spell-arena-stage" id="spellArenaStage"><div class="spell-crystal" aria-hidden="true">🔮</div><div class="shield-power" aria-live="polite"><small>พลังที่โล่สะสม</small><strong id="shieldPower">0</strong><b id="shieldEquation">0 × 9 = 0 หน่วย</b><div><i id="shieldBar"></i></div></div><div class="cloud-shield" aria-hidden="true">🛡️</div></div><div class="spell-sequence" id="spellSequence" aria-live="polite">เตรียมรับคาถาระลอกแรก…</div><div class="spell-waves" role="group" aria-label="คาถา 5 ระลอก">${Array.from({length:5},(_,index)=>`<button data-spell-wave="${index}" ${index?'disabled':''}><span aria-hidden="true">✦</span><b>ระลอก ${index+1}</b><small>+9 หน่วย</small></button>`).join('')}</div><div class="spell-actions"><button class="secondary" id="resetSpellArena">ตั้งโล่ใหม่ ↻</button><button class="primary" id="reflectSpell" disabled>สะท้อนแสง 45 หน่วย ✦</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-spell-wave]')],render=()=>{p.querySelector('#shieldPower').textContent=power;p.querySelector('#shieldEquation').textContent=`${waves} × 9 = ${power} หน่วย`;p.querySelector('#shieldBar').style.width=`${waves/5*100}%`;p.querySelector('#spellArenaStage').style.setProperty('--shield-charge',String(waves/5));buttons.forEach((button,index)=>{button.disabled=index!==waves;button.classList.toggle('blocked',index<waves)});p.querySelector('#reflectSpell').disabled=waves!==5},reset=()=>{waves=0;power=0;p.querySelector('#spellSequence').textContent='เตรียมรับคาถาระลอกแรก…';render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==waves)return;waves++;power=waves*9;p.querySelector('#spellSequence').textContent=Array.from({length:waves},(_,i)=>(i+1)*9).join(' · ')+(waves===5?' — โล่พร้อมสะท้อนแสง!':'');render();tone(470+waves*75,.2);if(waves===5)fb.innerHTML='<div class="star-chance">9 · 18 · 27 · 36 · 45 — รับคาถาครบแล้ว! ✦</div>'});
+    p.querySelector('#resetSpellArena').onclick=()=>{reset();tone(330)};
+    p.querySelector('#reflectSpell').onclick=()=>finish(level,1);
+    render();
+    return;
+  }
   if(level?.type!=='silent-wall')return;
   let stones=500,step=0;
   const parts=[200,70,3],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -29,6 +40,7 @@ map=()=>{
 const world4InventoryBase=showInventory;
 showInventory=()=>{world4InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-4'))panel.insertAdjacentHTML('beforeend',collectionWorld(4,'World 4 · นครลอยฟ้า'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,16);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,17);
+else if(save.stars[16]&&save.unlocked<17){save.unlocked=17;persist()}
 else if(save.stars[15]&&save.unlocked<16){save.unlocked=16;persist()}
 if(save.player)home();
