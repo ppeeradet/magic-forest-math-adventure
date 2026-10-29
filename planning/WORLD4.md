@@ -1,6 +1,6 @@
 # World 4 · นครลอยฟ้าและบทเพลงแห่งเมฆ
 
-สถานะ: Story/Gameplay specification พร้อมสำหรับสร้างด่าน 16–20  
+สถานะ: ด่าน 16 playable แล้ว; ด่าน 17–20 อยู่ใน Story/Gameplay specification  
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง
@@ -95,4 +95,14 @@
 - ไม่มี horizontal overflow ที่ 390×844 และ 820×1180
 - โหมดลดภาพเคลื่อนไหวยังแสดงสถานะสำเร็จได้ชัดเจน
 - เซฟเก่า World 1–3 เปิดต่อได้โดยไม่สูญหาย
+
+## ผลทดสอบด่าน 16 · เวอร์ชัน 80
+
+- เส้นทาง แผนที่ → บทเปิด World 4 → สำรวจ → ปริศนา → รางวัล ผ่าน
+- ใช้ Enter สำรวจและถอนศิลาได้
+- ปุ่มเริ่มใหม่คืนค่า 300 → 500 และเปิดเฉพาะขั้น −200
+- ลำดับ 500 → 300 → 230 → 227 และรางวัล “เศษระฆังศิลา” ถูกต้อง
+- Mobile 390×844: client/scroll width 375/375 ไม่มี horizontal overflow
+- iPad 820×1180: client/scroll width 820/820 ไม่มี horizontal overflow
+- Console error: 0
 
