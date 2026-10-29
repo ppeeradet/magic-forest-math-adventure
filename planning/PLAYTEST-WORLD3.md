@@ -1,7 +1,7 @@
 # World 3 Full Interaction Playtest
 
 วันที่ทดสอบ: 28 ตุลาคม 2026  
-เวอร์ชัน: 78  
+เวอร์ชัน: 79  
 โหมด: `?playtest=world3` (session-only ไม่เขียนทับเซฟผู้เล่น)
 
 ## ผลการกดจริง
@@ -40,8 +40,15 @@
 - Console error หลังทดสอบ reset/keyboard ด่าน 12–15: 0
 - ฉากจบด่าน 15 เปิดต่อและกล่าวถึงต้นไม้ 852 ต้น/ผลึกชิ้นที่สามถูกต้อง
 
+## Reduced motion
+
+- เพิ่ม stylesheet แยกสำหรับ `prefers-reduced-motion: reduce`
+- จำกัด animation ให้ทำงานเพียงหนึ่งรอบในเวลา 0.001ms
+- ลด transition และ transition delay เหลือ 0.001ms / 0ms
+- ปิด smooth scroll และ scroll snap ในโหมดลดการเคลื่อนไหว
+- precache stylesheet นี้ใน PWA เพื่อให้ทำงานขณะออฟไลน์
+
 ## Regression checklist รอบถัดไป
 
 - ทดสอบปุ่ม “ต่อไป” ทีละบรรทัดควบคู่กับปุ่ม “ข้ามเรื่องราว”
-- ทดสอบ reduced motion แบบเปิดค่าจริงในเบราว์เซอร์
 - ทดสอบ Safari บน iPad จริงเมื่อมีอุปกรณ์
