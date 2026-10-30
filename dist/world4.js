@@ -2,6 +2,17 @@ const world4PlayBase=play;
 play=id=>{
   world4PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='light-shields'){
+    let rescued=0,drops=0;
+    const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+    p.innerHTML=`<div class="light-lake-stage" id="lightLakeStage"><div class="lake-meter" aria-live="polite"><small>พลังเกราะแสง</small><strong id="lightDropCount">0</strong><b id="lightEquation">0 × 3 = 0 หยด</b><div><i id="lightBar"></i></div></div><div class="magic-animals" role="group" aria-label="สัตว์วิเศษ 8 ตัว">${['🦊','🦌','🐿️','🐇','🦉','🦔','🐼','🦄'].map((animal,index)=>`<button data-magic-animal="${index}" ${index?'disabled':''}><span>${animal}</span><b>ตัวที่ ${index+1}</b><small>+3 หยด</small></button>`).join('')}</div></div><div class="rescue-sequence" id="rescueSequence" aria-live="polite">เลือกสัตว์ตัวแรกเพื่อสร้างเกราะแสง</div><div class="lake-actions"><button class="secondary" id="resetLightShields">เริ่มช่วยใหม่ ↻</button><button class="primary" id="cleanseLake" disabled>รวมแสง 24 หยด ✦</button></div>`;
+    const animals=[...p.querySelectorAll('[data-magic-animal]')],count=p.querySelector('#lightDropCount'),equation=p.querySelector('#lightEquation'),bar=p.querySelector('#lightBar'),sequence=p.querySelector('#rescueSequence'),cleanse=p.querySelector('#cleanseLake'),stage=p.querySelector('#lightLakeStage'),render=()=>{count.textContent=drops;equation.textContent=`${rescued} × 3 = ${drops} หยด`;bar.style.width=`${rescued/8*100}%`;animals.forEach((button,index)=>{button.disabled=index!==rescued;button.classList.toggle('safe',index<rescued)});stage.style.setProperty('--lake-light',String(rescued/8));cleanse.disabled=rescued!==8},reset=()=>{rescued=0;drops=0;sequence.textContent='เลือกสัตว์ตัวแรกเพื่อสร้างเกราะแสง';render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    animals.forEach((button,index)=>button.onclick=()=>{if(index!==rescued)return;rescued++;drops=rescued*3;sequence.textContent=Array.from({length:rescued},(_,i)=>(i+1)*3).join(' · ')+(rescued===8?' — ทุกตัวปลอดภัยแล้ว!':'');render();tone(430+rescued*45,.18);if(rescued===8)fb.innerHTML='<div class="star-chance">3 · 6 · 9 · 12 · 15 · 18 · 21 · 24 — เกราะแสงเชื่อมครบ! ✦</div>'});
+    p.querySelector('#resetLightShields').onclick=()=>{reset();tone(330)};
+    cleanse.onclick=()=>finish(level,1);
+    render();
+    return;
+  }
   if(level?.type==='mirror-maze'){
     let mirrors=721,step=0;
     const parts=[400,50,6],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -57,12 +68,29 @@ map=()=>{
   const next=nextAdventure();
   wrap.insertAdjacentHTML('beforeend',worldMap(4,'World 4 · นครลอยฟ้าและบทเพลงแห่งเมฆ','ผลึกหัวใจชิ้นที่ 4',next?.id));
   wrap.querySelectorAll('.world-map-4 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));
+  if(save.stars[20]){
+    const eyebrow=wrap.querySelector('.map-head .eyebrow'),summary=wrap.querySelector('.map-head p'),endingButton=wrap.querySelector('#endingBtn'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');
+    if(eyebrow)eyebrow.textContent='ภารกิจสี่โลกสำเร็จแล้ว';
+    if(summary)summary.textContent='ผลึกหัวใจสี่ชิ้นกลับคืนมาแล้ว ป่าแห่งความทรงจำกำลังเปิดทาง';
+    if(endingButton){endingButton.textContent='ดูฉากจบ World 4 อีกครั้ง ✦';endingButton.onclick=()=>story(window.WORLD_FOUR_ENDING,map)}
+    if(journeyTitle)journeyTitle.textContent='พิชิตครบ 20 ตอน!';
+    if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/20 · ผลึก ${save.crystals} เม็ด · ดาว ${totalStars}/60`}
+  }
+};
+
+const world4FinishBase=finish;
+finish=(level,tries)=>{
+  world4FinishBase(level,tries);
+  if(level.id!==20)return;
+  const next=document.querySelector('#next');
+  if(next){next.textContent='ดูตอนจบ World 4';next.onclick=()=>story(window.WORLD_FOUR_ENDING,map)}
 };
 
 const world4InventoryBase=showInventory;
 showInventory=()=>{world4InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-4'))panel.insertAdjacentHTML('beforeend',collectionWorld(4,'World 4 · นครลอยฟ้า'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,19);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,20);
+else if(save.stars[19]&&save.unlocked<20){save.unlocked=20;persist()}
 else if(save.stars[18]&&save.unlocked<19){save.unlocked=19;persist()}
 else if(save.stars[17]&&save.unlocked<18){save.unlocked=18;persist()}
 else if(save.stars[16]&&save.unlocked<17){save.unlocked=17;persist()}

@@ -7,6 +7,7 @@ const level=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===16);
 const arena=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===17);
 const river=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===18);
 const maze=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===19);
+const lake=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===20);
 const runtime=readFileSync(new URL('../dist/world4.js',import.meta.url),'utf8');
 const fail=message=>{throw new Error(message)};
 
@@ -26,5 +27,10 @@ if(!runtime.includes("resetMusicRiver').onclick")||!runtime.includes('cross.oncl
 if(!maze||maze.answer!==721-456||maze.type!=='mirror-maze')fail('ด่าน 19 หรือคำตอบ 265 ไม่ถูกต้อง');
 if(!runtime.includes('const parts=[400,50,6]')||!runtime.includes('mirrors-=parts[index]'))fail('กลไกถอดภาพลวง 400, 50, 6 ไม่ครบ');
 if(!runtime.includes("resetMirrorMaze').onclick")||!runtime.includes('follow.onclick=()=>finish(level,1)'))fail('ด่าน 19 ไม่มี reset หรือรางวัล');
+if(!lake||lake.answer!==8*3||lake.type!=='light-shields')fail('ด่าน 20 หรือคำตอบ 24 ไม่ถูกต้อง');
+if(!runtime.includes('drops=rescued*3')||!runtime.includes("['🦊','🦌','🐿️','🐇','🦉','🦔','🐼','🦄']"))fail('กลไกเกราะแสง 8 ตัว ตัวละ 3 หยดไม่ครบ');
+if(!runtime.includes("resetLightShields').onclick")||!runtime.includes('cleanse.onclick=()=>finish(level,1)'))fail('ด่าน 20 ไม่มี reset หรือรางวัล');
+if(!globalThis.WORLD_FOUR_ENDING?.some(line=>line.text.includes('ป่าแห่งความทรงจำ')))fail('ฉากจบ World 4 ไม่เชื่อมไป World 5');
+if(!runtime.includes("level.id!==20")||!runtime.includes('WORLD_FOUR_ENDING,map'))fail('หน้ารางวัลด่าน 20 ไม่เชื่อมฉากจบ World 4');
 
-console.log('✓ Playtest World 4 ตอนที่ 16–19 ผ่าน: 227, 45, 861, 265 · reset · keyboard · reward');
+console.log('✓ Playtest World 4 ตอนที่ 16–20 ผ่าน: 227, 45, 861, 265, 24 · reset · keyboard · reward · ending 4/10');
