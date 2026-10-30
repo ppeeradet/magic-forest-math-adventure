@@ -2,6 +2,17 @@ const world4PlayBase=play;
 play=id=>{
   world4PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='mirror-maze'){
+    let mirrors=721,step=0;
+    const parts=[400,50,6],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+    p.innerHTML=`<div class="mirror-maze-stage" id="mirrorMazeStage"><div class="mirror-counter" aria-live="polite"><small>กระจกที่ยังสะท้อนอยู่</small><strong id="mirrorCount">721</strong><b id="mirrorEquation">721 − 456 = ?</b></div><div class="mirror-corridor" aria-hidden="true">${Array.from({length:9},(_,index)=>`<i style="--mirror-index:${index}">✦</i>`).join('')}<span id="truePath">ทางจริง 🌟</span></div></div><div class="illusion-history" id="illusionHistory" aria-live="polite">แยกภาพลวง: 456 = 400 + 50 + 6</div><div class="mirror-parts" role="group" aria-label="กระจกเงา 456 ชิ้น">${parts.map((value,index)=>`<button data-mirror-part="${index}" ${index?'disabled':''}><span aria-hidden="true">${['🌫️','🪞','✨'][index]}</span><b>−${value}</b><small>${['4 ร้อย','5 สิบ','6 หน่วย'][index]}</small></button>`).join('')}</div><div class="mirror-actions"><button class="secondary" id="resetMirrorMaze">คืนภาพลวง ↻</button><button class="primary" id="followTruePath" disabled>ตามกระจกจริง 265 ชิ้น ✦</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-mirror-part]')],count=p.querySelector('#mirrorCount'),equation=p.querySelector('#mirrorEquation'),history=p.querySelector('#illusionHistory'),path=p.querySelector('#truePath'),follow=p.querySelector('#followTruePath'),stage=p.querySelector('#mirrorMazeStage'),render=()=>{count.textContent=mirrors;equation.textContent=step?`721 − ${parts.slice(0,step).reduce((sum,value)=>sum+value,0)} = ${mirrors}`:'721 − 456 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('cleared',index<step)});stage.style.setProperty('--illusion-level',String(1-step/3));path.classList.toggle('revealed',step===3);follow.disabled=step!==3},reset=()=>{mirrors=721;step=0;history.textContent='แยกภาพลวง: 456 = 400 + 50 + 6';render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;const before=mirrors;mirrors-=parts[index];step++;history.textContent=`${before} − ${parts[index]} = ${mirrors}`;render();tone(600-step*85,.22);fb.innerHTML=`<div class="star-chance">${before} − ${parts[index]} = ${mirrors}${step===3?' — ทางจริงสว่างขึ้นแล้ว! ✦':''}</div>`});
+    p.querySelector('#resetMirrorMaze').onclick=()=>{reset();tone(330)};
+    follow.onclick=()=>finish(level,1);
+    render();
+    return;
+  }
   if(level?.type==='music-river'){
     let notes=472,step=0;
     const parts=[300,80,9],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -51,7 +62,8 @@ map=()=>{
 const world4InventoryBase=showInventory;
 showInventory=()=>{world4InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-4'))panel.insertAdjacentHTML('beforeend',collectionWorld(4,'World 4 · นครลอยฟ้า'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,18);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,19);
+else if(save.stars[18]&&save.unlocked<19){save.unlocked=19;persist()}
 else if(save.stars[17]&&save.unlocked<18){save.unlocked=18;persist()}
 else if(save.stars[16]&&save.unlocked<17){save.unlocked=17;persist()}
 else if(save.stars[15]&&save.unlocked<16){save.unlocked=16;persist()}

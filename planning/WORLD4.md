@@ -1,6 +1,6 @@
 # World 4 · นครลอยฟ้าและบทเพลงแห่งเมฆ
 
-สถานะ: ด่าน 16–18 playable แล้ว; ด่าน 19–20 อยู่ใน Story/Gameplay specification  
+สถานะ: ด่าน 16–19 playable แล้ว; ด่าน 20 อยู่ใน Story/Gameplay specification  
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง
@@ -123,5 +123,14 @@
 - ลำดับ 9 → 18 → 27 → 36 → 45 และรางวัล “ตราผู้พิทักษ์เมฆ” ถูกต้อง
 - Mobile 390×844: client/scroll width 375/375 ไม่มี horizontal overflow
 - iPad 820×1180: client/scroll width 820/820 ไม่มี horizontal overflow
+- Console error: 0
+
+## ผลทดสอบด่าน 19 · เวอร์ชัน 83
+
+- เส้นทาง แผนที่ → บทสนทนา → สำรวจ → คาถาถอดภาพลวง → รางวัล ผ่าน
+- ถอดกระจกเงาตามค่าประจำหลัก 400, 50, 6 และรองรับ Tab/Enter
+- ปุ่มคืนภาพลวงคืนค่า 321 → 721 และเปิดเฉพาะขั้น −400
+- ลำดับ 721 → 321 → 271 → 265 และรางวัล “เข็มทิศกระจกจริง” ถูกต้อง
+- Mobile 390×844 และ iPad 820×1180 ไม่มี horizontal overflow
 - Console error: 0
 
