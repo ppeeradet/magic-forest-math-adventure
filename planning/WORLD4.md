@@ -1,6 +1,6 @@
 # World 4 · นครลอยฟ้าและบทเพลงแห่งเมฆ
 
-สถานะ: ด่าน 16–17 playable แล้ว; ด่าน 18–20 อยู่ใน Story/Gameplay specification  
+สถานะ: ด่าน 16–18 playable แล้ว; ด่าน 19–20 อยู่ใน Story/Gameplay specification  
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง
@@ -104,6 +104,15 @@
 - ลำดับ 500 → 300 → 230 → 227 และรางวัล “เศษระฆังศิลา” ถูกต้อง
 - Mobile 390×844: client/scroll width 375/375 ไม่มี horizontal overflow
 - iPad 820×1180: client/scroll width 820/820 ไม่มี horizontal overflow
+- Console error: 0
+
+## ผลทดสอบด่าน 18 · เวอร์ชัน 82
+
+- เส้นทาง แผนที่ → บทสนทนา → สำรวจ → สะพานเสียงสามท่อน → รางวัล ผ่าน
+- รวมโน้ตตามค่าประจำหลัก 300, 80, 9 และรองรับ Tab/Enter
+- ปุ่มเรียบเรียงใหม่คืนค่า 772 → 472 และเปิดเฉพาะขั้น +300
+- ลำดับ 472 → 772 → 852 → 861 และรางวัล “คีย์โน้ตแห่งความสุข” ถูกต้อง
+- Mobile 390×844 และ iPad 820×1180 ไม่มี horizontal overflow
 - Console error: 0
 
 ## ผลทดสอบด่าน 17 · เวอร์ชัน 81

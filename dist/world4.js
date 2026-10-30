@@ -2,6 +2,17 @@ const world4PlayBase=play;
 play=id=>{
   world4PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='music-river'){
+    let notes=472,step=0;
+    const parts=[300,80,9],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+    p.innerHTML=`<div class="music-river-stage" id="musicRiverStage"><div class="river-bank"><span aria-hidden="true">🎼</span><small>โน้ตบนฝั่ง</small><strong id="musicNoteCount">472</strong></div><div class="music-bridge" id="musicBridge" aria-live="polite">${parts.map((_,index)=>`<i data-bridge-part="${index}">♫</i>`).join('')}</div><div class="river-bank happy"><span aria-hidden="true">😊</span><small>โน้ตที่จะรวม</small><strong>389</strong></div></div><div class="music-equation" id="musicEquation" aria-live="polite">472 + 389 = ?</div><div class="music-parts" role="group" aria-label="โน้ตแห่งความสุข 389 ตัว">${parts.map((value,index)=>`<button data-music-part="${index}" ${index?'disabled':''}><span aria-hidden="true">${['🎶','🎵','♪'][index]}</span><b>+${value}</b><small>${['3 ร้อย','8 สิบ','9 หน่วย'][index]}</small></button>`).join('')}</div><div class="music-actions"><button class="secondary" id="resetMusicRiver">เรียบเรียงใหม่ ↻</button><button class="primary" id="crossMusicBridge" disabled>ข้ามสะพาน 861 โน้ต ✦</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-music-part]')],bridge=[...p.querySelectorAll('[data-bridge-part]')],count=p.querySelector('#musicNoteCount'),equation=p.querySelector('#musicEquation'),cross=p.querySelector('#crossMusicBridge'),render=()=>{count.textContent=notes;equation.textContent=step?`472 + ${parts.slice(0,step).reduce((sum,value)=>sum+value,0)} = ${notes}`:'472 + 389 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('played',index<step)});bridge.forEach((piece,index)=>piece.classList.toggle('built',index<step));cross.disabled=step!==3;p.querySelector('#musicRiverStage').style.setProperty('--bridge-progress',String(step/3))},reset=()=>{notes=472;step=0;render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;const before=notes;notes+=parts[index];step++;render();tone(520+step*110,.22);fb.innerHTML=`<div class="star-chance">${before} + ${parts[index]} = ${notes}${step===3?' — สะพานเสียงสมบูรณ์! ✦':''}</div>`});
+    p.querySelector('#resetMusicRiver').onclick=()=>{reset();tone(330)};
+    cross.onclick=()=>finish(level,1);
+    render();
+    return;
+  }
   if(level?.type==='spell-arena'){
     let waves=0,power=0;
     const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -40,7 +51,8 @@ map=()=>{
 const world4InventoryBase=showInventory;
 showInventory=()=>{world4InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-4'))panel.insertAdjacentHTML('beforeend',collectionWorld(4,'World 4 · นครลอยฟ้า'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,17);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,18);
+else if(save.stars[17]&&save.unlocked<18){save.unlocked=18;persist()}
 else if(save.stars[16]&&save.unlocked<17){save.unlocked=17;persist()}
 else if(save.stars[15]&&save.unlocked<16){save.unlocked=16;persist()}
 if(save.player)home();

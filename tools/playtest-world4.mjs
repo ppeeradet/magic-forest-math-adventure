@@ -5,6 +5,7 @@ import {readFileSync} from 'node:fs';
 
 const level=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===16);
 const arena=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===17);
+const river=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===18);
 const runtime=readFileSync(new URL('../dist/world4.js',import.meta.url),'utf8');
 const fail=message=>{throw new Error(message)};
 
@@ -18,5 +19,8 @@ if(!globalThis.WORLD_FOUR_INTRO.some(line=>line.text.includes('นครลอ�
 if(!arena||arena.answer!==5*9||arena.type!=='spell-arena')fail('ด่าน 17 หรือคำตอบ 45 ไม่ถูกต้อง');
 if(!runtime.includes("level?.type==='spell-arena'")||!runtime.includes('waves*9'))fail('กลไกคาถาห้าระลอกไม่ครบ');
 if(!runtime.includes("resetSpellArena').onclick")||!runtime.includes("reflectSpell').onclick=()=>finish(level,1)"))fail('ด่าน 17 ไม่มี reset หรือรางวัล');
+if(!river||river.answer!==472+389||river.type!=='music-river')fail('ด่าน 18 หรือคำตอบ 861 ไม่ถูกต้อง');
+if(!runtime.includes('const parts=[300,80,9]')||!runtime.includes('notes+=parts[index]'))fail('กลไกรวมโน้ต 300, 80, 9 ไม่ครบ');
+if(!runtime.includes("resetMusicRiver').onclick")||!runtime.includes('cross.onclick=()=>finish(level,1)'))fail('ด่าน 18 ไม่มี reset หรือรางวัล');
 
-console.log('✓ Playtest World 4 ตอนที่ 16–17 ผ่าน: 227, 45 · reset · keyboard · reward');
+console.log('✓ Playtest World 4 ตอนที่ 16–18 ผ่าน: 227, 45, 861 · reset · keyboard · reward');
