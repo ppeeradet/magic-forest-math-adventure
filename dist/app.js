@@ -22,7 +22,12 @@ const ITEM_BOOK={
  'ตะเกียงหมอกใส':{art:'moon.png',note:'พลังแสง 643 หน่วยที่ทำให้เสียงลวงในหมอกเงียบลง'},
  'โน้ตกลีบดอกทอง':{art:'explorer-compass.png',note:'บทเพลงจริงจากดอกไม้ 644 ดอก ชี้ทางสู่ผลึกหัวใจ'},
  'หยดน้ำตาเอลฟ์':{art:'echo-crystal.png',note:'หยดแสง 24 หยดที่พาเรือใบบัวข้ามความทรงจำอันเศร้า'},
- 'ผลึกหัวใจชิ้นที่ 3':{art:'adventure-map.png',note:'ผลึกที่ต้นไม้ 852 ต้นร่วมกันชิงคืนจากบัลลังก์เงา'}
+ 'ผลึกหัวใจชิ้นที่ 3':{art:'adventure-map.png',note:'ผลึกที่ต้นไม้ 852 ต้นร่วมกันชิงคืนจากบัลลังก์เงา'},
+ 'เศษระฆังศิลา':{art:'echo-crystal.png',note:'เศษระฆังที่ตื่นขึ้นเมื่อเหลือศิลา 227 ก้อนบนกำแพงนครลอยฟ้า'},
+ 'ตราผู้พิทักษ์เมฆ':{art:'golden-star.png',note:'ตราจากโล่ที่รับคาถา 5 ระลอกและสะสมพลังครบ 45 หน่วย'},
+ 'คีย์โน้ตแห่งความสุข':{art:'moon.png',note:'คีย์ดนตรีจากสะพานเสียง 861 โน้ตที่เชื่อมสองฝั่งแม่น้ำ'},
+ 'เข็มทิศกระจกจริง':{art:'explorer-compass.png',note:'เข็มทิศที่ชี้ทางจริงหลังภาพลวง 456 ชิ้นสลายไป'},
+ 'ผลึกหัวใจชิ้นที่ 4':{art:'adventure-map.png',note:'ผลึกจากเกราะแสง 24 หยดที่ช่วยสัตว์ทั้งแปดและชำระทะเลสาบ'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
