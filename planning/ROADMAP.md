@@ -6,7 +6,7 @@
 - Platform readiness: ✅ เพิ่ม PWA manifest, install metadata, ปุ่มติดตั้ง, คู่มือ Add to Home Screen สำหรับ iPhone/iPad, offline asset cache, สถานะออนไลน์/ออฟไลน์ และข้อความแจ้งอัปเดตเวอร์ชันใหม่แล้ว
 - World 3 polish: ✅ ด่าน 11–15 ผ่าน full interaction playtest ครบเส้นทาง แก้ปุ่ม “ข้ามเรื่องราว” แล้ว และยืนยันรางวัล ฉากจบ responsive 390×844 / 820×1180 และ console error = 0; ผลทดสอบอยู่ใน `planning/PLAYTEST-WORLD3.md` · เป้าหมายถัดไปทดสอบ reset, keyboard และ reduced motion
 - World 4: ✅ ด่าน 16–20 เล่นได้ครบ พร้อมฉากจบรับผลึกหัวใจชิ้นที่ 4 และส่งต่อสู่ “ป่าแห่งความทรงจำ” · regression QA ตรวจลำดับคำนวณ reset, native keyboard buttons, reward, responsive rules และ reduced motion ครบแล้ว · รายละเอียดอยู่ใน `planning/PLAYTEST-WORLD4.md` · เป้าหมายถัดไป specification World 5 ตอนที่ 21–25
-- World 5: 🔄 ด่าน 21–22 เล่นได้จริงแล้ว: เชื่อมภาพ 587 + 235 = 822 และหมุนเวลาถอย 900 − 387 = 513 พร้อมบทเปิด แผนที่ reset, keyboard, reward และ responsive contract · ด่าน 23–25 มี specification ครบใน `planning/WORLD5.md` · เป้าหมายถัดไปสร้างด่าน 23 ทุ่งดอกไม้กลางคืน
+- World 5: 🔄 ด่าน 21–23 เล่นได้จริงแล้ว: เชื่อมภาพ 587 + 235 = 822, หมุนเวลาถอย 900 − 387 = 513 และปลุกดอกไม้ 7 × 8 = 56 พร้อมบทเปิด แผนที่ reset, keyboard, reward และ responsive contract · ด่าน 24–25 มี specification ครบใน `planning/WORLD5.md` · เป้าหมายถัดไปสร้างด่าน 24 ปราสาทแห่งเงามืด
 - Sprint 11–14 (3–5 วัน): AR prototype และคอลเลกชันสัตว์สามมิติ
 
 แต่ละ Sprint ต้องจบด้วยเกมที่เปิดได้ ไม่มี JavaScript error รองรับ 390×844 และ desktop และมี commit แยกชัดเจน

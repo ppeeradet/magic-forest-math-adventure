@@ -2,6 +2,17 @@ const world5PlayBase=play;
 play=id=>{
   world5PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='night-flowers'){
+    let awake=0;
+    const total=7,petals=8,p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+    p.innerHTML=`<div class="night-flower-stage" id="nightFlowerStage"><div class="moon-beam" aria-hidden="true">🌙</div><div class="flower-ring" role="group" aria-label="ดอกไม้ราตรี 7 ดอก">${Array.from({length:total},(_,index)=>`<button data-night-flower="${index}" ${index?'disabled':''} aria-label="ปลุกดอกไม้ดอกที่ ${index+1}"><span>✦</span><b>🌺</b><small>ดอกที่ ${index+1}</small></button>`).join('')}</div><div class="castle-shadow" id="castleShadow" aria-hidden="true">🏰</div></div><div class="petal-total" aria-live="polite"><small>กลีบที่ส่องแสง</small><strong id="petalCount">0</strong><b id="petalEquation">7 × 8 = ?</b></div><div class="flower-sequence" id="flowerSequence" aria-live="polite">ปลุกทีละดอก · เพิ่มครั้งละ 8 กลีบ</div><div class="night-flower-actions"><button class="secondary" id="resetNightFlowers">บรรเลงใหม่ ↻</button><button class="primary" id="openNightPath" disabled>เปิดทางลับด้วย 56 กลีบ ✦</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-night-flower]')],count=p.querySelector('#petalCount'),equation=p.querySelector('#petalEquation'),sequence=p.querySelector('#flowerSequence'),castle=p.querySelector('#castleShadow'),stage=p.querySelector('#nightFlowerStage'),open=p.querySelector('#openNightPath'),render=()=>{const sum=awake*petals;count.textContent=sum;equation.textContent=awake?`${awake} × ${petals} = ${sum}`:'7 × 8 = ?';buttons.forEach((button,index)=>{button.disabled=index!==awake;button.classList.toggle('awake',index<awake)});stage.style.setProperty('--night-light',String(awake/total));castle.classList.toggle('revealed',awake===total);open.disabled=awake!==total},reset=()=>{awake=0;sequence.textContent='ปลุกทีละดอก · เพิ่มครั้งละ 8 กลีบ';render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==awake)return;awake++;const sum=awake*petals;sequence.textContent=Array.from({length:awake},(_,i)=>(i+1)*petals).join(' · ');render();tone(392+awake*55,.2);fb.innerHTML=`<div class="star-chance">${awake} × 8 = ${sum}${awake===total?' — ทำนองแสงสมบูรณ์! ✦':''}</div>`});
+    p.querySelector('#resetNightFlowers').onclick=()=>{reset();tone(330)};
+    open.onclick=()=>finish(level,1);
+    render();
+    return;
+  }
   if(level?.type==='time-wheel'){
     let days=900,step=0;
     const parts=[300,80,7],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -40,7 +51,8 @@ map=()=>{
 const world5InventoryBase=showInventory;
 showInventory=()=>{world5InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-5'))panel.insertAdjacentHTML('beforeend',collectionWorld(5,'World 5 · ป่าแห่งความทรงจำ'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,22);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,23);
+else if(save.stars[22]&&save.unlocked<23){save.unlocked=23;persist()}
 else if(save.stars[21]&&save.unlocked<22){save.unlocked=22;persist()}
 else if(save.stars[20]&&save.unlocked<21){save.unlocked=21;persist()}
 if(save.player)home();
