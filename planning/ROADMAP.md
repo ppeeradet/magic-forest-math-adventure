@@ -6,6 +6,7 @@
 - Platform readiness: ✅ เพิ่ม PWA manifest, install metadata, ปุ่มติดตั้ง, คู่มือ Add to Home Screen สำหรับ iPhone/iPad, offline asset cache, สถานะออนไลน์/ออฟไลน์ และข้อความแจ้งอัปเดตเวอร์ชันใหม่แล้ว
 - World 3 polish: ✅ ด่าน 11–15 ผ่าน full interaction playtest ครบเส้นทาง แก้ปุ่ม “ข้ามเรื่องราว” แล้ว และยืนยันรางวัล ฉากจบ responsive 390×844 / 820×1180 และ console error = 0; ผลทดสอบอยู่ใน `planning/PLAYTEST-WORLD3.md` · เป้าหมายถัดไปทดสอบ reset, keyboard และ reduced motion
 - World 4: ✅ ด่าน 16–20 เล่นได้ครบ พร้อมฉากจบรับผลึกหัวใจชิ้นที่ 4 และส่งต่อสู่ “ป่าแห่งความทรงจำ” · regression QA ตรวจลำดับคำนวณ reset, native keyboard buttons, reward, responsive rules และ reduced motion ครบแล้ว · รายละเอียดอยู่ใน `planning/PLAYTEST-WORLD4.md` · เป้าหมายถัดไป specification World 5 ตอนที่ 21–25
+- World 5: 📝 ตรวจต้นฉบับ Word และ Question Bank ตอนที่ 21–25 แล้ว; วาง Story/Gameplay specification ครบคำตอบ 822, 513, 56, 463, 461 พร้อมรางวัล ฉากจบ 5/10 และทางเชื่อมสู่ตอน 26 · รายละเอียดอยู่ใน `planning/WORLD5.md` · เป้าหมายถัดไปสร้างด่าน 21 ป่าแห่งความทรงจำ
 - Sprint 11–14 (3–5 วัน): AR prototype และคอลเลกชันสัตว์สามมิติ
 
 แต่ละ Sprint ต้องจบด้วยเกมที่เปิดได้ ไม่มี JavaScript error รองรับ 390×844 และ desktop และมี commit แยกชัดเจน
