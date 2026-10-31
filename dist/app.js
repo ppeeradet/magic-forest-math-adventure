@@ -28,7 +28,8 @@ const ITEM_BOOK={
  'คีย์โน้ตแห่งความสุข':{art:'moon.png',note:'คีย์ดนตรีจากสะพานเสียง 861 โน้ตที่เชื่อมสองฝั่งแม่น้ำ'},
  'เข็มทิศกระจกจริง':{art:'explorer-compass.png',note:'เข็มทิศที่ชี้ทางจริงหลังภาพลวง 456 ชิ้นสลายไป'},
  'ผลึกหัวใจชิ้นที่ 4':{art:'adventure-map.png',note:'ผลึกจากเกราะแสง 24 หยดที่ช่วยสัตว์ทั้งแปดและชำระทะเลสาบ'},
- 'เมล็ดความทรงจำอบอุ่น':{art:'golden-star.png',note:'เมล็ดจากภาพความทรงจำ 822 ชิ้นที่เรียงตัวเป็นแผนที่ช่วยสัตว์วิเศษ'}
+ 'เมล็ดความทรงจำอบอุ่น':{art:'golden-star.png',note:'เมล็ดจากภาพความทรงจำ 822 ชิ้นที่เรียงตัวเป็นแผนที่ช่วยสัตว์วิเศษ'},
+ 'เศษนาฬิกาแห่งความหวัง':{art:'moon.png',note:'เศษวงล้อเวลาที่เหลือ 513 วัน เตือนว่าความหวังเติบโตได้ระหว่างการรอคอย'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}

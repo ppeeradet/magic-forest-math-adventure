@@ -18,9 +18,9 @@ const reducedMotionSource=readFileSync(new URL('../dist/reduced-motion.css',impo
 const indexSource=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
 const serviceWorkerSource=readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
 const manifest=JSON.parse(readFileSync(new URL('../dist/manifest.webmanifest',import.meta.url),'utf8'));
-const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485,500-273,5*9,472+389,721-456,8*3,587+235];
-const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','lotus-boats','root-network','silent-wall','spell-arena','music-river','mirror-maze','light-shields','memory-tree'];
-const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5];
+const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485,500-273,5*9,472+389,721-456,8*3,587+235,900-387];
+const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','lotus-boats','root-network','silent-wall','spell-arena','music-river','mirror-maze','light-shields','memory-tree','time-wheel'];
+const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 const saveApi=globalThis.MAGIC_FOREST_SAVE;
@@ -49,7 +49,7 @@ mockCloud.setOnline(false);
 const offlineSync=await cloudSaveApi.synchronize(mockCloud,localSave,saveApi);
 check(offlineSync.status==='offline'&&offlineSync.save.unlocked===8,'cloud ล่มต้องคืน local save ที่เล่นต่อได้โดยไม่ทำข้อมูลหาย');
 
-check(Array.isArray(levels)&&levels.length===21,'เกมต้องมี World 1–4 อย่างละ 5 ด่าน และ World 5 ตอนที่ 21');
+check(Array.isArray(levels)&&levels.length===22,'เกมต้องมี World 1–4 อย่างละ 5 ด่าน และ World 5 ตอนที่ 21–22');
 const progress=globalThis.MAGIC_FOREST_PROGRESS;
 check(progress?.starsForTries(1)===3&&progress?.starsForTries(2)===2&&progress?.starsForTries(4)===1,'เกณฑ์ดาวตามจำนวนครั้งไม่ถูกต้อง');
 const testLevel=levels[0],fresh={unlocked:1,stars:{},items:[],crystals:0,sound:true};
@@ -88,8 +88,8 @@ levels.forEach((level,index)=>{
 });
 check(new Set(levels.map(level=>level.title)).size===levels.length,'ชื่อด่านต้องไม่ซ้ำกัน');
 check(new Set(levels.map(level=>level.scene)).size===levels.length,'ฉากของแต่ละด่านต้องไม่ซ้ำกัน');
-check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลทั้ง 21 ด่านต้องไม่ซ้ำกัน');
-check(new Set(levels.map(level=>level.item)).size===levels.length,'ไอคอนของวิเศษทั้ง 21 ด่านต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลทั้ง 22 ด่านต้องไม่ซ้ำกัน');
+check(new Set(levels.map(level=>level.item)).size===levels.length,'ไอคอนของวิเศษทั้ง 22 ด่านต้องไม่ซ้ำกัน');
 check(levels.every(level=>level.item&&level.reward),'ทุกด่านต้องมีไอคอนและชื่อของวิเศษสำหรับกระเป๋า');
 check(Array.isArray(ending)&&ending.length>=4,'ตอนจบ World 1 ไม่ครบ');
 check(ending.some(line=>line.who==='แบมแบม')&&ending.some(line=>line.text.includes('แบมแบม')),'ตอนจบต้องรองรับการแทนชื่อผู้เล่น');
@@ -136,6 +136,7 @@ check(world4Source.includes("level?.type==='mirror-maze'")&&world4Source.include
 check(world4Source.includes("level?.type==='light-shields'")&&world4Source.includes('drops=rescued*3')&&world4Source.includes('เกราะแสงเชื่อมครบ'),'ด่าน 20 ต้องมีกลไกช่วยสัตว์ 8 ตัว ตัวละ 3 หยด รวม 24');
 check(globalThis.WORLD_FOUR_ENDING?.some(line=>line.text.includes('สี่ชิ้น'))&&globalThis.WORLD_FOUR_ENDING?.some(line=>line.text.includes('ป่าแห่งความทรงจำ')),'ฉากจบ World 4 ต้องสรุปผลึก 4/10 และเชื่อม World 5');
 check(world5Source.includes("level?.type!=='memory-tree'")&&world5Source.includes('const parts=[200,30,5]')&&world5Source.includes('ภาพทั้งหมดเชื่อมแล้ว'),'ด่าน 21 ต้องมีกลไกเชื่อมความทรงจำ 200, 30, 5 และรวม 822');
+check(world5Source.includes("level?.type==='time-wheel'")&&world5Source.includes('const parts=[300,80,7]')&&world5Source.includes("step===3?' — รูปปั้นกำลังตื่น! ✦':''"),'ด่าน 22 ต้องมีกลไกหมุนเวลา 300, 80, 7 และเหลือ 513');
 check(world5Source.includes("worldMap(5,'World 5 · ป่าแห่งความทรงจำ")&&globalThis.WORLD_FIVE_INTRO?.some(line=>line.text.includes('ใบไม้สีเงิน')),'World 5 ต้องมีแผนที่และบทเปิดต่อจากนครลอยฟ้า');
 check(appSource.includes('function successFanfare()')&&appSource.includes('dataset.fanfare'),'หน้ารางวัลต้องเล่นทำนองฉลองเมื่อเปิดเสียง');
 check(appSource.includes('lootHeading')&&appSource.includes('lootNote=itemInfo(savedItem).note'),'หน้ารางวัลต้องอธิบายของวิเศษที่ค้นพบและความหมายในเนื้อเรื่อง');
@@ -146,7 +147,7 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v86'")&&serviceWorkerSource.includes('./world5.js?v=86')&&serviceWorkerSource.includes('./data/world5.js?v=86')&&serviceWorkerSource.includes('./world5.css?v=86')&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v87'")&&serviceWorkerSource.includes('./world5.js?v=87')&&serviceWorkerSource.includes('./data/world5.js?v=87')&&serviceWorkerSource.includes('./world5-level22.css?v=87')&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(stylesSource.includes('.topbar .brand{font-size:0;gap:0}'),'แถบบนมือถือหน้าบทสนทนาต้องย่อชื่อเกมเพื่อไม่ให้ล้นแนวนอน');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
@@ -158,4 +159,4 @@ check(indexSource.includes('data/cloud-save.js?v=65')&&cloudSaveApi?.disabled&&c
 check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ เนื้อเรื่องและกลไก 21 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1–4 จบครบและ World 5 ตอนที่ 21 ต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
+console.log(`✓ เนื้อเรื่องและกลไก 22 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1–4 จบครบและ World 5 ตอนที่ 21–22 ต่อเนื่อง · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
