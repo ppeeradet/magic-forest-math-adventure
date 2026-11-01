@@ -7,10 +7,12 @@ import {readFileSync} from 'node:fs';
 const level=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===21);
 const level22=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===22);
 const level23=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===23);
+const level24=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===24);
 const runtime=readFileSync(new URL('../dist/world5.js',import.meta.url),'utf8');
 const styles=readFileSync(new URL('../dist/world5.css',import.meta.url),'utf8');
 const styles22=readFileSync(new URL('../dist/world5-level22.css',import.meta.url),'utf8');
 const styles23=readFileSync(new URL('../dist/world5-level23.css',import.meta.url),'utf8');
+const styles24=readFileSync(new URL('../dist/world5-level24.css',import.meta.url),'utf8');
 const fail=message=>{throw new Error(message)};
 if(!level||level.world!==5||level.type!=='memory-tree')fail('ไม่พบด่าน 21 ใน World 5');
 if(level.answer!==587+235)fail('คำตอบด่าน 21 ไม่เท่ากับ 822');
@@ -34,4 +36,11 @@ if(String(flowerSequence)!=='8,16,24,32,40,48,56')fail(`ลำดับด่า
 if(!runtime.includes("resetNightFlowers').onclick")||!runtime.includes('open.onclick=()=>finish(level,1)'))fail('ด่าน 23 ไม่มี reset หรือรางวัล');
 if(!runtime.includes('save.stars[22]&&save.unlocked<23'))fail('เซฟที่ผ่านด่าน 22 ต้องปลดล็อกด่าน 23');
 if(!styles23.includes('@media(max-width:560px)')||!styles23.includes('prefers-reduced-motion'))fail('ด่าน 23 ขาด responsive หรือ reduced-motion');
-console.log('✓ Playtest World 5 ตอนที่ 21–23 ผ่าน: 587 → 822 · 900 → 513 · 8 → 16 → 24 → 32 → 40 → 48 → 56 · reset · keyboard · reward · responsive contract');
+if(!level24||level24.world!==5||level24.type!=='rescue-signals')fail('ไม่พบด่าน 24 ใน World 5');
+if(level24.answer!==175+288)fail('คำตอบด่าน 24 ไม่เท่ากับ 463');
+let signals=175;const signalSequence=[signals];for(const part of [200,80,8]){signals+=part;signalSequence.push(signals)}
+if(String(signalSequence)!=='175,375,455,463')fail(`ลำดับด่าน 24 ผิด: ${signalSequence.join(' → ')}`);
+if(!runtime.includes("resetRescueSignals').onclick")||!runtime.includes('open.onclick=()=>finish(level,1)'))fail('ด่าน 24 ไม่มี reset หรือรางวัล');
+if(!runtime.includes('save.stars[23]&&save.unlocked<24'))fail('เซฟที่ผ่านด่าน 23 ต้องปลดล็อกด่าน 24');
+if(!styles24.includes('@media(max-width:560px)')||!styles24.includes('prefers-reduced-motion'))fail('ด่าน 24 ขาด responsive หรือ reduced-motion');
+console.log('✓ Playtest World 5 ตอนที่ 21–24 ผ่าน: 587 → 822 · 900 → 513 · 8 → 56 · 175 → 375 → 455 → 463 · reset · keyboard · reward · responsive contract');

@@ -30,7 +30,8 @@ const ITEM_BOOK={
  'ผลึกหัวใจชิ้นที่ 4':{art:'adventure-map.png',note:'ผลึกจากเกราะแสง 24 หยดที่ช่วยสัตว์ทั้งแปดและชำระทะเลสาบ'},
  'เมล็ดความทรงจำอบอุ่น':{art:'golden-star.png',note:'เมล็ดจากภาพความทรงจำ 822 ชิ้นที่เรียงตัวเป็นแผนที่ช่วยสัตว์วิเศษ'},
  'เศษนาฬิกาแห่งความหวัง':{art:'moon.png',note:'เศษวงล้อเวลาที่เหลือ 513 วัน เตือนว่าความหวังเติบโตได้ระหว่างการรอคอย'},
- 'กลีบราตรีเจ็ดดาว':{art:'golden-star.png',note:'กลีบเรืองแสง 56 กลีบจากดอกไม้เจ็ดดอก ซึ่งบรรเลงทางลับสู่ปราสาท'}
+ 'กลีบราตรีเจ็ดดาว':{art:'golden-star.png',note:'กลีบเรืองแสง 56 กลีบจากดอกไม้เจ็ดดอก ซึ่งบรรเลงทางลับสู่ปราสาท'},
+ 'ตรากุญแจสองเผ่าพันธุ์':{art:'explorer-compass.png',note:'ตราจากเครือข่าย 463 สัญญาณ ซึ่งเปิดทางหนีให้นกฟีนิกซ์และมังกรน้อย'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}

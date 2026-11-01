@@ -2,6 +2,17 @@ const world5PlayBase=play;
 play=id=>{
   world5PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='rescue-signals'){
+    let signals=175,step=0;
+    const parts=[200,80,8],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+    p.innerHTML=`<div class="rescue-signal-stage" id="rescueSignalStage"><div class="signal-flock phoenix" aria-hidden="true">🔥<small>175</small></div><div class="signal-network"><i></i><i></i><i></i><strong id="signalCount">175</strong><b id="signalEquation">175 + 288 = ?</b></div><div class="signal-flock dragons" aria-hidden="true">🐉<small>288</small></div><div class="rescue-gate" id="rescueGate" aria-hidden="true">🚪</div></div><div class="signal-history" id="signalHistory" aria-live="polite">แยกสัญญาณมังกร: 288 = 200 + 80 + 8</div><div class="signal-parts" role="group" aria-label="สัญญาณมังกรน้อย 288 ดวง">${parts.map((value,index)=>`<button data-signal-part="${index}" ${index?'disabled':''}><span>${['📡','✨','🔹'][index]}</span><b>+${value}</b><small>${['2 ร้อย','8 สิบ','8 หน่วย'][index]}</small></button>`).join('')}</div><div class="signal-actions"><button class="secondary" id="resetRescueSignals">เชื่อมใหม่ ↻</button><button class="primary" id="openRescueGate" disabled>เปิดทางหนี 463 สัญญาณ ✦</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-signal-part]')],count=p.querySelector('#signalCount'),equation=p.querySelector('#signalEquation'),history=p.querySelector('#signalHistory'),network=p.querySelector('.signal-network'),gate=p.querySelector('#rescueGate'),stage=p.querySelector('#rescueSignalStage'),open=p.querySelector('#openRescueGate'),render=()=>{count.textContent=signals;equation.textContent=step?`175 + ${parts.slice(0,step).reduce((sum,value)=>sum+value,0)} = ${signals}`:'175 + 288 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('linked',index<step)});[...network.querySelectorAll('i')].forEach((line,index)=>line.classList.toggle('linked',index<step));stage.style.setProperty('--rescue-light',String(step/3));gate.classList.toggle('open',step===3);open.disabled=step!==3},reset=()=>{signals=175;step=0;history.textContent='แยกสัญญาณมังกร: 288 = 200 + 80 + 8';render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;const before=signals;signals+=parts[index];step++;history.textContent=`${before} + ${parts[index]} = ${signals}`;render();tone(430+step*110,.22);fb.innerHTML=`<div class="star-chance">${before} + ${parts[index]} = ${signals}${step===3?' — ทางหนีปลอดภัยเปิดแล้ว! ✦':''}</div>`});
+    p.querySelector('#resetRescueSignals').onclick=()=>{reset();tone(330)};
+    open.onclick=()=>finish(level,1);
+    render();
+    return;
+  }
   if(level?.type==='night-flowers'){
     let awake=0;
     const total=7,petals=8,p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -51,7 +62,8 @@ map=()=>{
 const world5InventoryBase=showInventory;
 showInventory=()=>{world5InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-5'))panel.insertAdjacentHTML('beforeend',collectionWorld(5,'World 5 · ป่าแห่งความทรงจำ'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,23);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,24);
+else if(save.stars[23]&&save.unlocked<24){save.unlocked=24;persist()}
 else if(save.stars[22]&&save.unlocked<23){save.unlocked=23;persist()}
 else if(save.stars[21]&&save.unlocked<22){save.unlocked=22;persist()}
 else if(save.stars[20]&&save.unlocked<21){save.unlocked=21;persist()}
