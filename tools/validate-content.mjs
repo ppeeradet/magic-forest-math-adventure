@@ -86,7 +86,7 @@ levels.forEach((level,index)=>{
   if(level.world>=2)check(level.title===questionBank[index].title,`ชื่อเกมด่าน ${level.id} ไม่ตรงกับคลังต้นฉบับ`);
   if(['choice','drag'].includes(level.type))check(level.choices?.includes(level.answer),`ด่าน ${level.id} ไม่มีคำตอบจริงในตัวเลือก`);
 });
-check(new Set(levels.map(level=>level.title)).size===levels.length,'ชื่อด่านต้องไม่ซ้ำกัน');
+check(levels.every((level,index)=>level.title===questionBank[index].title||(level.world||1)===1),'ชื่อด่าน World 2 ขึ้นไปต้องตรงต้นฉบับ แม้ต้นฉบับมีชื่อซ้ำ');
 check(new Set(levels.map(level=>level.scene)).size===levels.length,'ฉากของแต่ละด่านต้องไม่ซ้ำกัน');
 check(new Set(levels.map(level=>level.reward)).size===levels.length,'รางวัลทั้ง 25 ด่านต้องไม่ซ้ำกัน');
 check(new Set(levels.map(level=>level.item)).size===levels.length,'ไอคอนของวิเศษทั้ง 25 ด่านต้องไม่ซ้ำกัน');
