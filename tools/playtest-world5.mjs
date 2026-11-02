@@ -8,11 +8,13 @@ const level=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===21);
 const level22=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===22);
 const level23=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===23);
 const level24=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===24);
+const level25=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===25);
 const runtime=readFileSync(new URL('../dist/world5.js',import.meta.url),'utf8');
 const styles=readFileSync(new URL('../dist/world5.css',import.meta.url),'utf8');
 const styles22=readFileSync(new URL('../dist/world5-level22.css',import.meta.url),'utf8');
 const styles23=readFileSync(new URL('../dist/world5-level23.css',import.meta.url),'utf8');
 const styles24=readFileSync(new URL('../dist/world5-level24.css',import.meta.url),'utf8');
+const styles25=readFileSync(new URL('../dist/world5-level25.css',import.meta.url),'utf8');
 const fail=message=>{throw new Error(message)};
 if(!level||level.world!==5||level.type!=='memory-tree')fail('ไม่พบด่าน 21 ใน World 5');
 if(level.answer!==587+235)fail('คำตอบด่าน 21 ไม่เท่ากับ 822');
@@ -43,4 +45,13 @@ if(String(signalSequence)!=='175,375,455,463')fail(`ลำดับด่าน 
 if(!runtime.includes("resetRescueSignals').onclick")||!runtime.includes('open.onclick=()=>finish(level,1)'))fail('ด่าน 24 ไม่มี reset หรือรางวัล');
 if(!runtime.includes('save.stars[23]&&save.unlocked<24'))fail('เซฟที่ผ่านด่าน 23 ต้องปลดล็อกด่าน 24');
 if(!styles24.includes('@media(max-width:560px)')||!styles24.includes('prefers-reduced-motion'))fail('ด่าน 24 ขาด responsive หรือ reduced-motion');
-console.log('✓ Playtest World 5 ตอนที่ 21–24 ผ่าน: 587 → 822 · 900 → 513 · 8 → 56 · 175 → 375 → 455 → 463 · reset · keyboard · reward · responsive contract');
+if(!level25||level25.world!==5||level25.type!=='shadow-energy')fail('ไม่พบด่าน 25 ใน World 5');
+if(level25.answer!==950-489)fail('คำตอบด่าน 25 ไม่เท่ากับ 461');
+let energy=950;const energySequence=[energy];for(const part of [400,80,9]){energy-=part;energySequence.push(energy)}
+if(String(energySequence)!=='950,550,470,461')fail(`ลำดับด่าน 25 ผิด: ${energySequence.join(' → ')}`);
+if(!runtime.includes("resetShadowEnergy').onclick")||!runtime.includes('restore.onclick=()=>finish(level,1)'))fail('ด่าน 25 ไม่มี reset หรือรางวัล');
+if(!runtime.includes('save.stars[24]&&save.unlocked<25'))fail('เซฟที่ผ่านด่าน 24 ต้องปลดล็อกด่าน 25');
+if(!runtime.includes("next.textContent='ดูตอนจบ World 5'")||!runtime.includes('WORLD_FIVE_ENDING,map'))fail('ด่าน 25 ต้องเชื่อมไปฉากจบ World 5');
+if(!styles25.includes('@media(max-width:560px)')||!styles25.includes('prefers-reduced-motion'))fail('ด่าน 25 ขาด responsive หรือ reduced-motion');
+if(!globalThis.WORLD_FIVE_ENDING?.some(line=>line.text.includes('ห้องแห่งการคูณ')))fail('ฉากจบ World 5 ไม่เชื่อมตอน 26');
+console.log('✓ Playtest World 5 ตอนที่ 21–25 ผ่านครบ: 587 → 822 · 900 → 513 · 8 → 56 · 175 → 463 · 950 → 550 → 470 → 461 · ending 5/10 · reset · keyboard · reward · responsive contract');

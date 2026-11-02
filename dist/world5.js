@@ -2,6 +2,17 @@ const world5PlayBase=play;
 play=id=>{
   world5PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='shadow-energy'){
+    let energy=950,step=0;
+    const parts=[400,80,9],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+    p.innerHTML=`<div class="shadow-energy-stage" id="shadowEnergyStage"><div class="shadow-mural" aria-hidden="true">${['🦊','🦉','🐉'].map((animal,index)=>`<i data-mural="${index}">${animal}</i>`).join('')}</div><div class="energy-core"><small>พลังที่ตามคืนได้</small><strong id="energyCount">950</strong><b id="energyEquation">950 − 489 = ?</b><span id="heartCrystal">💜</span></div><div class="multiplication-door" id="multiplicationDoor" aria-hidden="true">✖️</div></div><div class="energy-history" id="energyHistory" aria-live="polite">แยกพลังคงเหลือ: 489 = 400 + 80 + 9</div><div class="energy-parts" role="group" aria-label="พลังคงเหลือ 489 หน่วย">${parts.map((value,index)=>`<button data-energy-part="${index}" ${index?'disabled':''}><span>${['🌑','🌘','✨'][index]}</span><b>−${value}</b><small>${['4 ร้อย','8 สิบ','9 หน่วย'][index]}</small></button>`).join('')}</div><div class="energy-actions"><button class="secondary" id="resetShadowEnergy">ตามรอยใหม่ ↻</button><button class="primary" id="restoreHeartCrystal" disabled>คืนผลึกจากพลัง 461 ✦</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-energy-part]')],murals=[...p.querySelectorAll('[data-mural]')],count=p.querySelector('#energyCount'),equation=p.querySelector('#energyEquation'),history=p.querySelector('#energyHistory'),crystal=p.querySelector('#heartCrystal'),door=p.querySelector('#multiplicationDoor'),stage=p.querySelector('#shadowEnergyStage'),restore=p.querySelector('#restoreHeartCrystal'),render=()=>{count.textContent=energy;equation.textContent=step?`950 − ${parts.slice(0,step).reduce((sum,value)=>sum+value,0)} = ${energy}`:'950 − 489 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('cleared',index<step)});murals.forEach((mural,index)=>mural.classList.toggle('restored',index<step));stage.style.setProperty('--heart-light',String(step/3));crystal.classList.toggle('revealed',step===3);door.classList.toggle('revealed',step===3);restore.disabled=step!==3},reset=()=>{energy=950;step=0;history.textContent='แยกพลังคงเหลือ: 489 = 400 + 80 + 9';render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;const before=energy;energy-=parts[index];step++;history.textContent=`${before} − ${parts[index]} = ${energy}`;render();tone(510-step*70,.24);fb.innerHTML=`<div class="star-chance">${before} − ${parts[index]} = ${energy}${step===3?' — ผลึกหัวใจกำลังก่อตัว! ✦':''}</div>`});
+    p.querySelector('#resetShadowEnergy').onclick=()=>{reset();tone(330)};
+    restore.onclick=()=>finish(level,1);
+    render();
+    return;
+  }
   if(level?.type==='rescue-signals'){
     let signals=175,step=0;
     const parts=[200,80,8],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -57,12 +68,30 @@ map=()=>{
   const next=nextAdventure();
   wrap.insertAdjacentHTML('beforeend',worldMap(5,'World 5 · ป่าแห่งความทรงจำและปราสาทเงา','ผลึกหัวใจชิ้นที่ 5',next?.id));
   wrap.querySelectorAll('.world-map-5 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));
+  if(save.stars[25]){
+    const eyebrow=wrap.querySelector('.map-head .eyebrow'),summary=wrap.querySelector('.map-head p'),endingButton=wrap.querySelector('#endingBtn'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p'),nextLock=wrap.querySelector('.next-world-lock');
+    if(eyebrow)eyebrow.textContent='ภารกิจห้าโลกสำเร็จแล้ว';
+    if(summary)summary.textContent='ผลึกหัวใจห้าชิ้นกลับคืนมาแล้ว ห้องแห่งการคูณกำลังรออยู่';
+    if(endingButton){endingButton.textContent='ดูฉากจบ World 5 อีกครั้ง ✦';endingButton.onclick=()=>story(window.WORLD_FIVE_ENDING,map)}
+    if(journeyTitle)journeyTitle.textContent='พิชิตครบ 25 ตอน!';
+    if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/25 · ผลึก ${save.crystals} เม็ด · ดาว ${totalStars}/75`}
+    if(nextLock)nextLock.innerHTML='<span>🔒</span><div><small>บทถัดไป</small><strong>World 6 · ห้องแห่งการคูณ</strong><p>พ่อมดเงารออยู่หลังประตูยอดปราสาท</p></div>';
+  }
+};
+
+const world5FinishBase=finish;
+finish=(level,tries)=>{
+  world5FinishBase(level,tries);
+  if(level.id!==25)return;
+  const next=document.querySelector('#next');
+  if(next){next.textContent='ดูตอนจบ World 5';next.onclick=()=>story(window.WORLD_FIVE_ENDING,map)}
 };
 
 const world5InventoryBase=showInventory;
 showInventory=()=>{world5InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-5'))panel.insertAdjacentHTML('beforeend',collectionWorld(5,'World 5 · ป่าแห่งความทรงจำ'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,24);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,25);
+else if(save.stars[24]&&save.unlocked<25){save.unlocked=25;persist()}
 else if(save.stars[23]&&save.unlocked<24){save.unlocked=24;persist()}
 else if(save.stars[22]&&save.unlocked<23){save.unlocked=23;persist()}
 else if(save.stars[21]&&save.unlocked<22){save.unlocked=22;persist()}
