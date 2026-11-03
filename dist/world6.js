@@ -2,6 +2,16 @@ const world6PlayBase=play;
 play=id=>{
   world6PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='owl-relay'){
+    let step=0;
+    const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),parts=level.parts;
+    p.innerHTML=`<div class="owl-relay" id="owlRelay"><div class="owl-sky" aria-hidden="true"><span class="owl-flock resident">🦉<b>312</b></span><span class="owl-wind">〰️</span><span class="owl-stair-piece">🪜</span></div><div class="owl-total" aria-live="polite"><small>นกฮูกที่ชานพัก</small><strong id="owlTotal">312</strong><b id="owlEquation">312 + 249 = ?</b></div><div class="owl-groups" role="group" aria-label="เรียกนกฮูกเพิ่มทีละฝูง">${parts.map((part,index)=>`<button data-owl-part="${index}" ${index?'disabled':''}><span>${index===0?'ฝูงใหญ่':index===1?'ฝูงกลาง':'ฝูงเล็ก'}</span><b>+${part}</b><small>${'🦉'.repeat(3-index)}</small></button>`).join('')}</div><div class="owl-history" id="owlHistory" aria-live="polite">312 · รอรับเพื่อนอีก 249 ตัว</div></div><div class="owl-actions"><button class="secondary" id="resetOwlRelay">เรียกฝูงใหม่ ↻</button><button class="primary" id="liftOwlStair" disabled>ยกบันไดด้วยพลัง 561 ปีก</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-owl-part]')],total=p.querySelector('#owlTotal'),equation=p.querySelector('#owlEquation'),history=p.querySelector('#owlHistory'),stage=p.querySelector('#owlRelay'),lift=p.querySelector('#liftOwlStair'),values=[level.start],render=()=>{const sum=values.at(-1);total.textContent=sum;equation.textContent=step?`${level.start} + ${parts.slice(0,step).reduce((a,b)=>a+b,0)} = ${sum}`:'312 + 249 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('arrived',index<step)});history.textContent=values.join(' → ')+(step===parts.length?' · ครบ 561 ตัว!':'');stage.style.setProperty('--owl-progress',String(step/parts.length));lift.disabled=step!==parts.length},reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)+parts[index]);step++;render();tone(420+step*80,.2);fb.innerHTML=`<div class="star-chance">${values.at(-2)} + ${parts[index]} = ${values.at(-1)}${step===parts.length?' — ฝูงนกฮูกพร้อมยกบันไดแล้ว!':''}</div>`});
+    p.querySelector('#resetOwlRelay').onclick=()=>{reset();tone(330)};
+    lift.onclick=()=>finish(level,1);
+    render();return;
+  }
   if(level?.type!=='spell-rings')return;
   let sealed=0;
   const total=6,power=9,p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
@@ -29,6 +39,7 @@ map=()=>{
 const world6InventoryBase=showInventory;
 showInventory=()=>{world6InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-6'))panel.insertAdjacentHTML('beforeend',collectionWorld(6,'World 6 · หอคอยแห่งการคูณ'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,26);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,27);
 else if(save.stars[25]&&save.unlocked<26){save.unlocked=26;persist()}
+else if(save.stars[26]&&save.unlocked<27){save.unlocked=27;persist()}
 if(save.player)home();

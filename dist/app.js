@@ -33,7 +33,8 @@ const ITEM_BOOK={
  'กลีบราตรีเจ็ดดาว':{art:'golden-star.png',note:'กลีบเรืองแสง 56 กลีบจากดอกไม้เจ็ดดอก ซึ่งบรรเลงทางลับสู่ปราสาท'},
  'ตรากุญแจสองเผ่าพันธุ์':{art:'explorer-compass.png',note:'ตราจากเครือข่าย 463 สัญญาณ ซึ่งเปิดทางหนีให้นกฟีนิกซ์และมังกรน้อย'},
  'ผลึกหัวใจชิ้นที่ 5':{art:'echo-crystal.png',note:'ผลึกที่คืนรูปจากพลัง 461 หน่วย เป็นเครื่องหมายว่าการเดินทางผ่านมาครึ่งทาง'},
- 'ตราหกคาถา':{art:'golden-star.png',note:'ตราจากวงแหวนคาถา 6 ชั้นและพลังรวม 54 หน่วย เปิดทางขึ้นสู่ฝูงนกฮูก'}
+ 'ตราหกคาถา':{art:'golden-star.png',note:'ตราจากวงแหวนคาถา 6 ชั้นและพลังรวม 54 หน่วย เปิดทางขึ้นสู่ฝูงนกฮูก'},
+ 'ขนนกฮูกนำทาง':{art:'owl.png',note:'ขนนกสีเงินจากฝูงนกฮูก 561 ตัว ส่องทางขึ้นบันไดท่ามกลางพลังเงา'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}

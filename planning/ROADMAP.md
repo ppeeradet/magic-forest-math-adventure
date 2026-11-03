@@ -7,7 +7,7 @@
 - World 3 polish: ✅ ด่าน 11–15 ผ่าน full interaction playtest ครบเส้นทาง แก้ปุ่ม “ข้ามเรื่องราว” แล้ว และยืนยันรางวัล ฉากจบ responsive 390×844 / 820×1180 และ console error = 0; ผลทดสอบอยู่ใน `planning/PLAYTEST-WORLD3.md` · เป้าหมายถัดไปทดสอบ reset, keyboard และ reduced motion
 - World 4: ✅ ด่าน 16–20 เล่นได้ครบ พร้อมฉากจบรับผลึกหัวใจชิ้นที่ 4 และส่งต่อสู่ “ป่าแห่งความทรงจำ” · regression QA ตรวจลำดับคำนวณ reset, native keyboard buttons, reward, responsive rules และ reduced motion ครบแล้ว · รายละเอียดอยู่ใน `planning/PLAYTEST-WORLD4.md` · เป้าหมายถัดไป specification World 5 ตอนที่ 21–25
 - World 5: ✅ ด่าน 21–25 เล่นได้ครบและผ่าน full regression QA แล้ว: exploration, ลำดับคำนวณ, reset, native keyboard, aria-live, reward, save migration, responsive/reduced-motion, แผนที่ 25/25, ฉากจบ 5/10 และทางเชื่อม “ห้องแห่งการคูณ” ตอน 26 ผ่านครบ · รายละเอียดอยู่ใน `planning/PLAYTEST-WORLD5.md` · เป้าหมายถัดไปวาง Story/Gameplay specification World 6
-- World 6: 🔄 ด่าน 26 “ห้องแห่งการคูณ” เล่นได้จริงด้วยกลไกวงแหวนคาถา 6 × 9 = 54 พร้อมบทเปิด แผนที่ reset, native keyboard, aria-live, reward, save migration และ responsive contract · ด่าน 27–30 มี specification ครบใน `planning/WORLD6.md` · เป้าหมายถัดไปสร้างด่าน 27 “บันไดสู่จุดสูงสุด — ชานพักฝูงนกฮูก”
+- World 6: 🔄 ด่าน 26–27 เล่นได้จริง: วงแหวนคาถา 6 × 9 = 54 และชานพักฝูงนกฮูก 312 + 249 = 561 พร้อม exploration, reset, native keyboard, aria-live, reward, save migration และ responsive contract · ด่าน 28–30 มี specification ครบใน `planning/WORLD6.md` · เป้าหมายถัดไปสร้างด่าน 28 “บันไดสู่จุดสูงสุด — ขั้นบันไดพลังเงา”
 - Sprint 11–14 (3–5 วัน): AR prototype และคอลเลกชันสัตว์สามมิติ
 
 แต่ละ Sprint ต้องจบด้วยเกมที่เปิดได้ ไม่มี JavaScript error รองรับ 390×844 และ desktop และมี commit แยกชัดเจน
