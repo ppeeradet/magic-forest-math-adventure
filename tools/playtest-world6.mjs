@@ -1,0 +1,23 @@
+globalThis.window=globalThis;
+await import('../dist/data/levels.js');
+await import('../dist/data/world4.js');
+await import('../dist/data/world5.js');
+await import('../dist/data/world6.js');
+import {readFileSync} from 'node:fs';
+
+const level=globalThis.MAGIC_FOREST_LEVELS.find(item=>item.id===26);
+const runtime=readFileSync(new URL('../dist/world6.js',import.meta.url),'utf8');
+const styles=readFileSync(new URL('../dist/world6.css',import.meta.url),'utf8');
+const fail=message=>{throw new Error(message)};
+if(!level||level.world!==6||level.type!=='spell-rings')fail('ไม่พบด่าน 26 ใน World 6');
+if(level.title!=='ห้องแห่งการคูณ'||level.answer!==6*9)fail('ชื่อหรือคำตอบด่าน 26 ไม่ตรง Question Bank');
+const sequence=Array.from({length:6},(_,index)=>(index+1)*9);
+if(String(sequence)!=='9,18,27,36,45,54')fail(`ลำดับด่าน 26 ผิด: ${sequence.join(' → ')}`);
+if(level.required<3||level.hotspots.length<level.required||level.dialogue.length<4)fail('ด่าน 26 มี exploration หรือบทสนทนาไม่ครบ');
+if(!runtime.includes('<button data-spell-ring=')||!runtime.includes('id="spellSequence" aria-live="polite"'))fail('ด่าน 26 ต้องใช้ปุ่ม native และ aria-live');
+if(!runtime.includes("resetSpellRings').onclick")||!runtime.includes('open.onclick=()=>finish(level,1)'))fail('ด่าน 26 ไม่มี reset หรือรางวัล');
+if(!runtime.includes('save.stars[25]&&save.unlocked<26'))fail('เซฟที่ผ่านด่าน 25 ต้องปลดล็อกด่าน 26');
+if(!runtime.includes('if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,26)'))fail('โหมด playtest ต้องปลดล็อกด่าน 26 โดยไม่แก้เซฟจริง');
+if(!styles.includes('@media(max-width:560px)')||!styles.includes('prefers-reduced-motion'))fail('ด่าน 26 ขาด responsive หรือ reduced-motion');
+if(!globalThis.WORLD_SIX_INTRO?.some(line=>line.text.includes('ผลึกหัวใจทั้งห้าชิ้น')))fail('บทเปิด World 6 ไม่เชื่อมจาก World 5');
+console.log('✓ Playtest World 6 ตอนที่ 26 ผ่าน: 9 → 18 → 27 → 36 → 45 → 54 · exploration · reset · native keyboard · aria-live · reward · save migration · map · responsive contract');

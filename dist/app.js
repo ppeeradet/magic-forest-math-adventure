@@ -6,7 +6,7 @@ if(!PLAYTEST_MODE&&save.stars?.[10]&&save.unlocked<11){save.unlocked=11;localSto
 const app=document.querySelector('#app');let audio,cancelProfile;document.addEventListener('click',event=>{if(event.target?.id==='cancelProfile')home()});
 function playerName(){return save.player?.name?.trim()||'แบมแบม'}
 function personalize(value){return String(value).replaceAll('แบมแบม',playerName())}
-function applyPlayerCopy(from='แบมแบม'){if(!save.player)return;const visit=value=>{if(Array.isArray(value))return value.forEach(visit);if(value&&typeof value==='object')return Object.keys(value).forEach(k=>{if(typeof value[k]==='string')value[k]=value[k].replaceAll(from,playerName());else visit(value[k])})};visit(LEVELS);visit(window.WORLD_ONE_ENDING);visit(window.WORLD_TWO_ENDING);visit(window.WORLD_THREE_INTRO);visit(window.WORLD_THREE_ENDING);visit(window.WORLD_FOUR_INTRO);visit(window.WORLD_FOUR_ENDING);visit(window.WORLD_FIVE_INTRO);visit(window.WORLD_FIVE_ENDING)}
+function applyPlayerCopy(from='แบมแบม'){if(!save.player)return;const visit=value=>{if(Array.isArray(value))return value.forEach(visit);if(value&&typeof value==='object')return Object.keys(value).forEach(k=>{if(typeof value[k]==='string')value[k]=value[k].replaceAll(from,playerName());else visit(value[k])})};visit(LEVELS);visit(window.WORLD_ONE_ENDING);visit(window.WORLD_TWO_ENDING);visit(window.WORLD_THREE_INTRO);visit(window.WORLD_THREE_ENDING);visit(window.WORLD_FOUR_INTRO);visit(window.WORLD_FOUR_ENDING);visit(window.WORLD_FIVE_INTRO);visit(window.WORLD_FIVE_ENDING);visit(window.WORLD_SIX_INTRO)}
 const ITEM_BOOK={
  'เมล็ดแสง':{art:'golden-star.png',note:'เก็บพลังจากประตูเถาวัลย์ ใช้ปลุกสิ่งที่หลับใหล'},
  'เศษผลึกฟ้า':{art:'echo-crystal.png',note:'เศษหัวใจของป่า ส่งเสียงใสเมื่ออยู่ใกล้เวทมนตร์'},
@@ -32,7 +32,8 @@ const ITEM_BOOK={
  'เศษนาฬิกาแห่งความหวัง':{art:'moon.png',note:'เศษวงล้อเวลาที่เหลือ 513 วัน เตือนว่าความหวังเติบโตได้ระหว่างการรอคอย'},
  'กลีบราตรีเจ็ดดาว':{art:'golden-star.png',note:'กลีบเรืองแสง 56 กลีบจากดอกไม้เจ็ดดอก ซึ่งบรรเลงทางลับสู่ปราสาท'},
  'ตรากุญแจสองเผ่าพันธุ์':{art:'explorer-compass.png',note:'ตราจากเครือข่าย 463 สัญญาณ ซึ่งเปิดทางหนีให้นกฟีนิกซ์และมังกรน้อย'},
- 'ผลึกหัวใจชิ้นที่ 5':{art:'echo-crystal.png',note:'ผลึกที่คืนรูปจากพลัง 461 หน่วย เป็นเครื่องหมายว่าการเดินทางผ่านมาครึ่งทาง'}
+ 'ผลึกหัวใจชิ้นที่ 5':{art:'echo-crystal.png',note:'ผลึกที่คืนรูปจากพลัง 461 หน่วย เป็นเครื่องหมายว่าการเดินทางผ่านมาครึ่งทาง'},
+ 'ตราหกคาถา':{art:'golden-star.png',note:'ตราจากวงแหวนคาถา 6 ชั้นและพลังรวม 54 หน่วย เปิดทางขึ้นสู่ฝูงนกฮูก'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
