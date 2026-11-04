@@ -2,6 +2,16 @@ const world6PlayBase=play;
 play=id=>{
   world6PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='stair-energy'){
+    let step=0;
+    const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),parts=level.parts,values=[level.start];
+    p.innerHTML=`<div class="stair-energy" id="stairEnergy"><div class="energy-stair" aria-hidden="true">${parts.map((_,index)=>`<span data-stair-crack="${index}">🕸️</span>`).join('')}<b>🪜</b><i>🚪</i></div><div class="energy-core" aria-live="polite"><small>พลังที่ยังเหลือ</small><strong id="energyTotal">850</strong><b id="energyEquation">850 − 495 = ?</b></div><div class="shadow-layers" role="group" aria-label="ถอนพลังเงาทีละชั้น">${parts.map((part,index)=>`<button data-shadow-part="${index}" ${index?'disabled':''}><span>เงาชั้นที่ ${index+1}</span><b>−${part}</b><small>${index===0?'หลักร้อย':index===1?'หลักสิบ':'หลักหน่วย'}</small></button>`).join('')}</div><div class="energy-history" id="energyHistory" aria-live="polite">850 · รอถอนพลังเงา 495 หน่วย</div></div><div class="energy-actions"><button class="secondary" id="resetStairEnergy">คืนพลังตั้งต้น ↻</button><button class="primary" id="openPotionRoom" disabled>ส่งพลัง 355 เปิดประตู</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-shadow-part]')],cracks=[...p.querySelectorAll('[data-stair-crack]')],total=p.querySelector('#energyTotal'),equation=p.querySelector('#energyEquation'),history=p.querySelector('#energyHistory'),stage=p.querySelector('#stairEnergy'),open=p.querySelector('#openPotionRoom'),render=()=>{const current=values.at(-1),removed=parts.slice(0,step).reduce((a,b)=>a+b,0);total.textContent=current;equation.textContent=step?`${level.start} − ${removed} = ${current}`:'850 − 495 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('cleared',index<step)});cracks.forEach((crack,index)=>crack.classList.toggle('cleared',index<step));history.textContent=values.join(' → ')+(step===parts.length?' · เหลือพลังดี 355 หน่วย!':'');stage.style.setProperty('--energy-safe',String(step/parts.length));open.disabled=step!==parts.length},reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)-parts[index]);step++;render();tone(620-step*80,.2);fb.innerHTML=`<div class="star-chance">${values.at(-2)} − ${parts[index]} = ${values.at(-1)}${step===parts.length?' — บันไดมั่นคงแล้ว!':''}</div>`});
+    p.querySelector('#resetStairEnergy').onclick=()=>{reset();tone(330)};
+    open.onclick=()=>finish(level,1);
+    render();return;
+  }
   if(level?.type==='owl-relay'){
     let step=0;
     const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),parts=level.parts;
@@ -39,7 +49,8 @@ map=()=>{
 const world6InventoryBase=showInventory;
 showInventory=()=>{world6InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-6'))panel.insertAdjacentHTML('beforeend',collectionWorld(6,'World 6 · หอคอยแห่งการคูณ'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,27);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,28);
 else if(save.stars[25]&&save.unlocked<26){save.unlocked=26;persist()}
 else if(save.stars[26]&&save.unlocked<27){save.unlocked=27;persist()}
+else if(save.stars[27]&&save.unlocked<28){save.unlocked=28;persist()}
 if(save.player)home();
