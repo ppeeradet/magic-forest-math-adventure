@@ -2,6 +2,16 @@ const world6PlayBase=play;
 play=id=>{
   world6PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='ancient-library'){
+    let step=0;
+    const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),parts=level.parts,values=[level.start];
+    p.innerHTML=`<div class="ancient-library" id="ancientLibrary"><div class="library-shelves" aria-hidden="true"><span>📚<b>436</b></span><i>❤️</i><span>📜<b>297</b></span></div><div class="library-total" aria-live="polite"><small>หนังสือที่เชื่อมแล้ว</small><strong id="libraryTotal">436</strong><b id="libraryEquation">436 + 297 = ?</b></div><div class="book-sections" role="group" aria-label="ต่อหนังสือประวัติศาสตร์ทีละส่วน">${parts.map((part,index)=>`<button data-book-part="${index}" ${index?'disabled':''}><span>${index===0?'ชั้นใหญ่':index===1?'ชั้นกลาง':'ชั้นสุดท้าย'}</span><b>+${part}</b><small>${index===0?'2 ร้อย':index===1?'9 สิบ':'7 หน่วย'}</small></button>`).join('')}</div><div class="library-history" id="libraryHistory" aria-live="polite">436 · รอเชื่อมหนังสืออีก 297 เล่ม</div></div><div class="library-actions"><button class="secondary" id="resetAncientLibrary">จัดชั้นใหม่ ↻</button><button class="primary" id="restoreSixthCrystal" disabled>เปิดแท่นด้วยหนังสือ 733 เล่ม</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-book-part]')],total=p.querySelector('#libraryTotal'),equation=p.querySelector('#libraryEquation'),history=p.querySelector('#libraryHistory'),stage=p.querySelector('#ancientLibrary'),heart=p.querySelector('.library-shelves i'),restore=p.querySelector('#restoreSixthCrystal'),render=()=>{const sum=values.at(-1),added=parts.slice(0,step).reduce((a,b)=>a+b,0);total.textContent=sum;equation.textContent=step?`${level.start} + ${added} = ${sum}`:'436 + 297 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('shelved',index<step)});history.textContent=values.join(' → ')+(step===parts.length?' · คลังความรู้ครบ 733 เล่ม!':'');stage.style.setProperty('--library-light',String(step/parts.length));heart.classList.toggle('revealed',step===parts.length);restore.disabled=step!==parts.length},reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)+parts[index]);step++;render();tone(430+step*100,.24);fb.innerHTML=`<div class="star-chance">${values.at(-2)} + ${parts[index]} = ${values.at(-1)}${step===parts.length?' — ผลึกหัวใจกำลังส่องแสง!':''}</div>`});
+    p.querySelector('#resetAncientLibrary').onclick=()=>{reset();tone(330)};
+    restore.onclick=()=>finish(level,1);
+    render();return;
+  }
   if(level?.type==='levitation-potions'){
     let poured=0;
     const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),total=level.bottles,power=level.power;
@@ -54,14 +64,32 @@ map=()=>{
   const next=nextAdventure();
   wrap.insertAdjacentHTML('beforeend',worldMap(6,'World 6 · หอคอยแห่งการคูณและห้องสมุดโบราณ','ผลึกหัวใจชิ้นที่ 6',next?.id));
   wrap.querySelectorAll('.world-map-6 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));
+  if(save.stars[30]){
+    const eyebrow=wrap.querySelector('.map-head .eyebrow'),summary=wrap.querySelector('.map-head p'),endingButton=wrap.querySelector('#endingBtn'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p'),nextLock=wrap.querySelector('.next-world-lock');
+    if(eyebrow)eyebrow.textContent='ภารกิจหกโลกสำเร็จแล้ว';
+    if(summary)summary.textContent='ผลึกหัวใจหกชิ้นกลับคืนมาแล้ว รอยหมึกนำไปสู่สวนพฤกษาแห่งชีวิต';
+    if(endingButton){endingButton.textContent='ดูฉากจบ World 6 อีกครั้ง ✦';endingButton.onclick=()=>story(window.WORLD_SIX_ENDING,map)}
+    if(journeyTitle)journeyTitle.textContent='พิชิตครบ 30 ตอน!';
+    if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/30 · ผลึก ${save.crystals} เม็ด · ดาว ${totalStars}/90`}
+    if(nextLock)nextLock.innerHTML='<span>🔒</span><div><small>บทถัดไป</small><strong>World 7 · สวนพฤกษาแห่งชีวิต</strong><p>รอยหมึกเงากำลังทำให้ดอกไม้เหี่ยวเฉา</p></div>';
+  }
+};
+
+const world6FinishBase=finish;
+finish=(level,tries)=>{
+  world6FinishBase(level,tries);
+  if(level.id!==30)return;
+  const next=document.querySelector('#next');
+  if(next){next.textContent='ดูตอนจบ World 6';next.onclick=()=>story(window.WORLD_SIX_ENDING,map)}
 };
 
 const world6InventoryBase=showInventory;
 showInventory=()=>{world6InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-6'))panel.insertAdjacentHTML('beforeend',collectionWorld(6,'World 6 · หอคอยแห่งการคูณ'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,29);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,30);
 else if(save.stars[25]&&save.unlocked<26){save.unlocked=26;persist()}
 else if(save.stars[26]&&save.unlocked<27){save.unlocked=27;persist()}
 else if(save.stars[27]&&save.unlocked<28){save.unlocked=28;persist()}
 else if(save.stars[28]&&save.unlocked<29){save.unlocked=29;persist()}
+else if(save.stars[29]&&save.unlocked<30){save.unlocked=30;persist()}
 if(save.player)home();
