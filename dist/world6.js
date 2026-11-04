@@ -2,6 +2,16 @@ const world6PlayBase=play;
 play=id=>{
   world6PlayBase(id);
   const level=LEVELS[id-1];
+  if(level?.type==='levitation-potions'){
+    let poured=0;
+    const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),total=level.bottles,power=level.power;
+    p.innerHTML=`<div class="levitation-lab" id="levitationLab"><div class="cloud-cauldron" aria-hidden="true"><span class="potion-bubbles" id="potionBubbles">🫧</span><b>⚗️</b><i>🪜</i></div><div class="levitation-core" aria-live="polite"><small>พลังลอยสะสม</small><strong id="levitationPower">0</strong><b id="levitationEquation">7 × 8 = ?</b></div><div class="potion-bottles" role="group" aria-label="เติมน้ำยาลอยตัว 7 ขวด">${Array.from({length:total},(_,index)=>`<button data-potion="${index}" ${index?'disabled':''} aria-label="เติมน้ำยาขวดที่ ${index+1}"><span>${index+1}</span><b>🧪</b><small>+8</small></button>`).join('')}</div><div class="potion-sequence" id="potionSequence" aria-live="polite">เติมทีละขวด · เพิ่มครั้งละ 8 พลัง</div></div><div class="potion-actions"><button class="secondary" id="resetLevitationPotions">เทหม้อแล้วเริ่มใหม่ ↻</button><button class="primary" id="raiseLibraryStair" disabled>ยกบันไดด้วยพลัง 56 ✨</button></div>`;
+    const buttons=[...p.querySelectorAll('[data-potion]')],count=p.querySelector('#levitationPower'),equation=p.querySelector('#levitationEquation'),sequence=p.querySelector('#potionSequence'),bubbles=p.querySelector('#potionBubbles'),stage=p.querySelector('#levitationLab'),raise=p.querySelector('#raiseLibraryStair'),render=()=>{const sum=poured*power;count.textContent=sum;equation.textContent=poured?`${poured} × ${power} = ${sum}`:'7 × 8 = ?';buttons.forEach((button,index)=>{button.disabled=index!==poured;button.classList.toggle('poured',index<poured)});sequence.textContent=poured?Array.from({length:poured},(_,i)=>(i+1)*power).join(' → '):'เติมทีละขวด · เพิ่มครั้งละ 8 พลัง';bubbles.textContent='🫧'.repeat(Math.max(1,Math.ceil(poured/2)));stage.style.setProperty('--levitation',String(poured/total));raise.disabled=poured!==total},reset=()=>{poured=0;render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+    buttons.forEach((button,index)=>button.onclick=()=>{if(index!==poured)return;poured++;const sum=poured*power;render();tone(390+poured*55,.2);fb.innerHTML=`<div class="star-chance">${poured} × 8 = ${sum}${poured===total?' — แรงลอยครบ 56 เท่า!':''}</div>`});
+    p.querySelector('#resetLevitationPotions').onclick=()=>{reset();tone(330)};
+    raise.onclick=()=>finish(level,1);
+    render();return;
+  }
   if(level?.type==='stair-energy'){
     let step=0;
     const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),parts=level.parts,values=[level.start];
@@ -49,8 +59,9 @@ map=()=>{
 const world6InventoryBase=showInventory;
 showInventory=()=>{world6InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-6'))panel.insertAdjacentHTML('beforeend',collectionWorld(6,'World 6 · หอคอยแห่งการคูณ'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,28);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,29);
 else if(save.stars[25]&&save.unlocked<26){save.unlocked=26;persist()}
 else if(save.stars[26]&&save.unlocked<27){save.unlocked=27;persist()}
 else if(save.stars[27]&&save.unlocked<28){save.unlocked=28;persist()}
+else if(save.stars[28]&&save.unlocked<29){save.unlocked=29;persist()}
 if(save.player)home();
