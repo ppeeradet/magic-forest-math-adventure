@@ -8,6 +8,7 @@
 - World 4: ✅ ด่าน 16–20 เล่นได้ครบ พร้อมฉากจบรับผลึกหัวใจชิ้นที่ 4 และส่งต่อสู่ “ป่าแห่งความทรงจำ” · regression QA ตรวจลำดับคำนวณ reset, native keyboard buttons, reward, responsive rules และ reduced motion ครบแล้ว · รายละเอียดอยู่ใน `planning/PLAYTEST-WORLD4.md` · เป้าหมายถัดไป specification World 5 ตอนที่ 21–25
 - World 5: ✅ ด่าน 21–25 เล่นได้ครบและผ่าน full regression QA แล้ว: exploration, ลำดับคำนวณ, reset, native keyboard, aria-live, reward, save migration, responsive/reduced-motion, แผนที่ 25/25, ฉากจบ 5/10 และทางเชื่อม “ห้องแห่งการคูณ” ตอน 26 ผ่านครบ · รายละเอียดอยู่ใน `planning/PLAYTEST-WORLD5.md` · เป้าหมายถัดไปวาง Story/Gameplay specification World 6
 - World 6: ✅ ด่าน 26–30 เล่นได้ครบและผ่าน full regression QA: 6 × 9 = 54, 312 + 249 = 561, 850 − 495 = 355, 7 × 8 = 56 และ 436 + 297 = 733 · มี exploration, reset, native keyboard, aria-live, reward, save migration, responsive/reduced-motion, แผนที่ 30/30 และฉากจบผลึก 6/10 · เป้าหมายถัดไปวาง Story/Gameplay specification World 7 ตอนที่ 31–35 เริ่มที่ “สวนพฤกษาแห่งชีวิต”
+- World 7: 📝 Story/Gameplay specification ตอน 31–35 พร้อมแล้วใน `planning/WORLD7.md`: สวนพฤกษา ป่าเสียงกระซิบ ถ้ำน้ำแข็ง บ่อน้ำพุกาลเวลา และป่าต้องห้าม · คำตอบ 436, 40, 633, 563, 63 · ออกแบบ 5 กลไก non-quiz พร้อมฉากจบผลึก 7/10 และทางเชื่อม “ทะเลสาบล่องหน” ตอน 36 · เป้าหมายถัดไปสร้างด่าน 31 “สวนพฤกษาแห่งชีวิต”
 - Sprint 11–14 (3–5 วัน): AR prototype และคอลเลกชันสัตว์สามมิติ
 
 แต่ละ Sprint ต้องจบด้วยเกมที่เปิดได้ ไม่มี JavaScript error รองรับ 390×844 และ desktop และมี commit แยกชัดเจน
