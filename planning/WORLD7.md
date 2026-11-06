@@ -1,6 +1,6 @@
 # World 7 · สวนแห่งชีวิตและป่าต้องห้าม
 
-สถานะ: Story/Gameplay specification พร้อมพัฒนา; ด่าน 31–35 ยังไม่ playable  
+สถานะ: ด่าน 31 playable แล้ว; ด่าน 32–35 มี Story/Gameplay specification พร้อมพัฒนา  
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง

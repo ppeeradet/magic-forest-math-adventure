@@ -6,7 +6,7 @@ if(!PLAYTEST_MODE&&save.stars?.[10]&&save.unlocked<11){save.unlocked=11;localSto
 const app=document.querySelector('#app');let audio,cancelProfile;document.addEventListener('click',event=>{if(event.target?.id==='cancelProfile')home()});
 function playerName(){return save.player?.name?.trim()||'แบมแบม'}
 function personalize(value){return String(value).replaceAll('แบมแบม',playerName())}
-function applyPlayerCopy(from='แบมแบม'){if(!save.player)return;const visit=value=>{if(Array.isArray(value))return value.forEach(visit);if(value&&typeof value==='object')return Object.keys(value).forEach(k=>{if(typeof value[k]==='string')value[k]=value[k].replaceAll(from,playerName());else visit(value[k])})};visit(LEVELS);visit(window.WORLD_ONE_ENDING);visit(window.WORLD_TWO_ENDING);visit(window.WORLD_THREE_INTRO);visit(window.WORLD_THREE_ENDING);visit(window.WORLD_FOUR_INTRO);visit(window.WORLD_FOUR_ENDING);visit(window.WORLD_FIVE_INTRO);visit(window.WORLD_FIVE_ENDING);visit(window.WORLD_SIX_INTRO);visit(window.WORLD_SIX_ENDING)}
+function applyPlayerCopy(from='แบมแบม'){if(!save.player)return;const visit=value=>{if(Array.isArray(value))return value.forEach(visit);if(value&&typeof value==='object')return Object.keys(value).forEach(k=>{if(typeof value[k]==='string')value[k]=value[k].replaceAll(from,playerName());else visit(value[k])})};visit(LEVELS);visit(window.WORLD_ONE_ENDING);visit(window.WORLD_TWO_ENDING);visit(window.WORLD_THREE_INTRO);visit(window.WORLD_THREE_ENDING);visit(window.WORLD_FOUR_INTRO);visit(window.WORLD_FOUR_ENDING);visit(window.WORLD_FIVE_INTRO);visit(window.WORLD_FIVE_ENDING);visit(window.WORLD_SIX_INTRO);visit(window.WORLD_SIX_ENDING);visit(window.WORLD_SEVEN_INTRO)}
 const ITEM_BOOK={
  'เมล็ดแสง':{art:'golden-star.png',note:'เก็บพลังจากประตูเถาวัลย์ ใช้ปลุกสิ่งที่หลับใหล'},
  'เศษผลึกฟ้า':{art:'echo-crystal.png',note:'เศษหัวใจของป่า ส่งเสียงใสเมื่ออยู่ใกล้เวทมนตร์'},
@@ -37,7 +37,8 @@ const ITEM_BOOK={
  'ขนนกฮูกนำทาง':{art:'owl.png',note:'ขนนกสีเงินจากฝูงนกฮูก 561 ตัว ส่องทางขึ้นบันไดท่ามกลางพลังเงา'},
  'ศิลาพลังคงเหลือ':{art:'echo-crystal.png',note:'ศิลาที่เก็บพลังดี 355 หน่วยหลังถอนเวทมนตร์เงาออกจากบันไดลอยฟ้า'},
  'น้ำยาเจ็ดประกาย':{art:'golden-star.png',note:'น้ำยา 7 ขวด ขวดละ 8 พลัง รวมแรงลอย 56 เท่าที่พาบันไดขึ้นเหนือเมฆ'},
- 'ผลึกหัวใจชิ้นที่ 6':{art:'adventure-map.png',note:'ผลึกแห่งความรู้จากหนังสือ 733 เล่ม เปิดรอยทางไปยังสวนพฤกษาแห่งชีวิต'}
+ 'ผลึกหัวใจชิ้นที่ 6':{art:'adventure-map.png',note:'ผลึกแห่งความรู้จากหนังสือ 733 เล่ม เปิดรอยทางไปยังสวนพฤกษาแห่งชีวิต'},
+ 'เมล็ดชีวิตเรืองแสง':{art:'golden-star.png',note:'เมล็ดจากดอกไม้สด 436 ดอก ใช้ปลุกเส้นทางสู่ป่าแห่งเสียงกระซิบ'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
