@@ -38,7 +38,8 @@ const ITEM_BOOK={
  'ศิลาพลังคงเหลือ':{art:'echo-crystal.png',note:'ศิลาที่เก็บพลังดี 355 หน่วยหลังถอนเวทมนตร์เงาออกจากบันไดลอยฟ้า'},
  'น้ำยาเจ็ดประกาย':{art:'golden-star.png',note:'น้ำยา 7 ขวด ขวดละ 8 พลัง รวมแรงลอย 56 เท่าที่พาบันไดขึ้นเหนือเมฆ'},
  'ผลึกหัวใจชิ้นที่ 6':{art:'adventure-map.png',note:'ผลึกแห่งความรู้จากหนังสือ 733 เล่ม เปิดรอยทางไปยังสวนพฤกษาแห่งชีวิต'},
- 'เมล็ดชีวิตเรืองแสง':{art:'golden-star.png',note:'เมล็ดจากดอกไม้สด 436 ดอก ใช้ปลุกเส้นทางสู่ป่าแห่งเสียงกระซิบ'}
+ 'เมล็ดชีวิตเรืองแสง':{art:'golden-star.png',note:'เมล็ดจากดอกไม้สด 436 ดอก ใช้ปลุกเส้นทางสู่ป่าแห่งเสียงกระซิบ'},
+ 'ขนนกฮัมมิ่งเบิร์ด':{art:'golden-star.png',note:'ขนนกจากวงเพลง 8 ตัว ตัวละ 5 จังหวะ รวม 40 จังหวะ ชี้ทางสู่ถ้ำน้ำแข็ง'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
