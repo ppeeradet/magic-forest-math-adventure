@@ -1,0 +1,25 @@
+globalThis.window=globalThis;
+await import('../dist/data/levels.js');
+await import('../dist/data/world4.js');
+await import('../dist/data/world5.js');
+await import('../dist/data/world6.js');
+await import('../dist/data/world7.js');
+await import('../dist/data/world8.js');
+import {readFileSync} from 'node:fs';
+const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[35];
+const runtime=readFileSync(new URL('../dist/world8.js',import.meta.url),'utf8');
+const styles=readFileSync(new URL('../dist/world8.css',import.meta.url),'utf8');
+const errors=[],check=(ok,message)=>{if(!ok)errors.push(message)};
+check(levels.length===36,'ต้องมีด่านเล่นได้รวม 36 ด่าน');
+check(level?.id===36&&level.world===8&&level.title==='ทะเลสาบล่องหน','ข้อมูลด่าน 36 ไม่ถูกต้อง');
+check(level.type==='invisible-fish-ripples'&&level.start===398&&level.answer===825&&JSON.stringify(level.parts)==='[400,20,7]','โจทย์ 398 + 427 = 825 ไม่ถูกต้อง');
+check(JSON.stringify(level.parts.reduce((v,p)=>[...v,v.at(-1)+p],[level.start]))==='[398,798,818,825]','ลำดับเผยปลาไม่ถูกต้อง');
+check(level.required>=4&&level.hotspots.length>=5&&level.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 36 ไม่ครบ');
+check(runtime.includes('[data-fish-school]')&&runtime.includes('id="fishHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetInvisibleFish').onclick"),'ต้องมี native controls, aria-live และ reset');
+check(runtime.includes('save.stars[35]&&save.unlocked<36')&&runtime.includes('Math.max(save.unlocked,36)'),'save migration และ playtest unlock ไม่ครบ');
+check(runtime.includes("worldMap(8,'World 8")&&runtime.includes("collectionWorld(8,'World 8"),'แผนที่และคลัง World 8 ไม่ครบ');
+check(globalThis.WORLD_EIGHT_INTRO?.some(line=>line.text.includes('ทั้งเจ็ดชิ้น')),'บทเปิดต้องเชื่อมผลึก 7 ชิ้น');
+check(level.success.includes('ถ้ำแมงมุมยักษ์'),'ตอนจบด่าน 36 ต้องเชื่อมด่าน 37');
+check(styles.includes('@media(max-width:560px)')&&styles.includes('@media(prefers-reduced-motion:reduce)'),'responsive/reduced motion ไม่ครบ');
+if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
+console.log('✓ World 8 ด่าน 36 ผ่าน: 398 + 427 = 825 · exploration · native controls · save · map · responsive');
