@@ -39,7 +39,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='time-fountain')return;
+  if(level?.type==='time-fountain'){
   let step=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
   p.innerHTML=`<div class="time-sanctum" id="timeSanctum"><div class="time-wheel" aria-hidden="true"><span id="timeGear">⚙️</span><div id="fountainFlow">⛲</div><i>💧</i><i>💧</i><i>💧</i></div><div class="time-total" aria-live="polite"><small>ชิ้นส่วนสมบูรณ์</small><strong id="timeTotal">800</strong><b id="timeEquation">800 − 237 = ?</b></div><div class="broken-parts" role="group" aria-label="คัดชิ้นนาฬิกาที่แตกทีละส่วน">${level.parts.map((part,index)=>`<button data-time-part="${index}" ${index?'disabled':''}><span>${index===0?'เฟืองแตกชุดใหญ่':index===1?'เข็มแตกชุดกลาง':'ชิ้นสุดท้าย'}</span><b>−${part}</b><small>${index===0?'2 ร้อย':index===1?'3 สิบ':'7 หน่วย'}</small></button>`).join('')}</div><div class="time-history" id="timeHistory" aria-live="polite">800 · รอคัดชิ้นแตก 237 ชิ้น</div></div><div class="garden-actions"><button class="secondary" id="resetTimeFountain">ย้อนซ่อมใหม่ ↻</button><button class="primary" id="restartTime" disabled>เดินเวลาด้วย 563 ชิ้น</button></div>`;
@@ -49,6 +49,19 @@ play=id=>{
   buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)-level.parts[index]);step++;render();tone(460+step*90,.24);fb.innerHTML=`<div class="star-chance">${values.at(-2)} − ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — วงล้อเวลาเริ่มหมุนแล้ว!':''}</div>`});
   p.querySelector('#resetTimeFountain').onclick=()=>{reset();tone(330)};
   restart.onclick=()=>finish(level,1);
+  render();
+  return;
+  }
+  if(level?.type!=='firefly-seals')return;
+  let fireflies=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),sequence=[];
+  p.innerHTML=`<div class="shadow-seals" id="shadowSeals"><div class="sealed-heart" aria-hidden="true"><span id="heartCrystal">🖤</span><div>${Array.from({length:level.groups},(_,index)=>`<i data-seal-mark="${index}">✦</i>`).join('')}</div></div><div class="firefly-total" aria-live="polite"><small>แสงหิ่งห้อยสะสม</small><strong id="fireflyTotal">0</strong><b id="fireflyEquation">0 × 7 = 0</b></div><div class="firefly-grid" role="group" aria-label="ปลุกหิ่งห้อยทีละตัว">${Array.from({length:level.groups},(_,index)=>`<button data-firefly="${index}" ${index?'disabled':''}><span>🪲</span><b>ดวงที่ ${index+1}</b><small>+7 แสง</small></button>`).join('')}</div><div class="seal-history" id="sealHistory" aria-live="polite">รอปลุกหิ่งห้อยดวงแรก · เป้าหมาย 63 แสง</div></div><div class="garden-actions"><button class="secondary" id="resetFireflies">รวมแสงใหม่ ↻</button><button class="primary" id="freeHeartCrystal" disabled>คืนผลึกด้วย 63 แสง</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-firefly]')],marks=[...p.querySelectorAll('[data-seal-mark]')],total=p.querySelector('#fireflyTotal'),equation=p.querySelector('#fireflyEquation'),history=p.querySelector('#sealHistory'),stage=p.querySelector('#shadowSeals'),heart=p.querySelector('#heartCrystal'),free=p.querySelector('#freeHeartCrystal');
+  const render=()=>{const light=fireflies*level.each;total.textContent=light;equation.textContent=`${fireflies} × ${level.each} = ${light}`;buttons.forEach((button,index)=>{button.disabled=index!==fireflies;button.classList.toggle('lit',index<fireflies);button.querySelector('span').textContent=index<fireflies?'✨':'🪲'});marks.forEach((mark,index)=>mark.classList.toggle('open',index<fireflies));history.textContent=sequence.length?`${sequence.join(' · ')}${fireflies===level.groups?' · ผนึกทั้งเก้าจุดสลายแล้ว!':''}`:'รอปลุกหิ่งห้อยดวงแรก · เป้าหมาย 63 แสง';stage.style.setProperty('--seal-light',String(fireflies/level.groups));heart.textContent=fireflies===level.groups?'💖':'🖤';free.disabled=fireflies!==level.groups};
+  const reset=()=>{fireflies=0;sequence.splice(0);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==fireflies)return;fireflies++;sequence.push(fireflies*level.each);render();tone(510+fireflies*48,.21);fb.innerHTML=`<div class="star-chance">หิ่งห้อย ${fireflies} ตัว × ${level.each} แสง = ${fireflies*level.each}${fireflies===level.groups?' — ผลึกหัวใจเป็นอิสระแล้ว!':''}</div>`});
+  p.querySelector('#resetFireflies').onclick=()=>{reset();tone(330)};
+  free.onclick=()=>finish(level,1);
   render();
 };
 
@@ -63,14 +76,27 @@ map=()=>{
   const next=nextAdventure();
   wrap.insertAdjacentHTML('beforeend',worldMap(7,'World 7 · สวนแห่งชีวิตและป่าต้องห้าม','ผลึกหัวใจชิ้นที่ 7',next?.id));
   wrap.querySelectorAll('.world-map-7 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));
+  if(save.stars[35]){
+    const eyebrow=wrap.querySelector('.map-head .eyebrow'),summary=wrap.querySelector('.map-head p'),endingButton=wrap.querySelector('#endingBtn'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p'),nextLock=wrap.querySelector('.next-world-lock');
+    if(eyebrow)eyebrow.textContent='ภารกิจเจ็ดโลกสำเร็จแล้ว';
+    if(summary)summary.textContent='ผลึกหัวใจเจ็ดชิ้นกลับคืนมาแล้ว ม่านล่องหนกำลังเปิดทางสู่ทะเลสาบล่องหน';
+    if(endingButton){endingButton.textContent='ดูฉากจบ World 7 อีกครั้ง ✦';endingButton.onclick=()=>story(window.WORLD_SEVEN_ENDING,map)}
+    if(journeyTitle)journeyTitle.textContent='พิชิตครบ 35 ตอน!';
+    if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/35 · ผลึก ${save.crystals} เม็ด · ดาว ${totalStars}/105`}
+    if(nextLock)nextLock.innerHTML='<span>🔒</span><div><small>บทถัดไป</small><strong>World 8 · ทะเลสาบล่องหน</strong><p>ม่านที่มองไม่เห็นกำลังซ่อนเส้นทางตอนที่ 36</p></div>';
+  }
 };
+
+const world7FinishBase=finish;
+finish=(level,tries)=>{world7FinishBase(level,tries);if(level.id!==35)return;const next=document.querySelector('#next');if(next){next.textContent='ดูตอนจบ World 7';next.onclick=()=>story(window.WORLD_SEVEN_ENDING,map)}};
 
 const world7InventoryBase=showInventory;
 showInventory=()=>{world7InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-7'))panel.insertAdjacentHTML('beforeend',collectionWorld(7,'World 7 · สวนแห่งชีวิต'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,34);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,35);
 else if(save.stars[30]&&save.unlocked<31){save.unlocked=31;persist()}
 if(!PLAYTEST_MODE&&save.stars[31]&&save.unlocked<32){save.unlocked=32;persist()}
 if(!PLAYTEST_MODE&&save.stars[32]&&save.unlocked<33){save.unlocked=33;persist()}
 if(!PLAYTEST_MODE&&save.stars[33]&&save.unlocked<34){save.unlocked=34;persist()}
+if(!PLAYTEST_MODE&&save.stars[34]&&save.unlocked<35){save.unlocked=35;persist()}
 if(save.player)home();

@@ -6,7 +6,7 @@ if(!PLAYTEST_MODE&&save.stars?.[10]&&save.unlocked<11){save.unlocked=11;localSto
 const app=document.querySelector('#app');let audio,cancelProfile;document.addEventListener('click',event=>{if(event.target?.id==='cancelProfile')home()});
 function playerName(){return save.player?.name?.trim()||'แบมแบม'}
 function personalize(value){return String(value).replaceAll('แบมแบม',playerName())}
-function applyPlayerCopy(from='แบมแบม'){if(!save.player)return;const visit=value=>{if(Array.isArray(value))return value.forEach(visit);if(value&&typeof value==='object')return Object.keys(value).forEach(k=>{if(typeof value[k]==='string')value[k]=value[k].replaceAll(from,playerName());else visit(value[k])})};visit(LEVELS);visit(window.WORLD_ONE_ENDING);visit(window.WORLD_TWO_ENDING);visit(window.WORLD_THREE_INTRO);visit(window.WORLD_THREE_ENDING);visit(window.WORLD_FOUR_INTRO);visit(window.WORLD_FOUR_ENDING);visit(window.WORLD_FIVE_INTRO);visit(window.WORLD_FIVE_ENDING);visit(window.WORLD_SIX_INTRO);visit(window.WORLD_SIX_ENDING);visit(window.WORLD_SEVEN_INTRO)}
+function applyPlayerCopy(from='แบมแบม'){if(!save.player)return;const visit=value=>{if(Array.isArray(value))return value.forEach(visit);if(value&&typeof value==='object')return Object.keys(value).forEach(k=>{if(typeof value[k]==='string')value[k]=value[k].replaceAll(from,playerName());else visit(value[k])})};visit(LEVELS);visit(window.WORLD_ONE_ENDING);visit(window.WORLD_TWO_ENDING);visit(window.WORLD_THREE_INTRO);visit(window.WORLD_THREE_ENDING);visit(window.WORLD_FOUR_INTRO);visit(window.WORLD_FOUR_ENDING);visit(window.WORLD_FIVE_INTRO);visit(window.WORLD_FIVE_ENDING);visit(window.WORLD_SIX_INTRO);visit(window.WORLD_SIX_ENDING);visit(window.WORLD_SEVEN_INTRO);visit(window.WORLD_SEVEN_ENDING)}
 const ITEM_BOOK={
  'เมล็ดแสง':{art:'golden-star.png',note:'เก็บพลังจากประตูเถาวัลย์ ใช้ปลุกสิ่งที่หลับใหล'},
  'เศษผลึกฟ้า':{art:'echo-crystal.png',note:'เศษหัวใจของป่า ส่งเสียงใสเมื่ออยู่ใกล้เวทมนตร์'},
@@ -41,7 +41,8 @@ const ITEM_BOOK={
  'เมล็ดชีวิตเรืองแสง':{art:'golden-star.png',note:'เมล็ดจากดอกไม้สด 436 ดอก ใช้ปลุกเส้นทางสู่ป่าแห่งเสียงกระซิบ'},
  'ขนนกฮัมมิ่งเบิร์ด':{art:'golden-star.png',note:'ขนนกจากวงเพลง 8 ตัว ตัวละ 5 จังหวะ รวม 40 จังหวะ ชี้ทางสู่ถ้ำน้ำแข็ง'},
  'แกนน้ำแข็งสองสี':{art:'echo-crystal.png',note:'แกนกลางจากสะพานน้ำแข็งฟ้าและม่วงรวม 633 ก้อน เก็บความเย็นโดยไม่ทำให้หัวใจแข็งชา'},
- 'ทรายเวลาใส':{art:'moon.png',note:'ทรายจากวงล้อเวลาที่เหลือชิ้นสมบูรณ์ 563 ชิ้น ช่วยให้สายน้ำและเวลาคืนจังหวะ'}
+ 'ทรายเวลาใส':{art:'moon.png',note:'ทรายจากวงล้อเวลาที่เหลือชิ้นสมบูรณ์ 563 ชิ้น ช่วยให้สายน้ำและเวลาคืนจังหวะ'},
+ 'ผลึกหัวใจชิ้นที่ 7':{art:'adventure-map.png',note:'ผลึกที่เป็นอิสระเมื่อหิ่งห้อย 9 ตัวรวมแสง 63 ครั้ง เปิดรอยทางสู่ทะเลสาบล่องหน'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
