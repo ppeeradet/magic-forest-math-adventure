@@ -43,7 +43,8 @@ const ITEM_BOOK={
  'แกนน้ำแข็งสองสี':{art:'echo-crystal.png',note:'แกนกลางจากสะพานน้ำแข็งฟ้าและม่วงรวม 633 ก้อน เก็บความเย็นโดยไม่ทำให้หัวใจแข็งชา'},
  'ทรายเวลาใส':{art:'moon.png',note:'ทรายจากวงล้อเวลาที่เหลือชิ้นสมบูรณ์ 563 ชิ้น ช่วยให้สายน้ำและเวลาคืนจังหวะ'},
  'ผลึกหัวใจชิ้นที่ 7':{art:'adventure-map.png',note:'ผลึกที่เป็นอิสระเมื่อหิ่งห้อย 9 ตัวรวมแสง 63 ครั้ง เปิดรอยทางสู่ทะเลสาบล่องหน'},
- 'เกล็ดปลาสองแสง':{art:'echo-crystal.png',note:'เกล็ดจากปลาล่องหน 825 ตัว ส่องสีทองและเงินเพื่อชี้ทางผ่านสิ่งที่มองไม่เห็น'}
+ 'เกล็ดปลาสองแสง':{art:'echo-crystal.png',note:'เกล็ดจากปลาล่องหน 825 ตัว ส่องสีทองและเงินเพื่อชี้ทางผ่านสิ่งที่มองไม่เห็น'},
+ 'เส้นไหมจันทร์':{art:'moon.png',note:'เส้นไหมจากใยบริสุทธิ์ 524 เมตร อ่อนโยนแต่แข็งแรงพอจะนำทางผ่านถ้ำมืด'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
