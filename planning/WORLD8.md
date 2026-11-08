@@ -1,6 +1,6 @@
 # World 8 · ม่านล่องหนและหุบเขาแห่งความฝัน
 
-สถานะ: ด่าน 36–37 playable แล้ว; ด่าน 38–40 มี Story/Gameplay specification พร้อมพัฒนา  
+สถานะ: ด่าน 36–38 playable แล้ว; ด่าน 39–40 มี Story/Gameplay specification พร้อมพัฒนา  
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง

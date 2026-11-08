@@ -15,7 +15,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='moon-web-cutter')return;
+  if(level?.type==='moon-web-cutter'){
   let step=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
   p.innerHTML=`<div class="web-cavern" id="webCavern"><div class="web-stage" aria-hidden="true"><span id="webLayers">🕸️🕸️🕸️</span><b id="spiderFriends">🕷️</b></div><div class="web-total" aria-live="polite"><small>ใยเวทมนตร์ที่เหลือ</small><strong id="webTotal">910</strong><b id="webEquation">910 − 386 = ?</b></div><div class="shadow-web-parts" role="group" aria-label="ตัดใยเงาทีละส่วน">${level.parts.map((part,index)=>`<button data-web-part="${index}" ${index?'disabled':''}><span>${index===0?'ใยชั้นใหญ่':index===1?'ใยชั้นกลาง':'ปมสุดท้าย'}</span><b>−${part}</b><small>${index===0?'3 ร้อย':index===1?'8 สิบ':'6 หน่วย'}</small></button>`).join('')}</div><div class="web-history" id="webHistory" aria-live="polite">910 · รอตัดใยเงา 386 เมตร</div></div><div class="garden-actions"><button class="secondary" id="resetMoonWeb">เริ่มตัดใหม่ ↻</button><button class="primary" id="openSpiderCave" disabled>เปิดทางด้วยใย 524 เมตร</button></div>`;
@@ -24,6 +24,19 @@ play=id=>{
   const reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
   buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)-level.parts[index]);step++;render();tone(500+step*70,.22);fb.innerHTML=`<div class="star-chance">${values.at(-2)} − ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — ลูกแมงมุมเป็นอิสระแล้ว!':''}</div>`});
   p.querySelector('#resetMoonWeb').onclick=()=>{reset();tone(330)};
+  open.onclick=()=>finish(level,1);
+  render();
+  return;
+  }
+  if(level?.type!=='crystal-orchard')return;
+  let trees=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),sequence=[];
+  p.innerHTML=`<div class="crystal-orchard" id="crystalOrchard"><div class="light-grove" aria-hidden="true"><div id="crystalTrees">${Array.from({length:level.groups},()=>'<span>🌲</span>').join('')}</div><i id="lightRail"></i></div><div class="crystal-total" aria-live="polite"><small>ผลคริสตัลที่ตื่นแล้ว</small><strong id="crystalTotal">0</strong><b id="crystalEquation">0 × 6 = 0</b></div><div class="crystal-trees" role="group" aria-label="ปลุกต้นคริสตัลทีละต้น">${Array.from({length:level.groups},(_,index)=>`<button data-crystal-tree="${index}" ${index?'disabled':''}><span>🌲</span><b>ต้นที่ ${index+1}</b><small>+6 ผล</small></button>`).join('')}</div><div class="crystal-history" id="crystalHistory" aria-live="polite">รอปลุกต้นแรก · เป้าหมาย 48 ผล</div></div><div class="garden-actions"><button class="secondary" id="resetCrystalOrchard">ปลุกสวนใหม่ ↻</button><button class="primary" id="openDreamForest" disabled>เปิดทางด้วย 48 ผล</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-crystal-tree]')],grove=[...p.querySelectorAll('#crystalTrees span')],total=p.querySelector('#crystalTotal'),equation=p.querySelector('#crystalEquation'),history=p.querySelector('#crystalHistory'),stage=p.querySelector('#crystalOrchard'),rail=p.querySelector('#lightRail'),open=p.querySelector('#openDreamForest');
+  const render=()=>{const fruits=trees*level.each;total.textContent=fruits;equation.textContent=`${trees} × ${level.each} = ${fruits}`;buttons.forEach((button,index)=>{button.disabled=index!==trees;button.classList.toggle('awake',index<trees);button.querySelector('span').textContent=index<trees?'💎':'🌲'});grove.forEach((tree,index)=>{tree.textContent=index<trees?'🌳':'🌲';tree.classList.toggle('glowing',index<trees)});history.textContent=sequence.length?`${sequence.join(' · ')}${trees===level.groups?' · ผลคริสตัลครบ 48 ผล!':''}`:'รอปลุกต้นแรก · เป้าหมาย 48 ผล';stage.style.setProperty('--orchard-light',String(trees/level.groups));rail.style.width=`${trees/level.groups*100}%`;open.disabled=trees!==level.groups};
+  const reset=()=>{trees=0;sequence.splice(0);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==trees)return;trees++;sequence.push(trees*level.each);render();tone(530+trees*52,.2);fb.innerHTML=`<div class="star-chance">ต้น ${trees} ต้น × ${level.each} ผล = ${trees*level.each}${trees===level.groups?' — รางแสงสว่างถึงประตูแล้ว!':''}</div>`});
+  p.querySelector('#resetCrystalOrchard').onclick=()=>{reset();tone(330)};
   open.onclick=()=>finish(level,1);
   render();
 };
@@ -37,7 +50,8 @@ map=()=>{world8MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap
 const world8InventoryBase=showInventory;
 showInventory=()=>{world8InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-8'))panel.insertAdjacentHTML('beforeend',collectionWorld(8,'World 8 · ม่านล่องหน'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,37);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,38);
 else if(save.stars[35]&&save.unlocked<36){save.unlocked=36;persist()}
 if(!PLAYTEST_MODE&&save.stars[36]&&save.unlocked<37){save.unlocked=37;persist()}
+if(!PLAYTEST_MODE&&save.stars[37]&&save.unlocked<38){save.unlocked=38;persist()}
 if(save.player)home();
