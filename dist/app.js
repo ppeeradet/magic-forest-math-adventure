@@ -46,7 +46,8 @@ const ITEM_BOOK={
  'เกล็ดปลาสองแสง':{art:'echo-crystal.png',note:'เกล็ดจากปลาล่องหน 825 ตัว ส่องสีทองและเงินเพื่อชี้ทางผ่านสิ่งที่มองไม่เห็น'},
  'เส้นไหมจันทร์':{art:'moon.png',note:'เส้นไหมจากใยบริสุทธิ์ 524 เมตร อ่อนโยนแต่แข็งแรงพอจะนำทางผ่านถ้ำมืด'},
  'ผลคริสตัลรุ่งอรุณ':{art:'echo-crystal.png',note:'ผลจากต้นคริสตัล 8 ต้น ต้นละ 6 ผล รวม 48 ผล เก็บแสงแรกของทุ่งไว้ภายใน'},
- 'ด้ายฝันสองสี':{art:'moon.png',note:'ด้ายจากความฝันสวยงามและกล้าหาญรวม 745 เรื่อง ทอเป็นแผนที่ที่ไม่หลงทาง'}
+ 'ด้ายฝันสองสี':{art:'moon.png',note:'ด้ายจากความฝันสวยงามและกล้าหาญรวม 745 เรื่อง ทอเป็นแผนที่ที่ไม่หลงทาง'},
+ 'ผลึกหัวใจชิ้นที่ 8':{art:'adventure-map.png',note:'ผลึกที่คืนมาพร้อมเสียงจริง 444 ครั้ง เปิดเส้นทางตามกระแสน้ำสู่ลำธารแห่งความเร็ว'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}

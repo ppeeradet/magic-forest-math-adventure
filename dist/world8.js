@@ -41,7 +41,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='dream-loom')return;
+  if(level?.type==='dream-loom'){
   let step=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
   p.innerHTML=`<div class="dream-loom" id="dreamLoom"><div class="woven-dream" aria-hidden="true"><div id="dreamCloth">🌌</div><span>💙</span><span>💛</span><span>🦌</span></div><div class="dream-total" aria-live="polite"><small>ความฝันที่ทอรวมแล้ว</small><strong id="dreamTotal">547</strong><b id="dreamEquation">547 + 198 = ?</b></div><div class="dream-threads" role="group" aria-label="ทอความฝันกล้าหาญทีละส่วน">${level.parts.map((part,index)=>`<button data-dream-thread="${index}" ${index?'disabled':''}><span>${index===0?'ด้ายผืนใหญ่':index===1?'ด้ายช่วงกลาง':'ปมสุดท้าย'}</span><b>+${part}</b><small>${index===0?'1 ร้อย':index===1?'9 สิบ':'8 หน่วย'}</small></button>`).join('')}</div><div class="dream-history" id="dreamHistory" aria-live="polite">547 · รอทอความฝันกล้าหาญ 198 เรื่อง</div></div><div class="garden-actions"><button class="secondary" id="resetDreamLoom">ทอผืนฝันใหม่ ↻</button><button class="primary" id="wakeDreamForest" disabled>ปลุกป่าด้วย 745 เรื่อง</button></div>`;
@@ -52,20 +52,37 @@ play=id=>{
   p.querySelector('#resetDreamLoom').onclick=()=>{reset();tone(330)};
   wake.onclick=()=>finish(level,1);
   render();
+  return;
+  }
+  if(level?.type!=='echo-restorer')return;
+  let step=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
+  p.innerHTML=`<div class="echo-restorer" id="echoRestorer"><div class="echo-cliffs" aria-hidden="true"><span>🏔️</span><b id="echoWaves">···</b><i id="echoCrystal">🖤</i></div><div class="echo-total" aria-live="polite"><small>เสียงจริงที่ยังเหลือ</small><strong id="echoTotal">700</strong><b id="echoEquation">700 − 256 = ?</b></div><div class="missing-echo-parts" role="group" aria-label="ถอนเสียงที่หายไปทีละส่วน">${level.parts.map((part,index)=>`<button data-echo-part="${index}" ${index?'disabled':''}><span>${index===0?'ความเงียบชั้นใหญ่':index===1?'ความเงียบชั้นกลาง':'เสียงว่างสุดท้าย'}</span><b>−${part}</b><small>${index===0?'2 ร้อย':index===1?'5 สิบ':'6 หน่วย'}</small></button>`).join('')}</div><div class="echo-history" id="echoHistory" aria-live="polite">700 · รอถอนเสียงที่หาย 256 ครั้ง</div></div><div class="garden-actions"><button class="secondary" id="resetEchoRestorer">ฟังเสียงตั้งต้นใหม่ ↻</button><button class="primary" id="restoreEighthCrystal" disabled>คืนผลึกด้วย 444 เสียง</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-echo-part]')],total=p.querySelector('#echoTotal'),equation=p.querySelector('#echoEquation'),history=p.querySelector('#echoHistory'),stage=p.querySelector('#echoRestorer'),waves=p.querySelector('#echoWaves'),crystal=p.querySelector('#echoCrystal'),restore=p.querySelector('#restoreEighthCrystal');
+  const render=()=>{const current=values.at(-1),removed=level.parts.slice(0,step).reduce((a,b)=>a+b,0);total.textContent=current;equation.textContent=step?`${level.start} − ${removed} = ${current}`:'700 − 256 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('restored',index<step)});history.textContent=values.join(' → ')+(step===level.parts.length?' · เสียงจริง 444 ครั้งก้องพร้อมกัน!':'');stage.style.setProperty('--echo-restored',String(step/level.parts.length));waves.textContent=step?'〰️'.repeat(step):'···';crystal.textContent=step===level.parts.length?'💗':'🖤';restore.disabled=step!==level.parts.length};
+  const reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)-level.parts[index]);step++;render();tone(620-step*72,.24);fb.innerHTML=`<div class="star-chance">${values.at(-2)} − ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — แท่นผลึกเปิดแล้ว!':''}</div>`});
+  p.querySelector('#resetEchoRestorer').onclick=()=>{reset();tone(330)};
+  restore.onclick=()=>finish(level,1);
+  render();
 };
 
 const world8BeginBase=beginLevel;
 beginLevel=id=>id===36&&!save.stars[36]?story([...window.WORLD_EIGHT_INTRO,...LEVELS[35].dialogue],()=>explore(36)):world8BeginBase(id);
 
 const world8MapBase=map;
-map=()=>{world8MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-8'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(8,'World 8 · ม่านล่องหนและหุบเขาแห่งความฝัน','ผลึกหัวใจชิ้นที่ 8',next?.id));wrap.querySelectorAll('.world-map-8 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level))};
+map=()=>{world8MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-8'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(8,'World 8 · ม่านล่องหนและหุบเขาแห่งความฝัน','ผลึกหัวใจชิ้นที่ 8',next?.id));wrap.querySelectorAll('.world-map-8 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[40]){const eyebrow=wrap.querySelector('.map-head .eyebrow'),summary=wrap.querySelector('.map-head p'),endingButton=wrap.querySelector('#endingBtn'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p'),nextLock=wrap.querySelector('.next-world-lock');if(eyebrow)eyebrow.textContent='ภารกิจแปดโลกสำเร็จแล้ว';if(summary)summary.textContent='ผลึกหัวใจแปดชิ้นกลับคืนมาแล้ว กระแสน้ำกำลังชี้ทางสู่ลำธารแห่งความเร็ว';if(endingButton){endingButton.textContent='ดูฉากจบ World 8 อีกครั้ง ✦';endingButton.onclick=()=>story(window.WORLD_EIGHT_ENDING,map)}if(journeyTitle)journeyTitle.textContent='พิชิตครบ 40 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/40 · ผลึก ${save.crystals} เม็ด · ดาว ${totalStars}/120`}if(nextLock)nextLock.innerHTML='<span>🔒</span><div><small>บทถัดไป</small><strong>World 9 · ลำธารแห่งความเร็ว</strong><p>กระแสน้ำกำลังพารอยเงาไปยังตอนที่ 41</p></div>'}};
+
+const world8FinishBase=finish;
+finish=(level,tries)=>{world8FinishBase(level,tries);if(level.id!==40)return;const next=document.querySelector('#next');if(next){next.textContent='ดูตอนจบ World 8';next.onclick=()=>story(window.WORLD_EIGHT_ENDING,map)}};
 
 const world8InventoryBase=showInventory;
 showInventory=()=>{world8InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-8'))panel.insertAdjacentHTML('beforeend',collectionWorld(8,'World 8 · ม่านล่องหน'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,39);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,40);
 else if(save.stars[35]&&save.unlocked<36){save.unlocked=36;persist()}
 if(!PLAYTEST_MODE&&save.stars[36]&&save.unlocked<37){save.unlocked=37;persist()}
 if(!PLAYTEST_MODE&&save.stars[37]&&save.unlocked<38){save.unlocked=38;persist()}
 if(!PLAYTEST_MODE&&save.stars[38]&&save.unlocked<39){save.unlocked=39;persist()}
+if(!PLAYTEST_MODE&&save.stars[39]&&save.unlocked<40){save.unlocked=40;persist()}
 if(save.player)home();
