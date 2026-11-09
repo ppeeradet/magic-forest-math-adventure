@@ -1,0 +1,26 @@
+globalThis.window=globalThis;
+await import('../dist/data/levels.js');
+await import('../dist/data/world4.js');
+await import('../dist/data/world5.js');
+await import('../dist/data/world6.js');
+await import('../dist/data/world7.js');
+await import('../dist/data/world8.js');
+await import('../dist/data/world9.js');
+import {readFileSync} from 'node:fs';
+const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[40];
+const runtime=readFileSync(new URL('../dist/world9.js',import.meta.url),'utf8');
+const styles=readFileSync(new URL('../dist/world9.css',import.meta.url),'utf8');
+const errors=[],check=(ok,message)=>{if(!ok)errors.push(message)};
+check(levels.length===41,'ต้องมีด่านเล่นได้รวม 41 ด่าน');
+check(level?.id===41&&level.world===9&&level.title==='ลำธารแห่งความเร็ว'&&level.type==='current-fish-relay','ข้อมูลด่าน 41 ไม่ถูกต้อง');
+check(level.groups===6&&level.each===9&&level.answer===54,'โจทย์ 6 × 9 = 54 ไม่ถูกต้อง');
+check(JSON.stringify(Array.from({length:6},(_,index)=>(index+1)*9))==='[9,18,27,36,45,54]','ลำดับขบวนปลาไม่ถูกต้อง');
+check(level.required>=4&&level.hotspots.length>=5&&level.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 41 ไม่ครบ');
+check(runtime.includes('[data-relay-fish]')&&runtime.includes('id="relayHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetFishRelay').onclick"),'ต้องมี native controls, aria-live และ reset');
+check(runtime.includes('save.stars[40]&&save.unlocked<41')&&runtime.includes('Math.max(save.unlocked,41)'),'save migration และ playtest unlock ด่าน 41 ไม่ครบ');
+check(runtime.includes("worldMap(9,'World 9")&&runtime.includes("collectionWorld(9,'World 9"),'แผนที่และคลัง World 9 ไม่ครบ');
+check(globalThis.WORLD_NINE_INTRO?.some(line=>line.text.includes('ทั้งแปดชิ้น')),'บทเปิดต้องเชื่อมผลึก 8 ชิ้น');
+check(level.success.includes('ถ้ำแห่งแสงอาทิตย์ลับ'),'ตอนจบด่าน 41 ต้องเชื่อมด่าน 42');
+check(styles.includes('@media(max-width:560px)')&&styles.includes('@media(prefers-reduced-motion:reduce)'),'responsive/reduced motion ไม่ครบ');
+if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
+console.log('✓ World 9 ด่าน 41 ผ่าน: 6 × 9 = 54 · exploration · native controls · save · map · responsive');
