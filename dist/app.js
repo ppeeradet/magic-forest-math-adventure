@@ -48,7 +48,8 @@ const ITEM_BOOK={
  'ผลคริสตัลรุ่งอรุณ':{art:'echo-crystal.png',note:'ผลจากต้นคริสตัล 8 ต้น ต้นละ 6 ผล รวม 48 ผล เก็บแสงแรกของทุ่งไว้ภายใน'},
  'ด้ายฝันสองสี':{art:'moon.png',note:'ด้ายจากความฝันสวยงามและกล้าหาญรวม 745 เรื่อง ทอเป็นแผนที่ที่ไม่หลงทาง'},
  'ผลึกหัวใจชิ้นที่ 8':{art:'adventure-map.png',note:'ผลึกที่คืนมาพร้อมเสียงจริง 444 ครั้ง เปิดเส้นทางตามกระแสน้ำสู่ลำธารแห่งความเร็ว'},
- 'ครีบกระแสน้ำ':{art:'echo-crystal.png',note:'ครีบจากขบวนปลา 6 ตัวที่ว่ายต่อกัน 54 กิโลเมตร ช่วยทรงตัวในกระแสน้ำแรง'}
+ 'ครีบกระแสน้ำ':{art:'echo-crystal.png',note:'ครีบจากขบวนปลา 6 ตัวที่ว่ายต่อกัน 54 กิโลเมตร ช่วยทรงตัวในกระแสน้ำแรง'},
+ 'ปริซึมสุริยะ':{art:'golden-star.png',note:'ปริซึมที่รวมผลึกแสงเหลืองและส้ม 463 ชิ้น ส่องทางในสถานที่ที่ดวงอาทิตย์เข้าไม่ถึง'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}

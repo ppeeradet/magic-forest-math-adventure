@@ -2,7 +2,7 @@ const world9PlayBase=play;
 play=id=>{
   world9PlayBase(id);
   const level=LEVELS[id-1];
-  if(level?.type!=='current-fish-relay')return;
+  if(level?.type==='current-fish-relay'){
   let swimmers=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),sequence=[];
   p.innerHTML=`<div class="current-relay" id="currentRelay"><div class="stream-stage" aria-hidden="true"><span id="fishRelay">🧶</span><i id="currentRoute"></i></div><div class="relay-total" aria-live="polite"><small>ระยะทางขบวนปลา</small><strong id="relayTotal">0</strong><b id="relayEquation">0 × 9 = 0</b></div><div class="relay-fish" role="group" aria-label="ปล่อยปลาเข้าขบวนทีละตัว">${Array.from({length:level.groups},(_,index)=>`<button data-relay-fish="${index}" ${index?'disabled':''}><span>🐟</span><b>ตัวที่ ${index+1}</b><small>+9 กม.</small></button>`).join('')}</div><div class="relay-history" id="relayHistory" aria-live="polite">รอปล่อยปลาตัวแรก · เป้าหมาย 54 กิโลเมตร</div></div><div class="garden-actions"><button class="secondary" id="resetFishRelay">รวมขบวนใหม่ ↻</button><button class="primary" id="crossSpeedStream" disabled>ข้ามลำธารด้วย 54 กม.</button></div>`;
@@ -12,6 +12,19 @@ play=id=>{
   buttons.forEach((button,index)=>button.onclick=()=>{if(index!==swimmers)return;swimmers++;sequence.push(swimmers*level.each);render();tone(470+swimmers*55,.21);fb.innerHTML=`<div class="star-chance">ปลา ${swimmers} ตัว × ${level.each} กม. = ${swimmers*level.each}${swimmers===level.groups?' — ธงด้ายฝันผ่านน้ำวนแล้ว!':''}</div>`});
   p.querySelector('#resetFishRelay').onclick=()=>{reset();tone(330)};
   cross.onclick=()=>finish(level,1);
+  render();
+  return;
+  }
+  if(level?.type!=='sun-prism-merger')return;
+  let step=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
+  p.innerHTML=`<div class="sun-prism" id="sunPrism"><div class="prism-stage" aria-hidden="true"><span id="sunBeam">💛</span><b>🔺</b><i id="sunDoor">🌑</i></div><div class="sun-total" aria-live="polite"><small>ผลึกแสงที่รวมแล้ว</small><strong id="sunTotal">168</strong><b id="sunEquation">168 + 295 = ?</b></div><div class="sun-parts" role="group" aria-label="ส่งผลึกสีส้มผ่านปริซึมทีละส่วน">${level.parts.map((part,index)=>`<button data-sun-part="${index}" ${index?'disabled':''}><span>${index===0?'ลำแสงใหญ่':index===1?'ลำแสงกลาง':'ประกายสุดท้าย'}</span><b>+${part}</b><small>${index===0?'2 ร้อย':index===1?'9 สิบ':'5 หน่วย'}</small></button>`).join('')}</div><div class="sun-history" id="sunHistory" aria-live="polite">168 · รอรวมผลึกสีส้ม 295 ชิ้น</div></div><div class="garden-actions"><button class="secondary" id="resetSunPrism">จัดปริซึมใหม่ ↻</button><button class="primary" id="openSunDoor" disabled>เปิดประตูด้วยแสง 463 ชิ้น</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-sun-part]')],total=p.querySelector('#sunTotal'),equation=p.querySelector('#sunEquation'),history=p.querySelector('#sunHistory'),stage=p.querySelector('#sunPrism'),beam=p.querySelector('#sunBeam'),door=p.querySelector('#sunDoor'),open=p.querySelector('#openSunDoor');
+  const render=()=>{const current=values.at(-1),added=level.parts.slice(0,step).reduce((a,b)=>a+b,0);total.textContent=current;equation.textContent=step?`${level.start} + ${added} = ${current}`:'168 + 295 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('merged',index<step)});history.textContent=values.join(' → ')+(step===level.parts.length?' · แสงสุริยะครบ 463 ชิ้น!':'');stage.style.setProperty('--sun-merged',String(step/level.parts.length));beam.textContent='💛'+'🧡'.repeat(step);door.textContent=step===level.parts.length?'☀️':'🌑';open.disabled=step!==level.parts.length};
+  const reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)+level.parts[index]);step++;render();tone(520+step*75,.23);fb.innerHTML=`<div class="star-chance">${values.at(-2)} + ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — ประตูสุริยะสว่างแล้ว!':''}</div>`});
+  p.querySelector('#resetSunPrism').onclick=()=>{reset();tone(330)};
+  open.onclick=()=>finish(level,1);
   render();
 };
 
@@ -24,6 +37,7 @@ map=()=>{world9MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap
 const world9InventoryBase=showInventory;
 showInventory=()=>{world9InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-9'))panel.insertAdjacentHTML('beforeend',collectionWorld(9,'World 9 · กระแสน้ำและดวงดาว'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,41);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,42);
 else if(save.stars[40]&&save.unlocked<41){save.unlocked=41;persist()}
+if(!PLAYTEST_MODE&&save.stars[41]&&save.unlocked<42){save.unlocked=42;persist()}
 if(save.player)home();
