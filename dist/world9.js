@@ -15,7 +15,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='sun-prism-merger')return;
+  if(level?.type==='sun-prism-merger'){
   let step=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
   p.innerHTML=`<div class="sun-prism" id="sunPrism"><div class="prism-stage" aria-hidden="true"><span id="sunBeam">💛</span><b>🔺</b><i id="sunDoor">🌑</i></div><div class="sun-total" aria-live="polite"><small>ผลึกแสงที่รวมแล้ว</small><strong id="sunTotal">168</strong><b id="sunEquation">168 + 295 = ?</b></div><div class="sun-parts" role="group" aria-label="ส่งผลึกสีส้มผ่านปริซึมทีละส่วน">${level.parts.map((part,index)=>`<button data-sun-part="${index}" ${index?'disabled':''}><span>${index===0?'ลำแสงใหญ่':index===1?'ลำแสงกลาง':'ประกายสุดท้าย'}</span><b>+${part}</b><small>${index===0?'2 ร้อย':index===1?'9 สิบ':'5 หน่วย'}</small></button>`).join('')}</div><div class="sun-history" id="sunHistory" aria-live="polite">168 · รอรวมผลึกสีส้ม 295 ชิ้น</div></div><div class="garden-actions"><button class="secondary" id="resetSunPrism">จัดปริซึมใหม่ ↻</button><button class="primary" id="openSunDoor" disabled>เปิดประตูด้วยแสง 463 ชิ้น</button></div>`;
@@ -25,6 +25,19 @@ play=id=>{
   buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)+level.parts[index]);step++;render();tone(520+step*75,.23);fb.innerHTML=`<div class="star-chance">${values.at(-2)} + ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — ประตูสุริยะสว่างแล้ว!':''}</div>`});
   p.querySelector('#resetSunPrism').onclick=()=>{reset();tone(330)};
   open.onclick=()=>finish(level,1);
+  render();
+  return;
+  }
+  if(level?.type!=='stone-tear-channels')return;
+  let step=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
+  p.innerHTML=`<div class="tear-channels" id="tearChannels"><div class="stone-stage" aria-hidden="true"><span id="stoneFaces">🗿🗿🗿</span><i id="tearStream"></i></div><div class="tear-total" aria-live="polite"><small>น้ำตาบริสุทธิ์ที่เหลือ</small><strong id="tearTotal">830</strong><b id="tearEquation">830 − 475 = ?</b></div><div class="tear-parts" role="group" aria-label="แยกน้ำตาที่ถูกเก็บไปทีละส่วน">${level.parts.map((part,index)=>`<button data-tear-part="${index}" ${index?'disabled':''}><span>${index===0?'อ่างใหญ่':index===1?'ร่องกลาง':'หยดสุดท้าย'}</span><b>−${part}</b><small>${index===0?'4 ร้อย':index===1?'7 สิบ':'5 หน่วย'}</small></button>`).join('')}</div><div class="tear-history" id="tearHistory" aria-live="polite">830 · รอแยกน้ำตาที่ถูกเก็บ 475 หยด</div></div><div class="garden-actions"><button class="secondary" id="resetTearChannels">เปิดร่องน้ำใหม่ ↻</button><button class="primary" id="comfortStoneGuardians" disabled>คืนรอยยิ้มด้วย 355 หยด</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-tear-part]')],total=p.querySelector('#tearTotal'),equation=p.querySelector('#tearEquation'),history=p.querySelector('#tearHistory'),stage=p.querySelector('#tearChannels'),faces=p.querySelector('#stoneFaces'),stream=p.querySelector('#tearStream'),comfort=p.querySelector('#comfortStoneGuardians');
+  const render=()=>{const current=values.at(-1),removed=level.parts.slice(0,step).reduce((a,b)=>a+b,0);total.textContent=current;equation.textContent=step?`${level.start} − ${removed} = ${current}`:'830 − 475 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('flowing',index<step)});history.textContent=values.join(' → ')+(step===level.parts.length?' · เหลือน้ำตาบริสุทธิ์ 355 หยด!':'');stage.style.setProperty('--tears-restored',String(step/level.parts.length));faces.textContent='🗿'.repeat(3-step)+'🙂'.repeat(step);stream.style.width=`${step/level.parts.length*100}%`;comfort.disabled=step!==level.parts.length};
+  const reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)-level.parts[index]);step++;render();tone(600-step*70,.23);fb.innerHTML=`<div class="star-chance">${values.at(-2)} − ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — ร่องน้ำตาไหลครบแล้ว!':''}</div>`});
+  p.querySelector('#resetTearChannels').onclick=()=>{reset();tone(330)};
+  comfort.onclick=()=>finish(level,1);
   render();
 };
 
@@ -37,7 +50,8 @@ map=()=>{world9MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap
 const world9InventoryBase=showInventory;
 showInventory=()=>{world9InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-9'))panel.insertAdjacentHTML('beforeend',collectionWorld(9,'World 9 · กระแสน้ำและดวงดาว'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,42);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,43);
 else if(save.stars[40]&&save.unlocked<41){save.unlocked=41;persist()}
 if(!PLAYTEST_MODE&&save.stars[41]&&save.unlocked<42){save.unlocked=42;persist()}
+if(!PLAYTEST_MODE&&save.stars[42]&&save.unlocked<43){save.unlocked=43;persist()}
 if(save.player)home();
