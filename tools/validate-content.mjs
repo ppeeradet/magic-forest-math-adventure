@@ -26,9 +26,9 @@ const reducedMotionSource=readFileSync(new URL('../dist/reduced-motion.css',impo
 const indexSource=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
 const serviceWorkerSource=readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
 const manifest=JSON.parse(readFileSync(new URL('../dist/manifest.webmanifest',import.meta.url),'utf8'));
-const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485,500-273,5*9,472+389,721-456,8*3,587+235,900-387,7*8,175+288,950-489,6*9,312+249,850-495,7*8,436+297,621-185,8*5,279+354,800-237,9*7,398+427,910-386,8*6,547+198,700-256,6*9,168+295,830-475];
-const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','lotus-boats','root-network','silent-wall','spell-arena','music-river','mirror-maze','light-shields','memory-tree','time-wheel','night-flowers','rescue-signals','shadow-energy','spell-rings','owl-relay','stair-energy','levitation-potions','ancient-library','life-garden','humming-nectar','ice-bridge','time-fountain','firefly-seals','invisible-fish-ripples','moon-web-cutter','crystal-orchard','dream-loom','echo-restorer','current-fish-relay','sun-prism-merger','stone-tear-channels'];
-const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9];
+const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485,500-273,5*9,472+389,721-456,8*3,587+235,900-387,7*8,175+288,950-489,6*9,312+249,850-495,7*8,436+297,621-185,8*5,279+354,800-237,9*7,398+427,910-386,8*6,547+198,700-256,6*9,168+295,830-475,7*5];
+const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','lotus-boats','root-network','silent-wall','spell-arena','music-river','mirror-maze','light-shields','memory-tree','time-wheel','night-flowers','rescue-signals','shadow-energy','spell-rings','owl-relay','stair-energy','levitation-potions','ancient-library','life-garden','humming-nectar','ice-bridge','time-fountain','firefly-seals','invisible-fish-ripples','moon-web-cutter','crystal-orchard','dream-loom','echo-restorer','current-fish-relay','sun-prism-merger','stone-tear-channels','seven-star-bridge'];
+const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 const saveApi=globalThis.MAGIC_FOREST_SAVE;
@@ -57,7 +57,7 @@ mockCloud.setOnline(false);
 const offlineSync=await cloudSaveApi.synchronize(mockCloud,localSave,saveApi);
 check(offlineSync.status==='offline'&&offlineSync.save.unlocked===8,'cloud ล่มต้องคืน local save ที่เล่นต่อได้โดยไม่ทำข้อมูลหาย');
 
-check(Array.isArray(levels)&&levels.length===43,'เกมต้องมี World 1–8 ครบและเปิด World 9 รวม 43 ด่าน');
+check(Array.isArray(levels)&&levels.length===44,'เกมต้องมี World 1–8 ครบและเปิด World 9 รวม 44 ด่าน');
 const progress=globalThis.MAGIC_FOREST_PROGRESS;
 check(progress?.starsForTries(1)===3&&progress?.starsForTries(2)===2&&progress?.starsForTries(4)===1,'เกณฑ์ดาวตามจำนวนครั้งไม่ถูกต้อง');
 const testLevel=levels[0],fresh={unlocked:1,stars:{},items:[],crystals:0,sound:true};
@@ -171,7 +171,8 @@ check(globalThis.WORLD_EIGHT_ENDING?.some(line=>line.text.includes('แปดช
 check(globalThis.WORLD_EIGHT_INTRO?.some(line=>line.text.includes('ทั้งเจ็ดชิ้น'))&&world8Source.includes("worldMap(8,'World 8 · ม่านล่องหนและหุบเขาแห่งความฝัน"),'World 8 ต้องมีบทเปิดต่อจากผลึก 7 ชิ้นและแผนที่');
 check(world9Source.includes("level?.type==='current-fish-relay'")&&world9Source.includes('id="relayHistory" aria-live="polite"')&&world9Source.includes('swimmers*level.each')&&world9Source.includes("save.stars[40]&&save.unlocked<41"),'ด่าน 41 ต้องมีกลไกขบวนปลา 6 × 9 = 54 และปลดล็อกต่อเนื่อง');
 check(world9Source.includes("level?.type==='sun-prism-merger'")&&world9Source.includes('id="sunHistory" aria-live="polite"')&&world9Source.includes('values.at(-1)+level.parts[index]')&&world9Source.includes("save.stars[41]&&save.unlocked<42"),'ด่าน 42 ต้องมีกลไกรวมแสง 168 → 368 → 458 → 463 และปลดล็อกต่อเนื่อง');
-check(world9Source.includes("level?.type!=='stone-tear-channels'")&&world9Source.includes('id="tearHistory" aria-live="polite"')&&world9Source.includes('values.at(-1)-level.parts[index]')&&world9Source.includes("save.stars[42]&&save.unlocked<43"),'ด่าน 43 ต้องมีกลไกคืนน้ำตา 830 → 430 → 360 → 355 และปลดล็อกต่อเนื่อง');
+check(world9Source.includes("level?.type==='stone-tear-channels'")&&world9Source.includes('id="tearHistory" aria-live="polite"')&&world9Source.includes('values.at(-1)-level.parts[index]')&&world9Source.includes("save.stars[42]&&save.unlocked<43"),'ด่าน 43 ต้องมีกลไกคืนน้ำตา 830 → 430 → 360 → 355 และปลดล็อกต่อเนื่อง');
+check(world9Source.includes("level?.type!=='seven-star-bridge'")&&world9Source.includes('id="starHistory" aria-live="polite"')&&world9Source.includes('stars*level.each')&&world9Source.includes("save.stars[43]&&save.unlocked<44"),'ด่าน 44 ต้องมีกลไกดาว 7 × 5 = 35 และปลดล็อกต่อเนื่อง');
 check(globalThis.WORLD_NINE_INTRO?.some(line=>line.text.includes('ทั้งแปดชิ้น'))&&world9Source.includes("worldMap(9,'World 9 · กระแสน้ำ แสงลับ และสวนดวงดาว"),'World 9 ต้องมีบทเปิดต่อจากผลึก 8 ชิ้นและแผนที่');
 check(globalThis.WORLD_SEVEN_INTRO?.some(line=>line.text.includes('หกชิ้น'))&&world7Source.includes("worldMap(7,'World 7 · สวนแห่งชีวิตและป่าต้องห้าม"),'World 7 ต้องมีบทเปิดต่อจากผลึก 6 ชิ้นและแผนที่');
 check(world5Source.includes("worldMap(5,'World 5 · ป่าแห่งความทรงจำ")&&globalThis.WORLD_FIVE_INTRO?.some(line=>line.text.includes('ใบไม้สีเงิน')),'World 5 ต้องมีแผนที่และบทเปิดต่อจากนครลอยฟ้า');
@@ -184,7 +185,7 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v108'")&&serviceWorkerSource.includes('./world9.js?v=108')&&serviceWorkerSource.includes('./data/world9.js?v=108')&&serviceWorkerSource.includes('./world9.css?v=108')&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v109'")&&serviceWorkerSource.includes('./world9.js?v=109')&&serviceWorkerSource.includes('./data/world9.js?v=109')&&serviceWorkerSource.includes('./world9.css?v=109')&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(stylesSource.includes('.topbar .brand{font-size:0;gap:0}'),'แถบบนมือถือหน้าบทสนทนาต้องย่อชื่อเกมเพื่อไม่ให้ล้นแนวนอน');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
 check(appSource.includes("window.addEventListener('beforeinstallprompt'")&&appSource.includes('data-install')&&appSource.includes('showUpdateReady'),'PWA ต้องมีทางติดตั้งเกมและแจ้งเมื่อเวอร์ชันใหม่พร้อม');
@@ -196,4 +197,4 @@ check(indexSource.includes('data/cloud-save.js?v=65')&&cloudSaveApi?.disabled&&c
 check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ เนื้อเรื่องและกลไก 43 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1–8 จบครบและ World 9 ตอน 41–43 เล่นได้ · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
+console.log(`✓ เนื้อเรื่องและกลไก 44 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 1–8 จบครบและ World 9 ตอน 41–44 เล่นได้ · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
