@@ -51,7 +51,8 @@ const ITEM_BOOK={
  'ครีบกระแสน้ำ':{art:'echo-crystal.png',note:'ครีบจากขบวนปลา 6 ตัวที่ว่ายต่อกัน 54 กิโลเมตร ช่วยทรงตัวในกระแสน้ำแรง'},
  'ปริซึมสุริยะ':{art:'golden-star.png',note:'ปริซึมที่รวมผลึกแสงเหลืองและส้ม 463 ชิ้น ส่องทางในสถานที่ที่ดวงอาทิตย์เข้าไม่ถึง'},
  'น้ำตาหินบริสุทธิ์':{art:'echo-crystal.png',note:'หยดน้ำบริสุทธิ์ 355 หยดที่คืนรอยยิ้มแก่ผู้พิทักษ์และเผยเงาดาวบนผิวน้ำ'},
- 'เข็มทิศดาวเจ็ดดวง':{art:'golden-star.png',note:'เข็มทิศจากดาว 7 ดวงรวมแสง 35 แฉก ชี้ทางผ่านความมืดไปยังสวนผลึก'}
+ 'เข็มทิศดาวเจ็ดดวง':{art:'golden-star.png',note:'เข็มทิศจากดาว 7 ดวงรวมแสง 35 แฉก ชี้ทางผ่านความมืดไปยังสวนผลึก'},
+ 'ผลึกหัวใจชิ้นที่ 9':{art:'adventure-map.png',note:'ผลึกที่กลับมาเมื่อกุหลาบและลิลลี่รวม 832 ดอก เหลือผลึกหัวใจอีกเพียงชิ้นเดียว'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}

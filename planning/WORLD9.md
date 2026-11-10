@@ -1,6 +1,6 @@
 # World 9 · กระแสน้ำ แสงลับ และสวนดวงดาว
 
-สถานะ: ด่าน 41–44 playable แล้ว; ด่าน 45 มี Story/Gameplay specification พร้อมพัฒนา
+สถานะ: ด่าน 41–45 playable ครบ World และผ่าน regression QA
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง
