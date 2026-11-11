@@ -1,6 +1,6 @@
 # World 10 · เขาวงกตเงาและทะเลสาบกระจก
 
-สถานะ: ด่าน 46 playable แล้ว; ด่าน 47–50 มี Story/Gameplay specification พร้อมพัฒนา
+สถานะ: ด่าน 46–47 playable แล้ว; ด่าน 48–50 มี Story/Gameplay specification พร้อมพัฒนา
 แหล่งข้อมูล: `source-materials/ผจญภัยในป่าเวทมนตร์ edit.docx` และ `dist/data/question-bank.json`
 
 ## ความต่อเนื่องของเรื่อง
