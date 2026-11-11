@@ -15,7 +15,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='silent-dragonfly-signal')return;
+  if(level?.type==='silent-dragonfly-signal'){
   let dragonflies=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),sequence=[];
   p.innerHTML=`<div class="dragonfly-signal" id="dragonflySignal"><div class="silent-stage" aria-hidden="true"><span id="dragonflyLights">🤫</span><i id="wingSignal"></i></div><div class="wing-total" aria-live="polite"><small>คู่ปีกที่ส่งสัญญาณ</small><strong id="wingTotal">0</strong><b id="wingEquation">0 × 4 = 0</b></div><div class="dragonfly-buttons" role="group" aria-label="ปลุกแมลงปอทีละตัว">${Array.from({length:level.groups},(_,index)=>`<button data-dragonfly="${index}" ${index?'disabled':''}><span>🦋</span><b>ตัวที่ ${index+1}</b><small>+4 คู่</small></button>`).join('')}</div><div class="wing-history" id="wingHistory" aria-live="polite">รอปลุกตัวแรก · เป้าหมาย 36 คู่ปีก</div></div><div class="garden-actions"><button class="secondary" id="resetDragonflies">เริ่มสัญญาณใหม่ ↻</button><button class="primary" id="openDungeonGate" disabled>เปิดประตูด้วย 36 คู่</button></div>`;
@@ -24,6 +24,19 @@ play=id=>{
   const reset=()=>{dragonflies=0;sequence.splice(0);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
   buttons.forEach((button,index)=>button.onclick=()=>{if(index!==dragonflies)return;dragonflies++;sequence.push(dragonflies*level.each);render();tone(480+dragonflies*38,.18);fb.innerHTML=`<div class="star-chance">แมลงปอ ${dragonflies} ตัว × ${level.each} คู่ = ${dragonflies*level.each}${dragonflies===level.groups?' — ประตูอ่านรหัสครบแล้ว!':''}</div>`});
   p.querySelector('#resetDragonflies').onclick=()=>{reset();tone(330)};
+  open.onclick=()=>finish(level,1);
+  render();
+  return;
+  }
+  if(level?.type!=='dungeon-allies-unite')return;
+  let step=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
+  p.innerHTML=`<div class="dungeon-allies" id="dungeonAllies"><div class="dungeon-stage" aria-hidden="true"><span id="dungeonFriends">🦇 ⛓️ 🐍</span><i id="dungeonForce"></i></div><div class="allies-total" aria-live="polite"><small>ผู้ช่วยที่รวมพลังแล้ว</small><strong id="alliesTotal">378</strong><b id="alliesEquation">378 + 155 = ?</b></div><div class="allies-parts" role="group" aria-label="รวมสัตว์ทีละส่วน">${level.parts.map((part,index)=>`<button data-ally-part="${index}" ${index?'disabled':''}><span>${index===0?'ฝูงใหญ่':index===1?'ฝูงกลาง':'กลุ่มสุดท้าย'}</span><b>+${part}</b><small>${index===0?'1 ร้อย':index===1?'5 สิบ':'5 หน่วย'}</small></button>`).join('')}</div><div class="allies-history" id="alliesHistory" aria-live="polite">378 · รอรวมงูยักษ์ 155 ตัว</div></div><div class="garden-actions"><button class="secondary" id="resetDungeonAllies">รวมฝูงใหม่ ↻</button><button class="primary" id="openMusicForest" disabled>เปิดประตูด้วยผู้ช่วย 533 ตัว</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-ally-part]')],total=p.querySelector('#alliesTotal'),equation=p.querySelector('#alliesEquation'),history=p.querySelector('#alliesHistory'),stage=p.querySelector('#dungeonAllies'),friends=p.querySelector('#dungeonFriends'),force=p.querySelector('#dungeonForce'),open=p.querySelector('#openMusicForest');
+  const render=()=>{const current=values.at(-1),joined=level.parts.slice(0,step).reduce((a,b)=>a+b,0);total.textContent=current;equation.textContent=step?`${level.start} + ${joined} = ${current}`:'378 + 155 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('united',index<step)});history.textContent=values.join(' → ')+(step===level.parts.length?' · ผู้ช่วยครบ 533 ตัว!':'');stage.style.setProperty('--allies-united',String(step/level.parts.length));friends.textContent=step===3?'🦇 🤝 🐍':'🦇 '+'⛓️'.repeat(3-step)+' 🐍';force.style.width=`${step/level.parts.length*100}%`;open.disabled=step!==level.parts.length};
+  const reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)+level.parts[index]);step++;render();tone(420+step*70,.22);fb.innerHTML=`<div class="star-chance">${values.at(-2)} + ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — โซ่เงาหลุดครบแล้ว!':''}</div>`});
+  p.querySelector('#resetDungeonAllies').onclick=()=>{reset();tone(330)};
   open.onclick=()=>finish(level,1);
   render();
 };
@@ -37,7 +50,8 @@ map=()=>{world10MapBase();const wrap=document.querySelector('.map-wrap');if(!wra
 const world10InventoryBase=showInventory;
 showInventory=()=>{world10InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-10'))panel.insertAdjacentHTML('beforeend',collectionWorld(10,'World 10 · เขาวงกตเงา'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,47);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,48);
 else if(save.stars[45]&&save.unlocked<46){save.unlocked=46;persist()}
 if(!PLAYTEST_MODE&&save.stars[46]&&save.unlocked<47){save.unlocked=47;persist()}
+if(!PLAYTEST_MODE&&save.stars[47]&&save.unlocked<48){save.unlocked=48;persist()}
 if(save.player)home();

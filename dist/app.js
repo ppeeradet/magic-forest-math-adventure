@@ -54,7 +54,8 @@ const ITEM_BOOK={
  'เข็มทิศดาวเจ็ดดวง':{art:'golden-star.png',note:'เข็มทิศจากดาว 7 ดวงรวมแสง 35 แฉก ชี้ทางผ่านความมืดไปยังสวนผลึก'},
  'ผลึกหัวใจชิ้นที่ 9':{art:'adventure-map.png',note:'ผลึกที่กลับมาเมื่อกุหลาบและลิลลี่รวม 832 ดอก เหลือผลึกหัวใจอีกเพียงชิ้นเดียว'},
  'ด้ายเขาวงกตจริง':{art:'moon.png',note:'ด้ายที่ทำเครื่องหมายทางจริง 411 เส้น ช่วยให้ทีมไม่ย้อนเข้าทางลวงของพ่อมดเงา'},
- 'ปีกกระซิบเก้าคู่':{art:'golden-star.png',note:'ปีกแสงจากแมลงปอ 9 ตัวรวม 36 คู่ ใช้ส่งสัญญาณโดยไม่รบกวนความสงบ'}
+ 'ปีกกระซิบเก้าคู่':{art:'golden-star.png',note:'ปีกแสงจากแมลงปอ 9 ตัวรวม 36 คู่ ใช้ส่งสัญญาณโดยไม่รบกวนความสงบ'},
+ 'กุญแจมิตรภาพใต้ดิน':{art:'golden-star.png',note:'กุญแจที่เกิดจากผู้ช่วย 533 ตัวร่วมแรงกันปลดโซ่เงาโดยไม่ทิ้งใครไว้ข้างหลัง'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
