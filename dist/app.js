@@ -52,7 +52,8 @@ const ITEM_BOOK={
  'ปริซึมสุริยะ':{art:'golden-star.png',note:'ปริซึมที่รวมผลึกแสงเหลืองและส้ม 463 ชิ้น ส่องทางในสถานที่ที่ดวงอาทิตย์เข้าไม่ถึง'},
  'น้ำตาหินบริสุทธิ์':{art:'echo-crystal.png',note:'หยดน้ำบริสุทธิ์ 355 หยดที่คืนรอยยิ้มแก่ผู้พิทักษ์และเผยเงาดาวบนผิวน้ำ'},
  'เข็มทิศดาวเจ็ดดวง':{art:'golden-star.png',note:'เข็มทิศจากดาว 7 ดวงรวมแสง 35 แฉก ชี้ทางผ่านความมืดไปยังสวนผลึก'},
- 'ผลึกหัวใจชิ้นที่ 9':{art:'adventure-map.png',note:'ผลึกที่กลับมาเมื่อกุหลาบและลิลลี่รวม 832 ดอก เหลือผลึกหัวใจอีกเพียงชิ้นเดียว'}
+ 'ผลึกหัวใจชิ้นที่ 9':{art:'adventure-map.png',note:'ผลึกที่กลับมาเมื่อกุหลาบและลิลลี่รวม 832 ดอก เหลือผลึกหัวใจอีกเพียงชิ้นเดียว'},
+ 'ด้ายเขาวงกตจริง':{art:'moon.png',note:'ด้ายที่ทำเครื่องหมายทางจริง 411 เส้น ช่วยให้ทีมไม่ย้อนเข้าทางลวงของพ่อมดเงา'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}

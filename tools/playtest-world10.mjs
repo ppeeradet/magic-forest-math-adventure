@@ -1,0 +1,20 @@
+globalThis.window=globalThis;
+for(const file of ['levels','world4','world5','world6','world7','world8','world9','world10'])await import(`../dist/data/${file}.js`);
+import {readFileSync} from 'node:fs';
+const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[45];
+const runtime=readFileSync(new URL('../dist/world10.js',import.meta.url),'utf8');
+const styles=readFileSync(new URL('../dist/world10.css',import.meta.url),'utf8');
+const errors=[],check=(ok,message)=>{if(!ok)errors.push(message)};
+check(levels.length===46,'ต้องมีด่านเล่นได้รวม 46 ด่าน');
+check(level?.id===46&&level.world===10&&level.title==='ทางเดินแห่งเขาวงกต'&&level.type==='truth-maze-routes','ข้อมูลด่าน 46 ไม่ถูกต้อง');
+check(level.start===700&&level.answer===411&&JSON.stringify(level.parts)==='[200,80,9]','โจทย์ 700 − 289 = 411 ไม่ถูกต้อง');
+check(JSON.stringify(level.parts.reduce((v,p)=>[...v,v.at(-1)-p],[level.start]))==='[700,500,420,411]','ลำดับแยกทางลวงไม่ถูกต้อง');
+check(level.required>=4&&level.hotspots.length>=5&&level.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 46 ไม่ครบ');
+check(runtime.includes('[data-maze-part]')&&runtime.includes('id="mazeHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetTruthMaze').onclick"),'ต้องมี native controls, aria-live และ reset');
+check(runtime.includes('save.stars[45]&&save.unlocked<46')&&runtime.includes('Math.max(save.unlocked,46)'),'save migration และ playtest unlock ด่าน 46 ไม่ครบ');
+check(runtime.includes("worldMap(10,'World 10")&&runtime.includes("collectionWorld(10,'World 10"),'แผนที่และคลัง World 10 ไม่ครบ');
+check(globalThis.WORLD_TEN_INTRO?.some(line=>line.text.includes('ทั้งเก้าชิ้น')),'บทเปิดต้องเชื่อมผลึก 9 ชิ้น');
+check(level.success.includes('หุบเขาแห่งความเงียบสงัด'),'ตอนจบด่าน 46 ต้องเชื่อมด่าน 47');
+check(styles.includes('@media(max-width:560px)')&&styles.includes('@media(prefers-reduced-motion:reduce)'),'responsive/reduced motion ไม่ครบ');
+if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
+console.log('✓ World 10 ด่าน 46 ผ่าน: 700 − 289 = 411 · exploration · native controls · save · map · responsive');
