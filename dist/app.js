@@ -1,4 +1,4 @@
-const LEVELS=window.MAGIC_FOREST_LEVELS,PROGRESS=window.MAGIC_FOREST_PROGRESS,SAVE=window.MAGIC_FOREST_SAVE,KEY='magicForestSaveV2',PLAYTEST_MODE=new URLSearchParams(location.search).get('playtest')==='world3';
+const LEVELS=window.MAGIC_FOREST_LEVELS,PROGRESS=window.MAGIC_FOREST_PROGRESS,SAVE=window.MAGIC_FOREST_SAVE,KEY='magicForestSaveV2',PLAYTEST_TARGET=new URLSearchParams(location.search).get('playtest'),PLAYTEST_MODE=['world3','world10'].includes(PLAYTEST_TARGET);
 const playtestStars=Object.fromEntries(Array.from({length:10},(_,index)=>[index+1,3]));
 let save=PLAYTEST_MODE?SAVE.normalize({unlocked:15,stars:playtestStars,items:LEVELS.slice(0,10).map(level=>`${level.item} ${level.reward}`),crystals:100,sound:false,storySeen:true,player:{name:'แบมแบม',gender:'boy'}}):SAVE.load(localStorage,KEY);
 if(!PLAYTEST_MODE&&save.stars?.[5]&&save.unlocked<6){save.unlocked=6;localStorage.setItem(KEY,JSON.stringify(save))}
