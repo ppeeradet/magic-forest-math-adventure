@@ -41,7 +41,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='joy-note-restorer')return;
+  if(level?.type==='joy-note-restorer'){
   let step=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
   p.innerHTML=`<div class="joy-notes" id="joyNotes"><div class="music-stage" aria-hidden="true"><span id="forestMusic">🌳 〰️ 🌳</span><i id="musicGlow"></i></div><div class="notes-total" aria-live="polite"><small>โน้ตที่ยังบรรเลงได้</small><strong id="notesTotal">920</strong><b id="notesEquation">920 − 473 = ?</b></div><div class="note-parts" role="group" aria-label="คืนทำนองทีละส่วน">${level.parts.map((part,index)=>`<button data-note-part="${index}" ${index?'disabled':''}><span>${index===0?'แนวเสียงหลัก':index===1?'แนวประสาน':'จังหวะสุดท้าย'}</span><b>−${part}</b><small>${index===0?'4 ร้อย':index===1?'7 สิบ':'3 หน่วย'}</small></button>`).join('')}</div><div class="note-history" id="noteHistory" aria-live="polite">920 · รอแยกช่องเสียง 473 ตัว</div></div><div class="garden-actions"><button class="secondary" id="resetJoyNotes">เรียบเรียงใหม่ ↻</button><button class="primary" id="openMirrorLake" disabled>เปิดทางด้วย 447 โน้ต</button></div>`;
@@ -52,20 +52,37 @@ play=id=>{
   p.querySelector('#resetJoyNotes').onclick=()=>{reset();tone(330)};
   open.onclick=()=>finish(level,1);
   render();
+  return;
+  }
+  if(level?.type!=='six-mirror-heartlight')return;
+  let mirrors=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),sequence=[];
+  p.innerHTML=`<div class="mirror-heartlight" id="mirrorHeartlight"><div class="mirror-stage" aria-hidden="true"><span id="mirrorLights">🪞</span><i id="heartlightBeam"></i><b id="heartCrystal">💔</b></div><div class="heartlight-total" aria-live="polite"><small>หน่วยแสงสะท้อน</small><strong id="heartlightTotal">0</strong><b id="heartlightEquation">0 × 8 = 0</b></div><div class="mirror-buttons" role="group" aria-label="เปิดกระจกทีละบาน">${Array.from({length:level.groups},(_,index)=>`<button data-heart-mirror="${index}" ${index?'disabled':''}><span>🪞</span><b>บานที่ ${index+1}</b><small>+8 หน่วย</small></button>`).join('')}</div><div class="heartlight-history" id="heartlightHistory" aria-live="polite">รอเปิดกระจกบานแรก · เป้าหมาย 48 หน่วย</div></div><div class="garden-actions"><button class="secondary" id="resetHeartMirrors">จัดกระจกใหม่ ↻</button><button class="primary" id="restoreForestHeart" disabled>คืนหัวใจด้วยแสง 48 หน่วย</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-heart-mirror]')],total=p.querySelector('#heartlightTotal'),equation=p.querySelector('#heartlightEquation'),history=p.querySelector('#heartlightHistory'),stage=p.querySelector('#mirrorHeartlight'),lights=p.querySelector('#mirrorLights'),beam=p.querySelector('#heartlightBeam'),crystal=p.querySelector('#heartCrystal'),restore=p.querySelector('#restoreForestHeart');
+  const render=()=>{const light=mirrors*level.each;total.textContent=light;equation.textContent=`${mirrors} × ${level.each} = ${light}`;buttons.forEach((button,index)=>{button.disabled=index!==mirrors;button.classList.toggle('shining',index<mirrors)});history.textContent=sequence.length?`${sequence.join(' → ')}${mirrors===level.groups?' · แสงครบ 48 หน่วย!':''}`:'รอเปิดกระจกบานแรก · เป้าหมาย 48 หน่วย';stage.style.setProperty('--mirrors-shining',String(mirrors/level.groups));lights.textContent='🪞'.repeat(Math.max(1,mirrors));beam.style.width=`${mirrors/level.groups*100}%`;crystal.textContent=mirrors===level.groups?'💝':'💔';restore.disabled=mirrors!==level.groups};
+  const reset=()=>{mirrors=0;sequence.splice(0);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==mirrors)return;mirrors++;sequence.push(mirrors*level.each);render();tone(500+mirrors*65,.2);fb.innerHTML=`<div class="star-chance">กระจก ${mirrors} บาน × ${level.each} หน่วย = ${mirrors*level.each}${mirrors===level.groups?' — หัวใจแห่งป่าครบ 10/10 แล้ว!':''}</div>`});
+  p.querySelector('#resetHeartMirrors').onclick=()=>{reset();tone(330)};
+  restore.onclick=()=>finish(level,1);
+  render();
 };
 
 const world10BeginBase=beginLevel;
 beginLevel=id=>id===46&&!save.stars[46]?story([...window.WORLD_TEN_INTRO,...LEVELS[45].dialogue],()=>explore(46)):world10BeginBase(id);
 
 const world10MapBase=map;
-map=()=>{world10MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-10'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(10,'World 10 · เขาวงกตเงาและทะเลสาบกระจก','ผลึกหัวใจชิ้นที่ 10',next?.id));wrap.querySelectorAll('.world-map-10 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level))};
+map=()=>{world10MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-10'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(10,'World 10 · เขาวงกตเงาและทะเลสาบกระจก','ผลึกหัวใจชิ้นที่ 10',next?.id));wrap.querySelectorAll('.world-map-10 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[50]){const eyebrow=wrap.querySelector('.map-head .eyebrow'),summary=wrap.querySelector('.map-head p'),endingButton=wrap.querySelector('#endingBtn'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p'),nextLock=wrap.querySelector('.next-world-lock');if(eyebrow)eyebrow.textContent='ภารกิจสิบโลกสำเร็จแล้ว';if(summary)summary.textContent='ผลึกหัวใจครบ 10/10 ชิ้นแล้ว หัวใจแห่งป่ากลับมาส่องแสงอีกครั้ง';if(endingButton){endingButton.textContent='ดูฉากจบ World 10 อีกครั้ง ✦';endingButton.onclick=()=>story(window.WORLD_TEN_ENDING,map)}if(journeyTitle)journeyTitle.textContent='พิชิตครบ 50 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/50 · ผลึก ${save.crystals} เม็ด · ดาว ${totalStars}/150`}if(nextLock)nextLock.innerHTML='<span>☁️</span><div><small>การฟื้นฟูดำเนินต่อ</small><strong>ตอนที่ 51 · ดินแดนแห่งเมฆหมอก</strong><p>หัวใจป่าครบแล้ว แต่โลกเวทมนตร์ยังรอการฟื้นฟู</p></div>'}};
+
+const world10FinishBase=finish;
+finish=(level,tries)=>{world10FinishBase(level,tries);if(level.id!==50)return;const next=document.querySelector('#next');if(next){next.textContent='ดูตอนจบ World 10';next.onclick=()=>story(window.WORLD_TEN_ENDING,map)}};
 
 const world10InventoryBase=showInventory;
 showInventory=()=>{world10InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-10'))panel.insertAdjacentHTML('beforeend',collectionWorld(10,'World 10 · เขาวงกตเงา'))};
 
-if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,49);
+if(PLAYTEST_MODE)save.unlocked=Math.max(save.unlocked,50);
 else if(save.stars[45]&&save.unlocked<46){save.unlocked=46;persist()}
 if(!PLAYTEST_MODE&&save.stars[46]&&save.unlocked<47){save.unlocked=47;persist()}
 if(!PLAYTEST_MODE&&save.stars[47]&&save.unlocked<48){save.unlocked=48;persist()}
 if(!PLAYTEST_MODE&&save.stars[48]&&save.unlocked<49){save.unlocked=49;persist()}
+if(!PLAYTEST_MODE&&save.stars[49]&&save.unlocked<50){save.unlocked=50;persist()}
 if(save.player)home();

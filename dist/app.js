@@ -56,7 +56,8 @@ const ITEM_BOOK={
  'ด้ายเขาวงกตจริง':{art:'moon.png',note:'ด้ายที่ทำเครื่องหมายทางจริง 411 เส้น ช่วยให้ทีมไม่ย้อนเข้าทางลวงของพ่อมดเงา'},
  'ปีกกระซิบเก้าคู่':{art:'golden-star.png',note:'ปีกแสงจากแมลงปอ 9 ตัวรวม 36 คู่ ใช้ส่งสัญญาณโดยไม่รบกวนความสงบ'},
  'กุญแจมิตรภาพใต้ดิน':{art:'golden-star.png',note:'กุญแจที่เกิดจากผู้ช่วย 533 ตัวร่วมแรงกันปลดโซ่เงาโดยไม่ทิ้งใครไว้ข้างหลัง'},
- 'ทำนองแห่งความสุข':{art:'golden-star.png',note:'ทำนอง 447 โน้ตที่ปลุกต้นไม้เครื่องดนตรีและนำทางไปยังทะเลสาบกระจก'}
+ 'ทำนองแห่งความสุข':{art:'golden-star.png',note:'ทำนอง 447 โน้ตที่ปลุกต้นไม้เครื่องดนตรีและนำทางไปยังทะเลสาบกระจก'},
+ 'ผลึกหัวใจชิ้นที่ 10':{art:'golden-star.png',note:'ผลึกชิ้นสุดท้ายที่แสงสะท้อน 48 หน่วยประกอบเข้ากับอีกเก้าชิ้นจนหัวใจป่าครบ 10/10'}
 };
 function itemInfo(savedItem){const name=savedItem.replace(/^\S+\s+/,'');return {name,...(ITEM_BOOK[name]||{art:'golden-star.png',note:'ของวิเศษจากการผจญภัย'})}}
 function itemArt(savedItem,extra=''){const item=itemInfo(savedItem);return `<img class="item-art ${extra}" src="assets/items/${item.art}" alt="${item.name}">`}
