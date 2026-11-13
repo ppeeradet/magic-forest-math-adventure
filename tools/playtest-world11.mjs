@@ -1,11 +1,11 @@
 globalThis.window=globalThis;
 for(const file of ['levels','world4','world5','world6','world7','world8','world9','world10','world11'])await import(`../dist/data/${file}.js`);
 import {readFileSync} from 'node:fs';
-const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[50];
+const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[50],level52=levels[51];
 const runtime=readFileSync(new URL('../dist/world11.js',import.meta.url),'utf8');
 const styles=readFileSync(new URL('../dist/world11.css',import.meta.url),'utf8');
 const errors=[],check=(ok,message)=>{if(!ok)errors.push(message)};
-check(levels.length===51,'ต้องมีด่านเล่นได้รวม 51 ด่าน');
+check(levels.length===52,'ต้องมีด่านเล่นได้รวม 52 ด่าน');
 check(level?.id===51&&level.world===11&&level.title==='ดินแดนแห่งเมฆหมอก'&&level.type==='cloud-flock-merger','ข้อมูลด่าน 51 ไม่ถูกต้อง');
 check(level.start===286&&level.answer===643&&JSON.stringify(level.parts)==='[300,50,7]','โจทย์ 286 + 357 = 643 ไม่ถูกต้อง');
 check(JSON.stringify(level.parts.reduce((v,p)=>[...v,v.at(-1)+p],[level.start]))==='[286,586,636,643]','ลำดับรวมเมฆไม่ถูกต้อง');
@@ -15,6 +15,13 @@ check(runtime.includes("save.stars[50]&&save.unlocked<51")&&runtime.includes("PL
 check(runtime.includes("worldMap(11,'World 11")&&runtime.includes("collectionWorld(11,'World 11"),'แผนที่และคลัง World 11 ไม่ครบ');
 check(globalThis.WORLD_ELEVEN_INTRO?.some(line=>line.text.includes('10/10')),'บทเปิดต้องเชื่อมผลึกครบ 10/10');
 check(level.success.includes('อุโมงค์แห่งลมกรด'),'ตอนจบด่าน 51 ต้องเชื่อมด่าน 52');
+check(level52?.id===52&&level52.world===11&&level52.title==='อุโมงค์แห่งลมกรด'&&level52.type==='cyclone-power-release','ข้อมูลด่าน 52 ไม่ถูกต้อง');
+check(level52.start===700&&level52.answer===416&&JSON.stringify(level52.parts)==='[200,80,4]','โจทย์ 700 − 284 = 416 ไม่ถูกต้อง');
+check(JSON.stringify(level52.parts.reduce((v,p)=>[...v,v.at(-1)-p],[level52.start]))==='[700,500,420,416]','ลำดับปล่อยพลังลมไม่ถูกต้อง');
+check(level52.required>=4&&level52.hotspots.length>=5&&level52.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 52 ไม่ครบ');
+check(runtime.includes('[data-cyclone-part]')&&runtime.includes('id="cycloneHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetCyclone').onclick"),'ด่าน 52 ต้องมี native controls, aria-live และ reset');
+check(runtime.includes("save.stars[51]&&save.unlocked<52")&&runtime.includes('Math.max(save.unlocked,52)'),'save migration และ playtest unlock ด่าน 52 ไม่ครบ');
+check(level52.success.includes('ทุ่งหญ้าดอกไม้ไฟ'),'ตอนจบด่าน 52 ต้องเชื่อมด่าน 53');
 check(styles.includes('@media(max-width:560px)')&&styles.includes('@media(prefers-reduced-motion:reduce)')&&styles.includes('min-height:70px'),'responsive/touch/reduced motion ไม่ครบ');
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log('✓ World 11 ด่าน 51 ผ่าน: 286 + 357 = 643 · exploration · native controls · reset · save · map · responsive');
+console.log('✓ World 11 ด่าน 51–52 ผ่าน: 643 · 416 · exploration · native controls · reset · save · map · responsive');

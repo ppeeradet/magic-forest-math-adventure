@@ -30,9 +30,9 @@ const reducedMotionSource=readFileSync(new URL('../dist/reduced-motion.css',impo
 const indexSource=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
 const serviceWorkerSource=readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
 const manifest=JSON.parse(readFileSync(new URL('../dist/manifest.webmanifest',import.meta.url),'utf8'));
-const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485,500-273,5*9,472+389,721-456,8*3,587+235,900-387,7*8,175+288,950-489,6*9,312+249,850-495,7*8,436+297,621-185,8*5,279+354,800-237,9*7,398+427,910-386,8*6,547+198,700-256,6*9,168+295,830-475,7*5,654+178,700-289,9*4,378+155,920-473,6*8,286+357];
-const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','lotus-boats','root-network','silent-wall','spell-arena','music-river','mirror-maze','light-shields','memory-tree','time-wheel','night-flowers','rescue-signals','shadow-energy','spell-rings','owl-relay','stair-energy','levitation-potions','ancient-library','life-garden','humming-nectar','ice-bridge','time-fountain','firefly-seals','invisible-fish-ripples','moon-web-cutter','crystal-orchard','dream-loom','echo-restorer','current-fish-relay','sun-prism-merger','stone-tear-channels','seven-star-bridge','beauty-bloom-garden','truth-maze-routes','silent-dragonfly-signal','dungeon-allies-unite','joy-note-restorer','six-mirror-heartlight','cloud-flock-merger'];
-const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,11];
+const expectedAnswers=[345+218,876-324,457+186,732-289,9*2,569+374,915-458,8*7,189+256,600-145,6*7,295+348,823-179,4*6,367+485,500-273,5*9,472+389,721-456,8*3,587+235,900-387,7*8,175+288,950-489,6*9,312+249,850-495,7*8,436+297,621-185,8*5,279+354,800-237,9*7,398+427,910-386,8*6,547+198,700-256,6*9,168+295,830-475,7*5,654+178,700-289,9*4,378+155,920-473,6*8,286+357,700-284];
+const expectedTypes=['drag','digits','counter','choice','choice','drag','repair','fish','leaves','sand','mushroom-lights','fog-lantern','flower-choir','lotus-boats','root-network','silent-wall','spell-arena','music-river','mirror-maze','light-shields','memory-tree','time-wheel','night-flowers','rescue-signals','shadow-energy','spell-rings','owl-relay','stair-energy','levitation-potions','ancient-library','life-garden','humming-nectar','ice-bridge','time-fountain','firefly-seals','invisible-fish-ripples','moon-web-cutter','crystal-orchard','dream-loom','echo-restorer','current-fish-relay','sun-prism-merger','stone-tear-channels','seven-star-bridge','beauty-bloom-garden','truth-maze-routes','silent-dragonfly-signal','dungeon-allies-unite','joy-note-restorer','six-mirror-heartlight','cloud-flock-merger','cyclone-power-release'];
+const expectedWorlds=[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,11,11];
 const errors=[];
 const check=(ok,message)=>{if(!ok)errors.push(message)};
 const saveApi=globalThis.MAGIC_FOREST_SAVE;
@@ -61,7 +61,7 @@ mockCloud.setOnline(false);
 const offlineSync=await cloudSaveApi.synchronize(mockCloud,localSave,saveApi);
 check(offlineSync.status==='offline'&&offlineSync.save.unlocked===8,'cloud ล่มต้องคืน local save ที่เล่นต่อได้โดยไม่ทำข้อมูลหาย');
 
-check(Array.isArray(levels)&&levels.length===51,'เกมต้องมี World 1–11 รวม 51 ด่าน');
+check(Array.isArray(levels)&&levels.length===52,'เกมต้องมี World 1–11 รวม 52 ด่าน');
 const progress=globalThis.MAGIC_FOREST_PROGRESS;
 check(progress?.starsForTries(1)===3&&progress?.starsForTries(2)===2&&progress?.starsForTries(4)===1,'เกณฑ์ดาวตามจำนวนครั้งไม่ถูกต้อง');
 const testLevel=levels[0],fresh={unlocked:1,stars:{},items:[],crystals:0,sound:true};
@@ -186,7 +186,8 @@ check(world10Source.includes("level?.type==='joy-note-restorer'")&&world10Source
 check(world10Source.includes("level?.type!=='six-mirror-heartlight'")&&world10Source.includes('id="heartlightHistory" aria-live="polite"')&&world10Source.includes('mirrors*level.each')&&world10Source.includes("save.stars[49]&&save.unlocked<50"),'ด่าน 50 ต้องมีกลไกกระจก 6 × 8 = 48 และปลดล็อกต่อเนื่อง');
 check(globalThis.WORLD_TEN_ENDING?.some(line=>line.text.includes('10/10'))&&globalThis.WORLD_TEN_ENDING?.some(line=>line.text.includes('ดินแดนแห่งเมฆหมอก')),'ฉากจบ World 10 ต้องสรุปผลึก 10/10 และเชื่อมตอน 51');
 check(globalThis.WORLD_TEN_INTRO?.some(line=>line.text.includes('ทั้งเก้าชิ้น'))&&world10Source.includes("worldMap(10,'World 10 · เขาวงกตเงาและทะเลสาบกระจก"),'World 10 ต้องมีบทเปิดต่อจากผลึก 9 ชิ้นและแผนที่');
-check(world11Source.includes("level?.type!=='cloud-flock-merger'")&&world11Source.includes('id="cloudHistory" aria-live="polite"')&&world11Source.includes('values.at(-1)+level.parts[index]')&&world11Source.includes("save.stars[50]&&save.unlocked<51"),'ด่าน 51 ต้องมีกลไกรวมเมฆ 286 → 586 → 636 → 643 และปลดล็อกจากด่าน 50');
+check(world11Source.includes("level?.type==='cloud-flock-merger'")&&world11Source.includes('id="cloudHistory" aria-live="polite"')&&world11Source.includes('values.at(-1)+level.parts[index]')&&world11Source.includes("save.stars[50]&&save.unlocked<51"),'ด่าน 51 ต้องมีกลไกรวมเมฆ 286 → 586 → 636 → 643 และปลดล็อกจากด่าน 50');
+check(world11Source.includes("level?.type!=='cyclone-power-release'")&&world11Source.includes('id="cycloneHistory" aria-live="polite"')&&world11Source.includes('values.at(-1)-level.parts[index]')&&world11Source.includes("save.stars[51]&&save.unlocked<52"),'ด่าน 52 ต้องมีกลไกปล่อยลม 700 → 500 → 420 → 416 และปลดล็อกต่อเนื่อง');
 check(globalThis.WORLD_ELEVEN_INTRO?.some(line=>line.text.includes('10/10'))&&world11Source.includes("worldMap(11,'World 11 · เส้นทางฟื้นฟูเวทมนตร์"),'World 11 ต้องมีบทเปิดต่อจากผลึกครบ 10/10 และแผนที่');
 check(globalThis.WORLD_NINE_INTRO?.some(line=>line.text.includes('ทั้งแปดชิ้น'))&&world9Source.includes("worldMap(9,'World 9 · กระแสน้ำ แสงลับ และสวนดวงดาว"),'World 9 ต้องมีบทเปิดต่อจากผลึก 8 ชิ้นและแผนที่');
 check(globalThis.WORLD_SEVEN_INTRO?.some(line=>line.text.includes('หกชิ้น'))&&world7Source.includes("worldMap(7,'World 7 · สวนแห่งชีวิตและป่าต้องห้าม"),'World 7 ต้องมีบทเปิดต่อจากผลึก 6 ชิ้นและแผนที่');
@@ -200,7 +201,7 @@ check(appSource.includes('function showParentDashboard()')&&appSource.includes("
 check(appSource.includes('ข้อมูลนี้บันทึกในอุปกรณ์เครื่องนี้เท่านั้น'),'มุมผู้ปกครองต้องอธิบายขอบเขตข้อมูลอย่างชัดเจน');
 check(indexSource.includes('manifest.webmanifest')&&appSource.includes("navigator.serviceWorker.register('./sw.js')"),'หน้าเกมต้องเชื่อม PWA manifest และ service worker');
 check(manifest.display==='standalone'&&manifest.start_url==='./'&&manifest.icons.some(icon=>icon.sizes==='192x192')&&manifest.icons.some(icon=>icon.sizes==='512x512'),'PWA manifest ต้องรองรับการติดตั้งและมีไอคอน 192/512');
-check(serviceWorkerSource.includes("const CACHE='magic-forest-v117'")&&serviceWorkerSource.includes('./app.js?v=117')&&serviceWorkerSource.includes('./world11.js?v=117')&&serviceWorkerSource.includes('./data/world11.js?v=117')&&serviceWorkerSource.includes('./world11.css?v=117')&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
+check(serviceWorkerSource.includes("const CACHE='magic-forest-v118'")&&serviceWorkerSource.includes('./app.js?v=118')&&serviceWorkerSource.includes('./world11.js?v=118')&&serviceWorkerSource.includes('./data/world11.js?v=118')&&serviceWorkerSource.includes('./world11.css?v=118')&&serviceWorkerSource.includes('asset-manifest.json'),'service worker ต้องใช้ cache รุ่นปัจจุบันและ precache assets');
 check(appSource.includes("PLAYTEST_TARGET=new URLSearchParams(location.search).get('playtest')")&&appSource.includes("['world3','world10','world11'].includes(PLAYTEST_TARGET)"),'โหมด QA ต้องรองรับ URL playtest=world11 โดยไม่บันทึกเซฟจริง');
 check(stylesSource.includes('.topbar .brand{font-size:0;gap:0}'),'แถบบนมือถือหน้าบทสนทนาต้องย่อชื่อเกมเพื่อไม่ให้ล้นแนวนอน');
 check(appSource.includes('data-network')&&appSource.includes("window.addEventListener('online',updateNetworkStatus)")&&appSource.includes("window.addEventListener('offline',updateNetworkStatus)"),'แถบเกมต้องแสดงและอัปเดตสถานะออนไลน์/ออฟไลน์');
@@ -213,4 +214,4 @@ check(indexSource.includes('data/cloud-save.js?v=65')&&cloudSaveApi?.disabled&&c
 check(existsSync(new URL('../dist/assets/items/app-icon-192.png',import.meta.url))&&existsSync(new URL('../dist/asset-manifest.json',import.meta.url)),'ไฟล์ไอคอน PWA หรือ asset manifest ไม่ครบ');
 
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log(`✓ เนื้อเรื่องและกลไก 51 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 11 เริ่มภารกิจฟื้นฟูหลังผลึก 10/10 · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
+console.log(`✓ เนื้อเรื่องและกลไก 52 ด่านสอดคล้อง · โปรไฟล์ชาย/หญิงและชื่อกำหนดเองผ่าน · World 11 ฟื้นฟูเมฆและม่านลมหลังผลึก 10/10 · คลังต้นฉบับผ่าน ${questionBank.length} ด่าน · ระบบดาว/รางวัล/ปลดล็อกผ่าน regression test`);
