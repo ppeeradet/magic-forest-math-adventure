@@ -28,7 +28,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='firework-flower-sparks')return;
+  if(level?.type==='firework-flower-sparks'){
   let flowers=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),sequence=[];
   p.innerHTML=`<div class="firework-flowers" id="fireworkFlowers"><div class="firework-stage" aria-hidden="true"><span id="flowerLights">🌼</span><i id="sparkPath"></i></div><div class="spark-total" aria-live="polite"><small>ประกายที่ปลุกแล้ว</small><strong id="sparkTotal">0</strong><b id="sparkEquation">0 × 9 = 0</b></div><div class="firework-buttons" role="group" aria-label="ปลุกดอกไม้ไฟทีละกลุ่ม">${Array.from({length:level.groups},(_,index)=>`<button data-firework-flower="${index}" ${index?'disabled':''}><span>🌼</span><b>กลุ่มที่ ${index+1}</b><small>+9 ดวง</small></button>`).join('')}</div><div class="spark-history" id="sparkHistory" aria-live="polite">รอปลุกกลุ่มแรก · เป้าหมาย 63 ดวง</div></div><div class="garden-actions"><button class="secondary" id="resetFireworks">ดับประกายและเริ่มใหม่ ↻</button><button class="primary" id="openSecretForest" disabled>เปิดทางด้วย 63 ดวง</button></div>`;
@@ -39,19 +39,33 @@ play=id=>{
   p.querySelector('#resetFireworks').onclick=()=>{reset();tone(330)};
   open.onclick=()=>finish(level,1);
   render();
+  return;
+  }
+  if(level?.type!=='secret-vine-unweaver')return;
+  let step=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
+  p.innerHTML=`<div class="secret-vines" id="secretVines"><div class="secret-stage" aria-hidden="true"><span id="vineKnots">🌿🌿🌿</span><i id="truthLight"></i><b id="secretKey">🗝️</b></div><div class="secret-total" aria-live="polite"><small>ความจริงที่เชื่อมแล้ว</small><strong id="secretTotal">197</strong><b id="secretEquation">197 + 358 = ?</b></div><div class="secret-parts" role="group" aria-label="รวมเบาะแสทีละส่วน">${level.parts.map((part,index)=>`<button data-secret-part="${index}" ${index?'disabled':''}><span>${index===0?'หีบเบาะแสใหญ่':index===1?'สมุดเบาะแส':'กุญแจดอกสุดท้าย'}</span><b>+${part}</b><small>${index===0?'3 ร้อย':index===1?'5 สิบ':'8 หน่วย'}</small></button>`).join('')}</div><div class="secret-history" id="secretHistory" aria-live="polite">197 · รอรวมเบาะแสใหม่ 358 ชิ้น</div></div><div class="garden-actions"><button class="secondary" id="resetSecrets">เก็บเบาะแสและเริ่มใหม่ ↻</button><button class="primary" id="openWhisperCave" disabled>เปิดทางด้วย 555 ชิ้น</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-secret-part]')],total=p.querySelector('#secretTotal'),equation=p.querySelector('#secretEquation'),history=p.querySelector('#secretHistory'),stage=p.querySelector('#secretVines'),knots=p.querySelector('#vineKnots'),light=p.querySelector('#truthLight'),key=p.querySelector('#secretKey'),open=p.querySelector('#openWhisperCave');
+  const render=()=>{const current=values.at(-1),joined=level.parts.slice(0,step).reduce((a,b)=>a+b,0);total.textContent=current;equation.textContent=step?`${level.start} + ${joined} = ${current}`:'197 + 358 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('revealed',index<step)});history.textContent=values.join(' → ')+(step===level.parts.length?' · ความจริงเชื่อมครบ 555 ชิ้น!':'');stage.style.setProperty('--secrets-revealed',String(step/level.parts.length));knots.textContent='🌿'.repeat(3-step)+'✨'.repeat(step);light.style.width=`${step/level.parts.length*100}%`;key.style.opacity=String(.3+step*.23);open.disabled=step!==level.parts.length};
+  const reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)+level.parts[index]);step++;render();tone(430+step*90,.22);fb.innerHTML=`<div class="star-chance">${values.at(-2)} + ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — เถาวัลย์คลายครบแล้ว!':''}</div>`});
+  p.querySelector('#resetSecrets').onclick=()=>{reset();tone(330)};
+  open.onclick=()=>finish(level,1);
+  render();
 };
 
 const world11BeginBase=beginLevel;
 beginLevel=id=>id===51&&!save.stars[51]?story([...window.WORLD_ELEVEN_INTRO,...LEVELS[50].dialogue],()=>explore(51)):world11BeginBase(id);
 
 const world11MapBase=map;
-map=()=>{world11MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-11'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(11,'World 11 · เส้นทางฟื้นฟูเวทมนตร์','หัวใจป่าครบ 10/10 · ฟื้นฟูดินแดน',next?.id));wrap.querySelectorAll('.world-map-11 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[53]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>🌿</span><div><small>กำลังเตรียมด่านถัดไป</small><strong>ตอนที่ 54 · ป่าแห่งความลับ</strong><p>เถาวัลย์หนาแน่นยังซ่อนทางเดินอยู่</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 53 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/53 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/159`}}};
+map=()=>{world11MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-11'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(11,'World 11 · เส้นทางฟื้นฟูเวทมนตร์','หัวใจป่าครบ 10/10 · ฟื้นฟูดินแดน',next?.id));wrap.querySelectorAll('.world-map-11 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[54]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>🗣️</span><div><small>กำลังเตรียมด่านถัดไป</small><strong>ตอนที่ 55 · ถ้ำแห่งเสียงกระซิบ</strong><p>เสียงลึกลับและก้อนหินใหญ่ยังปิดทางออก</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 54 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/54 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/162`}}};
 
 const world11InventoryBase=showInventory;
 showInventory=()=>{world11InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-11'))panel.insertAdjacentHTML('beforeend',collectionWorld(11,'World 11 · เส้นทางฟื้นฟู'))};
 
-if(PLAYTEST_TARGET==='world11'){save.unlocked=Math.max(save.unlocked,53);for(let id=1;id<=50;id++)save.stars[id]??=3}
+if(PLAYTEST_TARGET==='world11'){save.unlocked=Math.max(save.unlocked,54);for(let id=1;id<=50;id++)save.stars[id]??=3}
 else if(save.stars[50]&&save.unlocked<51){save.unlocked=51;persist()}
 if(!PLAYTEST_MODE&&save.stars[51]&&save.unlocked<52){save.unlocked=52;persist()}
 if(!PLAYTEST_MODE&&save.stars[52]&&save.unlocked<53){save.unlocked=53;persist()}
+if(!PLAYTEST_MODE&&save.stars[53]&&save.unlocked<54){save.unlocked=54;persist()}
 if(save.player)home();

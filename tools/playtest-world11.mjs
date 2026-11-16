@@ -1,11 +1,11 @@
 globalThis.window=globalThis;
 for(const file of ['levels','world4','world5','world6','world7','world8','world9','world10','world11'])await import(`../dist/data/${file}.js`);
 import {readFileSync} from 'node:fs';
-const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[50],level52=levels[51],level53=levels[52];
+const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[50],level52=levels[51],level53=levels[52],level54=levels[53];
 const runtime=readFileSync(new URL('../dist/world11.js',import.meta.url),'utf8');
 const styles=readFileSync(new URL('../dist/world11.css',import.meta.url),'utf8');
 const errors=[],check=(ok,message)=>{if(!ok)errors.push(message)};
-check(levels.length===53,'ต้องมีด่านเล่นได้รวม 53 ด่าน');
+check(levels.length===54,'ต้องมีด่านเล่นได้รวม 54 ด่าน');
 check(level?.id===51&&level.world===11&&level.title==='ดินแดนแห่งเมฆหมอก'&&level.type==='cloud-flock-merger','ข้อมูลด่าน 51 ไม่ถูกต้อง');
 check(level.start===286&&level.answer===643&&JSON.stringify(level.parts)==='[300,50,7]','โจทย์ 286 + 357 = 643 ไม่ถูกต้อง');
 check(JSON.stringify(level.parts.reduce((v,p)=>[...v,v.at(-1)+p],[level.start]))==='[286,586,636,643]','ลำดับรวมเมฆไม่ถูกต้อง');
@@ -20,14 +20,21 @@ check(level52.start===700&&level52.answer===416&&JSON.stringify(level52.parts)==
 check(JSON.stringify(level52.parts.reduce((v,p)=>[...v,v.at(-1)-p],[level52.start]))==='[700,500,420,416]','ลำดับปล่อยพลังลมไม่ถูกต้อง');
 check(level52.required>=4&&level52.hotspots.length>=5&&level52.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 52 ไม่ครบ');
 check(runtime.includes('[data-cyclone-part]')&&runtime.includes('id="cycloneHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetCyclone').onclick"),'ด่าน 52 ต้องมี native controls, aria-live และ reset');
-check(runtime.includes("save.stars[51]&&save.unlocked<52")&&runtime.includes('Math.max(save.unlocked,53)'),'save migration และ playtest unlock ด่าน 52 ไม่ครบ');
+check(runtime.includes("save.stars[51]&&save.unlocked<52")&&runtime.includes('Math.max(save.unlocked,54)'),'save migration และ playtest unlock ด่าน 52 ไม่ครบ');
 check(level52.success.includes('ทุ่งหญ้าดอกไม้ไฟ'),'ตอนจบด่าน 52 ต้องเชื่อมด่าน 53');
 check(level53?.id===53&&level53.world===11&&level53.title==='ทุ่งหญ้าดอกไม้ไฟ'&&level53.type==='firework-flower-sparks','ข้อมูลด่าน 53 ไม่ถูกต้อง');
 check(level53.groups===7&&level53.each===9&&level53.answer===63,'โจทย์ 7 × 9 = 63 ไม่ถูกต้อง');
 check(level53.required>=4&&level53.hotspots.length>=5&&level53.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 53 ไม่ครบ');
 check(runtime.includes('[data-firework-flower]')&&runtime.includes('id="sparkHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetFireworks').onclick"),'ด่าน 53 ต้องมี native controls, aria-live และ reset');
-check(runtime.includes('flowers*level.each')&&runtime.includes("save.stars[52]&&save.unlocked<53")&&runtime.includes('Math.max(save.unlocked,53)'),'ลำดับคูณ save migration และ playtest unlock ด่าน 53 ไม่ครบ');
+check(runtime.includes('flowers*level.each')&&runtime.includes("save.stars[52]&&save.unlocked<53")&&runtime.includes('Math.max(save.unlocked,54)'),'ลำดับคูณ save migration และ playtest unlock ด่าน 53 ไม่ครบ');
 check(level53.success.includes('ป่าแห่งความลับ'),'ตอนจบด่าน 53 ต้องเชื่อมด่าน 54');
+check(level54?.id===54&&level54.world===11&&level54.title==='ป่าแห่งความลับ'&&level54.type==='secret-vine-unweaver','ข้อมูลด่าน 54 ไม่ถูกต้อง');
+check(level54.start===197&&level54.answer===555&&JSON.stringify(level54.parts)==='[300,50,8]','โจทย์ 197 + 358 = 555 ไม่ถูกต้อง');
+check(JSON.stringify(level54.parts.reduce((v,p)=>[...v,v.at(-1)+p],[level54.start]))==='[197,497,547,555]','ลำดับรวมความลับไม่ถูกต้อง');
+check(level54.required>=4&&level54.hotspots.length>=5&&level54.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 54 ไม่ครบ');
+check(runtime.includes('[data-secret-part]')&&runtime.includes('id="secretHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetSecrets').onclick"),'ด่าน 54 ต้องมี native controls, aria-live และ reset');
+check(runtime.includes("save.stars[53]&&save.unlocked<54")&&runtime.includes('Math.max(save.unlocked,54)'),'save migration และ playtest unlock ด่าน 54 ไม่ครบ');
+check(level54.success.includes('ถ้ำแห่งเสียงกระซิบ'),'ตอนจบด่าน 54 ต้องเชื่อมด่าน 55');
 check(styles.includes('@media(max-width:560px)')&&styles.includes('@media(prefers-reduced-motion:reduce)')&&styles.includes('min-height:70px'),'responsive/touch/reduced motion ไม่ครบ');
 if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
-console.log('✓ World 11 ด่าน 51–53 ผ่าน: 643 · 416 · 63 · exploration · native controls · reset · save · map · responsive');
+console.log('✓ World 11 ด่าน 51–54 ผ่าน: 643 · 416 · 63 · 555 · exploration · native controls · reset · save · map · responsive');
