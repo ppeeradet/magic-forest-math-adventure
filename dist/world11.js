@@ -15,7 +15,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='cyclone-power-release')return;
+  if(level?.type==='cyclone-power-release'){
   let step=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
   p.innerHTML=`<div class="cyclone-release" id="cycloneRelease"><div class="cyclone-stage" aria-hidden="true"><span id="cycloneWind">🌪️🌪️🌪️</span><i id="calmBeam"></i><b id="featherTest">🪶</b></div><div class="cyclone-total" aria-live="polite"><small>พลังลมที่เหลือ</small><strong id="cycloneTotal">700</strong><b id="cycloneEquation">700 − 284 = ?</b></div><div class="cyclone-parts" role="group" aria-label="ปล่อยพลังลมทีละส่วน">${level.parts.map((part,index)=>`<button data-cyclone-part="${index}" ${index?'disabled':''}><span>${index===0?'ช่องระบายใหญ่':index===1?'ช่องระบายกลาง':'ช่องปรับละเอียด'}</span><b>−${part}</b><small>${index===0?'2 ร้อย':index===1?'8 สิบ':'4 หน่วย'}</small></button>`).join('')}</div><div class="cyclone-history" id="cycloneHistory" aria-live="polite">700 · รอปล่อยพลังส่วนเกิน 284 หน่วย</div></div><div class="garden-actions"><button class="secondary" id="resetCyclone">ปิดช่องและเริ่มใหม่ ↻</button><button class="primary" id="crossCyclone" disabled>ผ่านม่านลม 416 หน่วย</button></div>`;
@@ -26,18 +26,32 @@ play=id=>{
   p.querySelector('#resetCyclone').onclick=()=>{reset();tone(330)};
   cross.onclick=()=>finish(level,1);
   render();
+  return;
+  }
+  if(level?.type!=='firework-flower-sparks')return;
+  let flowers=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),sequence=[];
+  p.innerHTML=`<div class="firework-flowers" id="fireworkFlowers"><div class="firework-stage" aria-hidden="true"><span id="flowerLights">🌼</span><i id="sparkPath"></i></div><div class="spark-total" aria-live="polite"><small>ประกายที่ปลุกแล้ว</small><strong id="sparkTotal">0</strong><b id="sparkEquation">0 × 9 = 0</b></div><div class="firework-buttons" role="group" aria-label="ปลุกดอกไม้ไฟทีละกลุ่ม">${Array.from({length:level.groups},(_,index)=>`<button data-firework-flower="${index}" ${index?'disabled':''}><span>🌼</span><b>กลุ่มที่ ${index+1}</b><small>+9 ดวง</small></button>`).join('')}</div><div class="spark-history" id="sparkHistory" aria-live="polite">รอปลุกกลุ่มแรก · เป้าหมาย 63 ดวง</div></div><div class="garden-actions"><button class="secondary" id="resetFireworks">ดับประกายและเริ่มใหม่ ↻</button><button class="primary" id="openSecretForest" disabled>เปิดทางด้วย 63 ดวง</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-firework-flower]')],total=p.querySelector('#sparkTotal'),equation=p.querySelector('#sparkEquation'),history=p.querySelector('#sparkHistory'),stage=p.querySelector('#fireworkFlowers'),lights=p.querySelector('#flowerLights'),path=p.querySelector('#sparkPath'),open=p.querySelector('#openSecretForest');
+  const render=()=>{const sparks=flowers*level.each;total.textContent=sparks;equation.textContent=`${flowers} × ${level.each} = ${sparks}`;buttons.forEach((button,index)=>{button.disabled=index!==flowers;button.classList.toggle('awake',index<flowers)});history.textContent=sequence.length?`${sequence.join(' → ')}${flowers===level.groups?' · ประกายครบ 63 ดวง!':''}`:'รอปลุกกลุ่มแรก · เป้าหมาย 63 ดวง';stage.style.setProperty('--flowers-awake',String(flowers/level.groups));lights.textContent=('🌼'.repeat(Math.max(1,flowers))+(flowers?'✨'.repeat(Math.min(flowers,4)):''));path.style.width=`${flowers/level.groups*100}%`;open.disabled=flowers!==level.groups};
+  const reset=()=>{flowers=0;sequence.splice(0);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==flowers)return;flowers++;sequence.push(flowers*level.each);render();tone(470+flowers*55,.18);fb.innerHTML=`<div class="star-chance">ดอกไม้ ${flowers} กลุ่ม × ${level.each} ดวง = ${flowers*level.each}${flowers===level.groups?' — กำแพงดอกไม้เปิดแล้ว!':''}</div>`});
+  p.querySelector('#resetFireworks').onclick=()=>{reset();tone(330)};
+  open.onclick=()=>finish(level,1);
+  render();
 };
 
 const world11BeginBase=beginLevel;
 beginLevel=id=>id===51&&!save.stars[51]?story([...window.WORLD_ELEVEN_INTRO,...LEVELS[50].dialogue],()=>explore(51)):world11BeginBase(id);
 
 const world11MapBase=map;
-map=()=>{world11MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-11'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(11,'World 11 · เส้นทางฟื้นฟูเวทมนตร์','หัวใจป่าครบ 10/10 · ฟื้นฟูดินแดน',next?.id));wrap.querySelectorAll('.world-map-11 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[52]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>🎆</span><div><small>กำลังเตรียมด่านถัดไป</small><strong>ตอนที่ 53 · ทุ่งหญ้าดอกไม้ไฟ</strong><p>กำแพงดอกไม้ประกายยังขวางทางอยู่</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 52 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/52 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/156`}}};
+map=()=>{world11MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-11'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(11,'World 11 · เส้นทางฟื้นฟูเวทมนตร์','หัวใจป่าครบ 10/10 · ฟื้นฟูดินแดน',next?.id));wrap.querySelectorAll('.world-map-11 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[53]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>🌿</span><div><small>กำลังเตรียมด่านถัดไป</small><strong>ตอนที่ 54 · ป่าแห่งความลับ</strong><p>เถาวัลย์หนาแน่นยังซ่อนทางเดินอยู่</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 53 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/53 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/159`}}};
 
 const world11InventoryBase=showInventory;
 showInventory=()=>{world11InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-11'))panel.insertAdjacentHTML('beforeend',collectionWorld(11,'World 11 · เส้นทางฟื้นฟู'))};
 
-if(PLAYTEST_TARGET==='world11'){save.unlocked=Math.max(save.unlocked,52);for(let id=1;id<=50;id++)save.stars[id]??=3}
+if(PLAYTEST_TARGET==='world11'){save.unlocked=Math.max(save.unlocked,53);for(let id=1;id<=50;id++)save.stars[id]??=3}
 else if(save.stars[50]&&save.unlocked<51){save.unlocked=51;persist()}
 if(!PLAYTEST_MODE&&save.stars[51]&&save.unlocked<52){save.unlocked=52;persist()}
+if(!PLAYTEST_MODE&&save.stars[52]&&save.unlocked<53){save.unlocked=53;persist()}
 if(save.player)home();
