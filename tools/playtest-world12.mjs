@@ -1,0 +1,26 @@
+globalThis.window=globalThis;
+for(const file of ['levels','world4','world5','world6','world7','world8','world9','world10','world11','world12'])await import(`../dist/data/${file}.js`);
+import {readFileSync} from 'node:fs';
+const levels=globalThis.MAGIC_FOREST_LEVELS,level=levels[55];
+const runtime=readFileSync(new URL('../dist/world12.js',import.meta.url),'utf8');
+const styles=readFileSync(new URL('../dist/world12.css',import.meta.url),'utf8');
+const app=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
+const index=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const sw=readFileSync(new URL('../dist/sw.js',import.meta.url),'utf8');
+const errors=[],check=(ok,message)=>{if(!ok)errors.push(message)};
+check(levels.length===56,'ต้องมีด่านเล่นได้รวม 56 ด่าน');
+check(level?.id===56&&level.world===12&&level.title==='ทะเลสาบแห่งแสงจันทร์'&&level.type==='moon-moth-antenna-lights','ข้อมูลด่าน 56 ไม่ถูกต้อง');
+check(level.groups===7&&level.each===2&&level.answer===14,'โจทย์ 7 × 2 = 14 ไม่ถูกต้อง');
+check(level.required>=4&&level.hotspots.length>=5&&level.dialogue.length>=4,'exploration หรือบทสนทนาด่าน 56 ไม่ครบ');
+check(runtime.includes('[data-moon-moth]')&&runtime.includes('id="moonMothHistory" aria-live="polite"')&&runtime.includes("p.querySelector('#resetMoonMoths').onclick"),'ต้องมี native controls, aria-live และ reset');
+check(runtime.includes('moths*level.each')&&runtime.includes("save.stars[55]&&save.unlocked<56"),'ลำดับคูณและ save migration ด่าน 56 ไม่ครบ');
+check(runtime.includes("PLAYTEST_TARGET==='world12'")&&runtime.includes('Math.max(save.unlocked,56)'),'playtest unlock ด่าน 56 ไม่ครบ');
+check(runtime.includes("worldMap(12,'World 12")&&runtime.includes("collectionWorld(12,'World 12"),'แผนที่และคลัง World 12 ไม่ครบ');
+check(globalThis.WORLD_TWELVE_INTRO?.some(line=>line.text.includes('7 ตัว')),'บทเปิดต้องเชื่อมผีเสื้อ 7 ตัว');
+check(level.success.includes('ป่าแห่งความสงบ'),'ตอนจบด่าน 56 ต้องเชื่อมด่าน 57');
+check(styles.includes('@media(max-width:560px)')&&styles.includes('@media(prefers-reduced-motion:reduce)')&&styles.includes('min-height:70px'),'responsive/touch/reduced motion ไม่ครบ');
+check(app.includes("'world12'"), 'app ต้องรองรับ playtest=world12');
+check(index.includes('world12.css?v=122')&&index.includes('data/world12.js?v=122')&&index.includes('world12.js?v=122')&&index.includes('app.js?v=122'),'index ต้องโหลด World 12 รุ่น 122');
+check(sw.includes("magic-forest-v122")&&sw.includes('./world12.css?v=122')&&sw.includes('./world12.js?v=122')&&sw.includes('./data/world12.js?v=122'),'service worker ต้อง precache World 12');
+if(errors.length){console.error(errors.map(error=>`✗ ${error}`).join('\n'));process.exit(1)}
+console.log('✓ World 12 ด่าน 56 ผ่าน: 7 × 2 = 14 · exploration · native controls · reset · save · map · responsive');
