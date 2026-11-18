@@ -2,7 +2,7 @@ const world12PlayBase=play;
 play=id=>{
   world12PlayBase(id);
   const level=LEVELS[id-1];
-  if(level?.type!=='moon-moth-antenna-lights')return;
+  if(level?.type==='moon-moth-antenna-lights'){
   let moths=0;
   const sequence=[],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
   p.innerHTML=`<div class="moon-moth-lights" id="moonMothLights"><div class="moon-moth-stage" aria-hidden="true"><span id="moonMoths">🌙 · · · · · · ·</span><i id="moonBridge"></i><b id="fluffyReflection">🐇</b></div><div class="moon-moth-total" aria-live="polite"><small>หนวดที่สว่างแล้ว</small><strong id="antennaTotal">0</strong><b id="antennaEquation">0 × 2 = 0</b></div><div class="moon-moth-buttons" role="group" aria-label="ผีเสื้อกลางคืน 7 ตัว">${Array.from({length:level.groups},(_,index)=>`<button data-moon-moth="${index}" ${index?'disabled':''} aria-pressed="false"><span>🦋</span><b>ตัวที่ ${index+1}</b><small>+${level.each} เส้น</small></button>`).join('')}</div><div class="moon-moth-history" id="moonMothHistory" aria-live="polite">รอจุดผีเสื้อตัวแรก · เป้าหมาย 14 เส้น</div></div><div class="garden-actions"><button class="secondary" id="resetMoonMoths">ดับแสงและเริ่มใหม่ ↻</button><button class="primary" id="crossMoonBridge" disabled>ข้ามสะพานแสง 14 เส้น</button></div>`;
@@ -13,17 +13,31 @@ play=id=>{
   p.querySelector('#resetMoonMoths').onclick=()=>{reset();tone(330)};
   cross.onclick=()=>finish(level,1);
   render();
+  return;
+  }
+  if(level?.type!=='peace-energy-canopy')return;
+  let step=0;
+  const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
+  p.innerHTML=`<div class="peace-canopy" id="peaceCanopy"><div class="peace-stage" aria-hidden="true"><span id="canopyLayers">🌳🌳🌳</span><i id="peaceLight"></i><b id="fluffyListener">🐇</b></div><div class="peace-total" aria-live="polite"><small>พลังใจบนเรือนยอด</small><strong id="peaceTotal">468</strong><b id="peaceEquation">468 + 275 = ?</b></div><div class="peace-parts" role="group" aria-label="รวมพลังแห่งความสุขทีละส่วน">${level.parts.map((part,index)=>`<button data-peace-part="${index}" ${index?'disabled':''}><span>${index===0?'แสงสุขก้อนใหญ่':index===1?'สายลมอุ่น':'ประกายสุดท้าย'}</span><b>+${part}</b><small>${index===0?'2 ร้อย':index===1?'7 สิบ':'5 หน่วย'}</small></button>`).join('')}</div><div class="peace-history" id="peaceHistory" aria-live="polite">468 · รอรวมพลังแห่งความสุข 275 หน่วย</div></div><div class="garden-actions"><button class="secondary" id="resetPeaceCanopy">รวมพลังใหม่ ↻</button><button class="primary" id="openPeaceForest" disabled>เปิดเรือนยอดด้วย 743 หน่วย</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-peace-part]')],total=p.querySelector('#peaceTotal'),equation=p.querySelector('#peaceEquation'),history=p.querySelector('#peaceHistory'),stage=p.querySelector('#peaceCanopy'),layers=p.querySelector('#canopyLayers'),light=p.querySelector('#peaceLight'),fluffy=p.querySelector('#fluffyListener'),open=p.querySelector('#openPeaceForest');
+  const render=()=>{const current=values.at(-1),joined=level.parts.slice(0,step).reduce((sum,value)=>sum+value,0);total.textContent=current;equation.textContent=step?`${level.start} + ${joined} = ${current}`:'468 + 275 = ?';buttons.forEach((button,index)=>{button.disabled=index!==step;button.classList.toggle('joined',index<step)});history.textContent=values.join(' → ')+(step===level.parts.length?' · พลังใจรวมครบ 743 หน่วย!':'');stage.style.setProperty('--peace-joined',String(step/level.parts.length));layers.textContent='🌳'.repeat(3-step)+'🌿'.repeat(step);light.style.width=`${step/level.parts.length*100}%`;fluffy.style.opacity=String(.35+step*.21);open.disabled=step!==level.parts.length};
+  const reset=()=>{step=0;values.splice(1);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==step)return;values.push(values.at(-1)+level.parts[index]);step++;render();tone(430+step*90,.22);fb.innerHTML=`<div class="star-chance">${values.at(-2)} + ${level.parts[index]} = ${values.at(-1)}${step===level.parts.length?' — ได้ยินเสียงใบไม้เปิดทางแล้ว!':''}</div>`});
+  p.querySelector('#resetPeaceCanopy').onclick=()=>{reset();tone(330)};
+  open.onclick=()=>finish(level,1);
+  render();
 };
 
 const world12BeginBase=beginLevel;
 beginLevel=id=>id===56&&!save.stars[56]?story([...window.WORLD_TWELVE_INTRO,...LEVELS[55].dialogue],()=>explore(56)):world12BeginBase(id);
 
 const world12MapBase=map;
-map=()=>{world12MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-12'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(12,'World 12 · แสงจันทร์ ความกล้าหาญ และอัญมณี','ฟื้นฟูดินแดนรอบนอก · ผลึกคงที่ 10/10',next?.id));wrap.querySelectorAll('.world-map-12 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[56]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>🌳</span><div><small>World 12 ดำเนินต่อ</small><strong>ตอนที่ 57 · ป่าแห่งความสงบ</strong><p>กำแพงต้นไม้สูงใหญ่กำลังรอพลังใจสองชนิด</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 56 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/56 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/168`}}};
+map=()=>{world12MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-12'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(12,'World 12 · แสงจันทร์ ความกล้าหาญ และอัญมณี','ฟื้นฟูดินแดนรอบนอก · ผลึกคงที่ 10/10',next?.id));wrap.querySelectorAll('.world-map-12 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[57]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>⛰️</span><div><small>World 12 ดำเนินต่อ</small><strong>ตอนที่ 58 · หุบเขาแห่งความกล้าหาญ</strong><p>เงาที่ดูดความกล้ากำลังปิดทางเข้าสู่หุบเขา</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 57 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/57 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/171`}}};
 
 const world12InventoryBase=showInventory;
 showInventory=()=>{world12InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-12'))panel.insertAdjacentHTML('beforeend',collectionWorld(12,'World 12 · แสงจันทร์และอัญมณี'))};
 
-if(PLAYTEST_TARGET==='world12'){save.unlocked=Math.max(save.unlocked,56);for(let id=1;id<=55;id++)save.stars[id]??=3}
+if(PLAYTEST_TARGET==='world12'){save.unlocked=Math.max(save.unlocked,57);for(let id=1;id<=55;id++)save.stars[id]??=3}
 else if(save.stars[55]&&save.unlocked<56){save.unlocked=56;persist()}
+if(!PLAYTEST_MODE&&save.stars[56]&&save.unlocked<57){save.unlocked=57;persist()}
 if(save.player)home();
