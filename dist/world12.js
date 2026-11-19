@@ -28,7 +28,7 @@ play=id=>{
   render();
   return;
   }
-  if(level?.type!=='courage-shadow-release')return;
+  if(level?.type==='courage-shadow-release'){
   let step=0;
   const p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback'),values=[level.start];
   p.innerHTML=`<div class="courage-release" id="courageRelease"><div class="courage-stage" aria-hidden="true"><span id="shadowLayers">🌑🌑🌑</span><i id="courageGlow"></i><b id="valleyStone">🪨</b></div><div class="courage-total" aria-live="polite"><small>ความกล้าจริงที่เหลือ</small><strong id="courageTotal">900</strong><b id="courageEquation">900 − 387 = ?</b></div><div class="courage-parts" role="group" aria-label="ปลดเงาทีละส่วน">${level.parts.map((part,index)=>`<button data-courage-part="${index}" ${index?'disabled':''}><span>${index===0?'เงาชั้นใหญ่':index===1?'เงาชั้นกลาง':'เงาจุดสุดท้าย'}</span><b>−${part}</b><small>${index===0?'3 ร้อย':index===1?'8 สิบ':'7 หน่วย'}</small></button>`).join('')}</div><div class="courage-history" id="courageHistory" aria-live="polite">900 · รอปลดเงา 387 หน่วย</div></div><div class="garden-actions"><button class="secondary" id="resetCourage">คืนเงาและเริ่มใหม่ ↻</button><button class="primary" id="liftValleyStone" disabled>ยกก้อนหินด้วย 513 หน่วย</button></div>`;
@@ -39,19 +39,33 @@ play=id=>{
   p.querySelector('#resetCourage').onclick=()=>{reset();tone(330)};
   lift.onclick=()=>finish(level,1);
   render();
+  return;
+  }
+  if(level?.type!=='healing-droplet-chain')return;
+  let drops=0;
+  const sequence=[],p=document.querySelector('#puzzle'),fb=document.querySelector('#feedback');
+  p.innerHTML=`<div class="healing-chain" id="healingChain"><div class="healing-stage" aria-hidden="true"><span id="healingDrops">· · · · · · · · ·</span><i id="healingStream"></i><b id="fluffyPaw">🐇</b></div><div class="healing-total" aria-live="polite"><small>พลังรักษารวม</small><strong id="healingTotal">0</strong><b id="healingEquation">0 × 3 = 0</b></div><div class="healing-buttons" role="group" aria-label="หยดน้ำรักษา 9 หยด">${Array.from({length:level.groups},(_,index)=>`<button data-healing-drop="${index}" ${index?'disabled':''} aria-pressed="false"><span>💧</span><b>หยดที่ ${index+1}</b><small>+${level.each} หน่วย</small></button>`).join('')}</div><div class="healing-history" id="healingHistory" aria-live="polite">รอเชื่อมหยดแรก · เป้าหมาย 27 หน่วย</div></div><div class="garden-actions"><button class="secondary" id="resetHealingDrops">แยกหยดและเริ่มใหม่ ↻</button><button class="primary" id="crossPurityStream" disabled>ข้ามด้วยพลังรักษา 27 หน่วย</button></div>`;
+  const buttons=[...p.querySelectorAll('[data-healing-drop]')],total=p.querySelector('#healingTotal'),equation=p.querySelector('#healingEquation'),history=p.querySelector('#healingHistory'),stage=p.querySelector('#healingChain'),dropLine=p.querySelector('#healingDrops'),stream=p.querySelector('#healingStream'),fluffy=p.querySelector('#fluffyPaw'),cross=p.querySelector('#crossPurityStream');
+  const render=()=>{const power=drops*level.each;total.textContent=power;equation.textContent=`${drops} × ${level.each} = ${power}`;buttons.forEach((button,index)=>{button.disabled=index!==drops;button.classList.toggle('linked',index<drops);button.setAttribute('aria-pressed',String(index<drops))});history.textContent=sequence.length?sequence.join(' → ')+(drops===level.groups?' · พลังรักษาครบ 27 หน่วย!':''):'รอเชื่อมหยดแรก · เป้าหมาย 27 หน่วย';stage.style.setProperty('--drops-linked',String(drops/level.groups));dropLine.textContent=Array.from({length:level.groups},(_,index)=>index<drops?'💧':'·').join(' ');stream.style.width=`${drops/level.groups*100}%`;fluffy.style.left=`${7+drops*9.5}%`;cross.disabled=drops!==level.groups};
+  const reset=()=>{drops=0;sequence.splice(0);render();fb.innerHTML=`<div class="star-chance">โอกาสรอบนี้ ${starRating(3)}</div>`};
+  buttons.forEach((button,index)=>button.onclick=()=>{if(index!==drops)return;drops++;sequence.push(drops*level.each);render();tone(470+drops*38,.18);fb.innerHTML=`<div class="star-chance">หยดน้ำ ${drops} หยด × ${level.each} หน่วย = ${drops*level.each}${drops===level.groups?' — สายพลังรักษาพร้อมแล้ว!':''}</div>`});
+  p.querySelector('#resetHealingDrops').onclick=()=>{reset();tone(330)};
+  cross.onclick=()=>finish(level,1);
+  render();
 };
 
 const world12BeginBase=beginLevel;
 beginLevel=id=>id===56&&!save.stars[56]?story([...window.WORLD_TWELVE_INTRO,...LEVELS[55].dialogue],()=>explore(56)):world12BeginBase(id);
 
 const world12MapBase=map;
-map=()=>{world12MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-12'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(12,'World 12 · แสงจันทร์ ความกล้าหาญ และอัญมณี','ฟื้นฟูดินแดนรอบนอก · ผลึกคงที่ 10/10',next?.id));wrap.querySelectorAll('.world-map-12 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[58]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>💧</span><div><small>World 12 ดำเนินต่อ</small><strong>ตอนที่ 59 · ลำธารแห่งความบริสุทธิ์</strong><p>หยดน้ำรักษากำลังรอเชื่อมเป็นสายพลัง</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 58 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/58 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/174`}}};
+map=()=>{world12MapBase();const wrap=document.querySelector('.map-wrap');if(!wrap||wrap.querySelector('.world-map-12'))return;const next=nextAdventure();wrap.insertAdjacentHTML('beforeend',worldMap(12,'World 12 · แสงจันทร์ ความกล้าหาญ และอัญมณี','ฟื้นฟูดินแดนรอบนอก · ผลึกคงที่ 10/10',next?.id));wrap.querySelectorAll('.world-map-12 [data-level]').forEach(button=>button.onclick=()=>beginLevel(+button.dataset.level));if(save.stars[59]){const nextLock=wrap.querySelector('.next-world-lock'),journeyTitle=wrap.querySelector('.journey-complete h2'),journeyCopy=wrap.querySelector('.journey-complete p');if(nextLock)nextLock.innerHTML='<span>💎</span><div><small>World 12 ดำเนินต่อ</small><strong>ตอนที่ 60 · ถ้ำแห่งอัญมณี</strong><p>อัญมณีสองสีกำลังรอเรียงเป็นประตู</p></div>';if(journeyTitle)journeyTitle.textContent='พิชิตครบ 59 ตอน!';if(journeyCopy){const totalStars=LEVELS.reduce((sum,l)=>sum+(save.stars[l.id]||0),0);journeyCopy.textContent=`ของวิเศษ ${save.items.length}/59 · ผลึกหัวใจ 10/10 · ดาว ${totalStars}/177`}}};
 
 const world12InventoryBase=showInventory;
 showInventory=()=>{world12InventoryBase();const panel=document.querySelector('.collection-panel');if(panel&&!panel.querySelector('.collection-world-12'))panel.insertAdjacentHTML('beforeend',collectionWorld(12,'World 12 · แสงจันทร์และอัญมณี'))};
 
-if(PLAYTEST_TARGET==='world12'){save.unlocked=Math.max(save.unlocked,58);for(let id=1;id<=55;id++)save.stars[id]??=3}
+if(PLAYTEST_TARGET==='world12'){save.unlocked=Math.max(save.unlocked,59);for(let id=1;id<=55;id++)save.stars[id]??=3}
 else if(save.stars[55]&&save.unlocked<56){save.unlocked=56;persist()}
 if(!PLAYTEST_MODE&&save.stars[56]&&save.unlocked<57){save.unlocked=57;persist()}
 if(!PLAYTEST_MODE&&save.stars[57]&&save.unlocked<58){save.unlocked=58;persist()}
+if(!PLAYTEST_MODE&&save.stars[58]&&save.unlocked<59){save.unlocked=59;persist()}
 if(save.player)home();
